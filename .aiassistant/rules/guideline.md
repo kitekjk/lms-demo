@@ -265,7 +265,50 @@ class PlaceOrderAppService(
 - Repository, 외부 API 구현체 등
 - domain의 인터페이스를 구현
 
-#### 3.1 Enum 타입 변환
+#### 3.1 JPA Auditing 설정
+
+**생성일시, 수정일시는 JPA Auditing을 사용하여 자동 관리한다.**
+- `@CreatedDate`, `@LastModifiedDate` 어노테이션 사용
+- `@EntityListeners(AuditingEntityListener::class)` 추가
+- BaseEntity를 상속받아 공통 타임스탬프 관리
+
+**BaseEntity 예시:**
+```kotlin
+@MappedSuperclass
+@EntityListeners(AuditingEntityListener::class)
+abstract class BaseEntity {
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    var createdAt: Instant = Instant.now()
+        protected set
+
+    @LastModifiedDate
+    @Column(nullable = false)
+    var updatedAt: Instant = Instant.now()
+        protected set
+}
+```
+
+**JPA Auditing 활성화 (Application 또는 Config 클래스):**
+```kotlin
+@Configuration
+@EnableJpaAuditing
+class JpaConfig
+```
+
+**Entity에서 사용:**
+```kotlin
+@Entity
+@Table(name = "users")
+class UserEntity(
+    @Id
+    var id: String,
+    var email: String,
+    // ... 기타 필드
+) : BaseEntity()  // BaseEntity 상속으로 createdAt, updatedAt 자동 관리
+```
+
+#### 3.2 Enum 타입 변환
 
 **Enum을 데이터베이스에 저장할 때는 반드시 `AttributeConverter`를 사용한다.**
 - JPA의 `@Enumerated` 어노테이션 사용 금지
@@ -401,5 +444,165 @@ interfaces/
 - Kotest의 shouldBe, shouldNotBe, shouldThrow 등의 매처를 사용
 - 다양한 엣지 케이스에 대한 테스트 코드 작성
 - 모든 입력 유효성 검사 테스트
+
+---
+
+## 📋 프로젝트 초기화 체크리스트
+
+신규 프로젝트 생성 시 반드시 수행해야 할 작업들:
+
+### 1. Git 설정
+
+**`.gitignore` 파일 생성:**
+```gitignore
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IntelliJ IDEA
+.idea/
+*.iml
+*.iws
+out/
+
+# Eclipse
+.classpath
+.project
+.settings/
+bin/
+
+# MacOS
+.DS_Store
+
+# Windows
+Thumbs.db
+
+# 환경 변수
+.env
+*.env
+
+# 로그
+*.log
+
+# TaskMaster AI (선택적)
+.taskmaster/state.json
+.taskmaster/reports/
+```
+
+**Git 초기화 및 첫 커밋:**
+```bash
+git init
+git add .
+git commit -m "chore: 프로젝트 초기 구성
+
+- Multi-module DDD 구조
+- Spring Boot 3.5.9 + Kotlin 2.1.0
+- Spotless + ktlint 코드 품질 관리
+- JPA Auditing, AttributeConverter 설정
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+```
+
+### 2. GitHub Repository 생성
+
+```bash
+# GitHub CLI 사용 (권장)
+gh repo create <repository-name> --public --source=. --remote=origin
+
+# 또는 수동으로 원격 저장소 추가
+git remote add origin https://github.com/<username>/<repository-name>.git
+
+# 푸시
+git branch -M master
+git push -u origin master
+```
+
+### 3. README.md 작성
+
+다음 섹션을 포함해야 함:
+- 프로젝트 개요 및 목적
+- 기술 스택
+- 아키텍처 구조
+- 빌드 및 실행 방법
+- 코드 품질 관리 (Spotless)
+- 환경 변수 설정
+- 프로젝트 구조
+- 개발 가이드 (필요시)
+
+### 4. 환경 변수 템플릿
+
+**`.env.example` 파일 생성:**
+```bash
+# Database
+SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/mydb
+SPRING_DATASOURCE_USERNAME=user
+SPRING_DATASOURCE_PASSWORD=password
+
+# JWT
+JWT_SECRET_KEY=your-secret-key-here
+JWT_ACCESS_TOKEN_EXPIRATION=3600000
+JWT_REFRESH_TOKEN_EXPIRATION=604800000
+
+# 기타 설정
+SPRING_PROFILES_ACTIVE=local
+```
+
+### 5. 코드 품질 검증
+
+```bash
+# Spotless 포맷팅 적용
+./gradlew spotlessApply
+
+# 빌드 및 테스트
+./gradlew clean build
+
+# 모든 검증이 통과하는지 확인
+```
+
+### 6. TaskMaster AI 설정 (선택적)
+
+TaskMaster AI를 사용하는 경우:
+
+```bash
+# TaskMaster 초기화
+task-master init
+
+# PRD 문서 작성 (.taskmaster/docs/prd.md)
+# 태스크 생성
+task-master parse-prd .taskmaster/docs/prd.md
+
+# 복잡도 분석
+task-master analyze-complexity --research
+```
+
+### 7. 필수 설정 파일 확인
+
+다음 파일들이 올바르게 생성되었는지 확인:
+- ✅ `gradle/libs.versions.toml` - 의존성 버전 관리
+- ✅ `build.gradle.kts` - Root Gradle 설정 (Spotless 포함)
+- ✅ `.editorconfig` - 에디터 설정
+- ✅ `.gitignore` - Git 제외 파일
+- ✅ `README.md` - 프로젝트 문서
+- ✅ `.env.example` - 환경 변수 템플릿
+- ✅ 멀티모듈 구조 (`domain`, `application`, `infrastructure`, `interfaces`)
+
+### 8. 최종 검증
+
+```bash
+# 1. Git 상태 확인
+git status
+
+# 2. 빌드 성공 확인
+./gradlew clean build
+
+# 3. Spotless 검증
+./gradlew spotlessCheck
+
+# 4. GitHub에 푸시
+git push origin master
+```
+
+---
 
 ## ✅ 이 문서는 자동 인식하여 코드 생성 시 참조됩니다.
