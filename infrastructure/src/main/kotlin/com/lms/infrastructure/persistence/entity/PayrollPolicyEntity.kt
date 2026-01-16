@@ -1,5 +1,6 @@
 package com.lms.infrastructure.persistence.entity
 
+import com.lms.domain.model.payroll.PolicyType
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -27,7 +28,7 @@ class PayrollPolicyEntity(
     val id: String = UUID.randomUUID().toString(),
 
     @Column(name = "policy_type", nullable = false, length = 30)
-    var policyType: String,
+    var policyType: PolicyType,
 
     @Column(name = "multiplier", nullable = false, precision = 5, scale = 2)
     var multiplier: BigDecimal,

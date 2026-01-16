@@ -1,5 +1,6 @@
 package com.lms.infrastructure.persistence.entity
 
+import com.lms.domain.model.attendance.AttendanceStatus
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -42,7 +43,7 @@ class AttendanceRecordEntity(
     var checkOutTime: Instant? = null,
 
     @Column(name = "status", nullable = false, length = 20)
-    var status: String,  // AttendanceStatus enum's name
+    var status: AttendanceStatus,
 
     @Column(name = "note", length = 500)
     var note: String? = null

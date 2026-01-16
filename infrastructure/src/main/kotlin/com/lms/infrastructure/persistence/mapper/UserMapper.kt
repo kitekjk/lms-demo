@@ -15,7 +15,7 @@ object UserMapper {
             id = UserId.from(entity.id),
             email = Email(entity.email),
             password = Password(entity.password),
-            role = Role.valueOf(entity.role),
+            role = entity.role,
             isActive = entity.isActive,
             createdAt = entity.createdAt,
             lastLoginAt = entity.lastLoginAt
@@ -31,7 +31,7 @@ object UserMapper {
             id = domain.id.value,
             email = domain.email.value,
             password = domain.password.encodedValue,
-            role = domain.role.name,
+            role = domain.role,
             isActive = domain.isActive,
             lastLoginAt = domain.lastLoginAt
         )
@@ -43,7 +43,7 @@ object UserMapper {
     fun updateEntity(entity: UserEntity, domain: User) {
         entity.email = domain.email.value
         entity.password = domain.password.encodedValue
-        entity.role = domain.role.name
+        entity.role = domain.role
         entity.isActive = domain.isActive
         entity.lastLoginAt = domain.lastLoginAt
     }

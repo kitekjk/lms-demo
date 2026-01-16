@@ -1,5 +1,7 @@
 package com.lms.infrastructure.persistence.entity
 
+import com.lms.domain.model.leave.LeaveStatus
+import com.lms.domain.model.leave.LeaveType
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -30,7 +32,7 @@ class LeaveRequestEntity(
     var employeeId: String,
 
     @Column(name = "leave_type", nullable = false, length = 20)
-    var leaveType: String,
+    var leaveType: LeaveType,
 
     @Column(name = "start_date", nullable = false)
     var startDate: LocalDate,
@@ -39,7 +41,7 @@ class LeaveRequestEntity(
     var endDate: LocalDate,
 
     @Column(name = "status", nullable = false, length = 20)
-    var status: String,
+    var status: LeaveStatus,
 
     @Column(name = "reason", length = 500)
     var reason: String? = null,

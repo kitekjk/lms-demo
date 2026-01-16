@@ -1,5 +1,6 @@
 package com.lms.infrastructure.persistence.entity
 
+import com.lms.domain.model.employee.EmployeeType
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -34,7 +35,7 @@ class EmployeeEntity(
     var name: String,
 
     @Column(name = "employee_type", nullable = false, length = 20)
-    var employeeType: String,  // EmployeeType enum의 name
+    var employeeType: EmployeeType,
 
     @Column(name = "store_id", length = 36)
     var storeId: String? = null,

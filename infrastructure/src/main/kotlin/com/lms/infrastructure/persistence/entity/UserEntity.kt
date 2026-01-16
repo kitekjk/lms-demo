@@ -1,5 +1,6 @@
 package com.lms.infrastructure.persistence.entity
 
+import com.lms.domain.model.user.Role
 import jakarta.persistence.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
@@ -29,7 +30,7 @@ class UserEntity(
     var password: String,
 
     @Column(nullable = false, length = 20)
-    var role: String,  // Role enum의 name
+    var role: Role,
 
     @Column(name = "is_active", nullable = false)
     var isActive: Boolean = true,

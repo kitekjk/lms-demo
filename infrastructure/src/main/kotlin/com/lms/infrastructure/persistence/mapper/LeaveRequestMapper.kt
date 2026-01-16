@@ -16,12 +16,12 @@ object LeaveRequestMapper {
         return LeaveRequest.reconstruct(
             id = LeaveRequestId.from(entity.id),
             employeeId = EmployeeId.from(entity.employeeId),
-            leaveType = LeaveType.valueOf(entity.leaveType),
+            leaveType = entity.leaveType,
             leavePeriod = LeavePeriod(
                 startDate = entity.startDate,
                 endDate = entity.endDate
             ),
-            status = LeaveStatus.valueOf(entity.status),
+            status = entity.status,
             reason = entity.reason,
             approvedBy = entity.approvedBy?.let { UserId.from(it) },
             approvedAt = entity.approvedAt,
@@ -37,10 +37,10 @@ object LeaveRequestMapper {
         return LeaveRequestEntity(
             id = domain.id.value,
             employeeId = domain.employeeId.value,
-            leaveType = domain.leaveType.name,
+            leaveType = domain.leaveType,
             startDate = domain.leavePeriod.startDate,
             endDate = domain.leavePeriod.endDate,
-            status = domain.status.name,
+            status = domain.status,
             reason = domain.reason,
             approvedBy = domain.approvedBy?.value,
             approvedAt = domain.approvedAt,
@@ -53,10 +53,10 @@ object LeaveRequestMapper {
      */
     fun updateEntity(entity: LeaveRequestEntity, domain: LeaveRequest) {
         entity.employeeId = domain.employeeId.value
-        entity.leaveType = domain.leaveType.name
+        entity.leaveType = domain.leaveType
         entity.startDate = domain.leavePeriod.startDate
         entity.endDate = domain.leavePeriod.endDate
-        entity.status = domain.status.name
+        entity.status = domain.status
         entity.reason = domain.reason
         entity.approvedBy = domain.approvedBy?.value
         entity.approvedAt = domain.approvedAt

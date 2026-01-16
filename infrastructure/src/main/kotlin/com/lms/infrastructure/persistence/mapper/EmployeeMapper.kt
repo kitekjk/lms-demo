@@ -17,7 +17,7 @@ object EmployeeMapper {
             id = EmployeeId(entity.id),
             userId = UserId(entity.userId),
             name = EmployeeName(entity.name),
-            employeeType = EmployeeType.valueOf(entity.employeeType),
+            employeeType = entity.employeeType,
             storeId = entity.storeId?.let { StoreId(it) },
             remainingLeave = RemainingLeave(entity.remainingLeave),
             isActive = entity.isActive,
@@ -34,7 +34,7 @@ object EmployeeMapper {
             id = domain.id.value,
             userId = domain.userId.value,
             name = domain.name.value,
-            employeeType = domain.employeeType.name,
+            employeeType = domain.employeeType,
             storeId = domain.storeId?.value,
             remainingLeave = domain.remainingLeave.value,
             isActive = domain.isActive
@@ -47,7 +47,7 @@ object EmployeeMapper {
     fun updateEntity(entity: EmployeeEntity, domain: Employee) {
         entity.userId = domain.userId.value
         entity.name = domain.name.value
-        entity.employeeType = domain.employeeType.name
+        entity.employeeType = domain.employeeType
         entity.storeId = domain.storeId?.value
         entity.remainingLeave = domain.remainingLeave.value
         entity.isActive = domain.isActive

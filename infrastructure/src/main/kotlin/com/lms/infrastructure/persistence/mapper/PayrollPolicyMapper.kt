@@ -18,7 +18,7 @@ object PayrollPolicyMapper {
 
         return PayrollPolicy.reconstruct(
             id = PayrollPolicyId.from(entity.id),
-            policyType = PolicyType.valueOf(entity.policyType),
+            policyType = entity.policyType,
             multiplier = PolicyMultiplier.from(entity.multiplier),
             effectivePeriod = effectivePeriod,
             description = entity.description,
@@ -32,7 +32,7 @@ object PayrollPolicyMapper {
     fun toEntity(domain: PayrollPolicy): PayrollPolicyEntity {
         return PayrollPolicyEntity(
             id = domain.id.value,
-            policyType = domain.policyType.name,
+            policyType = domain.policyType,
             multiplier = domain.multiplier.value,
             effectiveFrom = domain.effectivePeriod.effectiveFrom,
             effectiveTo = domain.effectivePeriod.effectiveTo,
@@ -44,7 +44,7 @@ object PayrollPolicyMapper {
      * Domain 변경사항을 Entity에 반영
      */
     fun updateEntity(entity: PayrollPolicyEntity, domain: PayrollPolicy) {
-        entity.policyType = domain.policyType.name
+        entity.policyType = domain.policyType
         entity.multiplier = domain.multiplier.value
         entity.effectiveFrom = domain.effectivePeriod.effectiveFrom
         entity.effectiveTo = domain.effectivePeriod.effectiveTo

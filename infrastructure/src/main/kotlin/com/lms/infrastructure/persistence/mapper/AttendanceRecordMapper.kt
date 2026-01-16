@@ -22,7 +22,7 @@ object AttendanceRecordMapper {
                 checkInTime = entity.checkInTime,
                 checkOutTime = entity.checkOutTime
             ),
-            status = AttendanceStatus.valueOf(entity.status),
+            status = entity.status,
             note = entity.note,
             createdAt = entity.createdAt
         )
@@ -39,7 +39,7 @@ object AttendanceRecordMapper {
             attendanceDate = domain.attendanceDate,
             checkInTime = domain.attendanceTime.checkInTime,
             checkOutTime = domain.attendanceTime.checkOutTime,
-            status = domain.status.name,
+            status = domain.status,
             note = domain.note
         )
     }
@@ -53,7 +53,7 @@ object AttendanceRecordMapper {
         entity.attendanceDate = domain.attendanceDate
         entity.checkInTime = domain.attendanceTime.checkInTime
         entity.checkOutTime = domain.attendanceTime.checkOutTime
-        entity.status = domain.status.name
+        entity.status = domain.status
         entity.note = domain.note
     }
 }
