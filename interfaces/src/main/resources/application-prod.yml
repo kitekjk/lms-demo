@@ -1,0 +1,27 @@
+# Production Profile Configuration
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 10
+
+  jpa:
+    hibernate:
+      ddl-auto: validate  # Never auto-update in production
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+
+jwt:
+  secret-key: ${JWT_SECRET_KEY}  # Must be set from environment
+
+logging:
+  level:
+    root: WARN
+    com.lms: INFO
+    org.springframework.security: WARN
+    org.hibernate.SQL: WARN
