@@ -1,12 +1,16 @@
 package com.lms.interfaces.web.controller
 
+import com.lms.application.attendance.AdjustAttendanceAppService
 import com.lms.application.attendance.CheckInAppService
 import com.lms.application.attendance.CheckOutAppService
+import com.lms.application.attendance.GetAttendanceRecordsByStoreAppService
 import com.lms.application.attendance.GetMyAttendanceRecordsAppService
+import com.lms.application.attendance.dto.AdjustAttendanceCommand
 import com.lms.application.attendance.dto.CheckInCommand
 import com.lms.application.attendance.dto.CheckOutCommand
 import com.lms.domain.common.DomainContext
 import com.lms.infrastructure.security.SecurityUtils
+import com.lms.interfaces.web.dto.AttendanceAdjustRequest
 import com.lms.interfaces.web.dto.AttendanceRecordListResponse
 import com.lms.interfaces.web.dto.AttendanceRecordResponse
 import com.lms.interfaces.web.dto.CheckInRequest
@@ -28,7 +32,9 @@ import org.springframework.web.bind.annotation.*
 class AttendanceController(
     private val checkInAppService: CheckInAppService,
     private val checkOutAppService: CheckOutAppService,
-    private val getMyAttendanceRecordsAppService: GetMyAttendanceRecordsAppService
+    private val getMyAttendanceRecordsAppService: GetMyAttendanceRecordsAppService,
+    private val getAttendanceRecordsByStoreAppService: GetAttendanceRecordsByStoreAppService,
+    private val adjustAttendanceAppService: AdjustAttendanceAppService
 ) {
 
     /**
@@ -134,6 +140,76 @@ class AttendanceController(
         val response = AttendanceRecordListResponse(
             records = records,
             totalCount = records.size
+        )
+
+        return ResponseEntity.ok(response)
+    }
+
+    /**
+     * 매장별 출퇴근 기록 조회 (관리자용)
+     * MANAGER와 SUPER_ADMIN만 가능
+     */
+    @GetMapping("/records")
+    @PreAuthorize("hasAnyRole('MANAGER', 'SUPER_ADMIN')")
+    fun getRecordsByStore(
+        @RequestParam storeId: String,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) startDate: LocalDate?,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) endDate: LocalDate?
+    ): ResponseEntity<AttendanceRecordListResponse> {
+        val results = getAttendanceRecordsByStoreAppService.execute(storeId, startDate, endDate)
+
+        val records = results.map { result ->
+            AttendanceRecordResponse(
+                id = result.id,
+                employeeId = result.employeeId,
+                workScheduleId = result.workScheduleId,
+                attendanceDate = result.attendanceDate,
+                checkInTime = result.checkInTime,
+                checkOutTime = result.checkOutTime,
+                actualWorkHours = result.actualWorkHours,
+                status = result.status,
+                note = result.note,
+                createdAt = result.createdAt
+            )
+        }
+
+        val response = AttendanceRecordListResponse(
+            records = records,
+            totalCount = records.size
+        )
+
+        return ResponseEntity.ok(response)
+    }
+
+    /**
+     * 출퇴근 기록 수정 (관리자용)
+     * MANAGER와 SUPER_ADMIN만 가능
+     */
+    @PutMapping("/records/{recordId}")
+    @PreAuthorize("hasAnyRole('MANAGER', 'SUPER_ADMIN')")
+    fun adjustRecord(
+        context: DomainContext,
+        @PathVariable recordId: String,
+        @Valid @RequestBody request: AttendanceAdjustRequest
+    ): ResponseEntity<AttendanceRecordResponse> {
+        val command = AdjustAttendanceCommand(
+            adjustedCheckInTime = request.adjustedCheckInTime,
+            adjustedCheckOutTime = request.adjustedCheckOutTime,
+            reason = request.reason
+        )
+
+        val result = adjustAttendanceAppService.execute(context, recordId, command)
+        val response = AttendanceRecordResponse(
+            id = result.id,
+            employeeId = result.employeeId,
+            workScheduleId = result.workScheduleId,
+            attendanceDate = result.attendanceDate,
+            checkInTime = result.checkInTime,
+            checkOutTime = result.checkOutTime,
+            actualWorkHours = result.actualWorkHours,
+            status = result.status,
+            note = result.note,
+            createdAt = result.createdAt
         )
 
         return ResponseEntity.ok(response)
