@@ -30,6 +30,7 @@ dependencies {
 
     // Servlet API
     compileOnly("jakarta.servlet:jakarta.servlet-api")
+    testImplementation("jakarta.servlet:jakarta.servlet-api")
 
     // JWT
     implementation(libs.jjwt.api)
