@@ -8,8 +8,7 @@ import com.lms.application.employee.GetEmployeesByStoreAppService
 import com.lms.application.employee.UpdateEmployeeAppService
 import com.lms.application.employee.dto.CreateEmployeeCommand
 import com.lms.application.employee.dto.UpdateEmployeeCommand
-import com.lms.domain.common.DomainContextBase
-import com.lms.infrastructure.security.SecurityUtils
+import com.lms.domain.common.DomainContext
 import com.lms.interfaces.web.dto.EmployeeCreateRequest
 import com.lms.interfaces.web.dto.EmployeeListResponse
 import com.lms.interfaces.web.dto.EmployeeResponse
@@ -42,17 +41,10 @@ class EmployeeController(
      */
     @PostMapping
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'MANAGER')")
-    fun createEmployee(@Valid @RequestBody request: EmployeeCreateRequest): ResponseEntity<EmployeeResponse> {
-        val context = DomainContextBase(
-            serviceName = "EmployeeController",
-            userId = SecurityUtils.getCurrentUserId() ?: "",
-            userName = SecurityUtils.getCurrentUserId() ?: "",
-            roleId = SecurityUtils.getCurrentUserRole() ?: "",
-            requestId = java.util.UUID.randomUUID(),
-            requestedAt = java.time.Instant.now(),
-            clientIp = ""
-        )
-
+    fun createEmployee(
+        context: DomainContext,
+        @Valid @RequestBody request: EmployeeCreateRequest
+    ): ResponseEntity<EmployeeResponse> {
         val command = CreateEmployeeCommand(
             userId = request.userId,
             name = request.name,
@@ -141,19 +133,10 @@ class EmployeeController(
     @PutMapping("/{employeeId}")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'MANAGER')")
     fun updateEmployee(
+        context: DomainContext,
         @PathVariable employeeId: String,
         @Valid @RequestBody request: EmployeeUpdateRequest
     ): ResponseEntity<EmployeeResponse> {
-        val context = DomainContextBase(
-            serviceName = "EmployeeController",
-            userId = SecurityUtils.getCurrentUserId() ?: "",
-            userName = SecurityUtils.getCurrentUserId() ?: "",
-            roleId = SecurityUtils.getCurrentUserRole() ?: "",
-            requestId = java.util.UUID.randomUUID(),
-            requestedAt = java.time.Instant.now(),
-            clientIp = ""
-        )
-
         val command = UpdateEmployeeCommand(
             name = request.name,
             employeeType = request.employeeType,
@@ -181,17 +164,7 @@ class EmployeeController(
      */
     @PatchMapping("/{employeeId}/deactivate")
     @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'MANAGER')")
-    fun deactivateEmployee(@PathVariable employeeId: String): ResponseEntity<EmployeeResponse> {
-        val context = DomainContextBase(
-            serviceName = "EmployeeController",
-            userId = SecurityUtils.getCurrentUserId() ?: "",
-            userName = SecurityUtils.getCurrentUserId() ?: "",
-            roleId = SecurityUtils.getCurrentUserRole() ?: "",
-            requestId = java.util.UUID.randomUUID(),
-            requestedAt = java.time.Instant.now(),
-            clientIp = ""
-        )
-
+    fun deactivateEmployee(context: DomainContext, @PathVariable employeeId: String): ResponseEntity<EmployeeResponse> {
         val result = deactivateEmployeeAppService.execute(context, employeeId)
         val response = EmployeeResponse(
             id = result.id,

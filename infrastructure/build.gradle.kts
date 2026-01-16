@@ -25,6 +25,9 @@ dependencies {
     // Spring Data JPA
     implementation(libs.spring.boot.starter.data.jpa)
 
+    // Spring Web (for WebMvcConfigurer, Interceptor, ArgumentResolver)
+    implementation(libs.spring.boot.starter.web)
+
     // Spring Security (for JWT filters and authentication)
     implementation(libs.spring.boot.starter.security)
 

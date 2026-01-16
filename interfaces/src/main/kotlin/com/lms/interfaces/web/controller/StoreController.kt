@@ -7,8 +7,7 @@ import com.lms.application.store.GetStoreAppService
 import com.lms.application.store.UpdateStoreAppService
 import com.lms.application.store.dto.CreateStoreCommand
 import com.lms.application.store.dto.UpdateStoreCommand
-import com.lms.domain.common.DomainContextBase
-import com.lms.infrastructure.security.SecurityUtils
+import com.lms.domain.common.DomainContext
 import com.lms.interfaces.web.dto.StoreCreateRequest
 import com.lms.interfaces.web.dto.StoreListResponse
 import com.lms.interfaces.web.dto.StoreResponse
@@ -39,17 +38,10 @@ class StoreController(
      */
     @PostMapping
     @PreAuthorize("hasRole('SUPER_ADMIN')")
-    fun createStore(@Valid @RequestBody request: StoreCreateRequest): ResponseEntity<StoreResponse> {
-        val context = DomainContextBase(
-            serviceName = "StoreController",
-            userId = SecurityUtils.getCurrentUserId() ?: "",
-            userName = SecurityUtils.getCurrentUserId() ?: "",
-            roleId = SecurityUtils.getCurrentUserRole() ?: "",
-            requestId = java.util.UUID.randomUUID(),
-            requestedAt = java.time.Instant.now(),
-            clientIp = "" // TODO: Extract from request
-        )
-
+    fun createStore(
+        context: DomainContext,
+        @Valid @RequestBody request: StoreCreateRequest
+    ): ResponseEntity<StoreResponse> {
         val command = CreateStoreCommand(
             name = request.name,
             location = request.location
@@ -117,19 +109,10 @@ class StoreController(
     @PutMapping("/{storeId}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     fun updateStore(
+        context: DomainContext,
         @PathVariable storeId: String,
         @Valid @RequestBody request: StoreUpdateRequest
     ): ResponseEntity<StoreResponse> {
-        val context = DomainContextBase(
-            serviceName = "StoreController",
-            userId = SecurityUtils.getCurrentUserId() ?: "",
-            userName = SecurityUtils.getCurrentUserId() ?: "",
-            roleId = SecurityUtils.getCurrentUserRole() ?: "",
-            requestId = java.util.UUID.randomUUID(),
-            requestedAt = java.time.Instant.now(),
-            clientIp = ""
-        )
-
         val command = UpdateStoreCommand(
             name = request.name,
             location = request.location
