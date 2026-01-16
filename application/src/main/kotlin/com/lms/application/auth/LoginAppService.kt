@@ -6,10 +6,10 @@ import com.lms.application.auth.dto.UserInfo
 import com.lms.domain.common.DomainContext
 import com.lms.domain.exception.AuthenticationFailedException
 import com.lms.domain.exception.InactiveUserException
+import com.lms.domain.model.auth.TokenProvider
 import com.lms.domain.model.employee.EmployeeRepository
 import com.lms.domain.model.user.Email
 import com.lms.domain.model.user.UserRepository
-import com.lms.infrastructure.security.jwt.JwtTokenProvider
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -23,7 +23,7 @@ class LoginAppService(
     private val userRepository: UserRepository,
     private val employeeRepository: EmployeeRepository,
     private val passwordEncoder: PasswordEncoder,
-    private val jwtTokenProvider: JwtTokenProvider
+    private val tokenProvider: TokenProvider
 ) {
 
     fun execute(context: DomainContext, command: LoginCommand): LoginResult {
@@ -50,13 +50,13 @@ class LoginAppService(
         val storeId = employee?.storeId?.value
 
         // 6. JWT 토큰 생성
-        val accessToken = jwtTokenProvider.generateAccessToken(
+        val accessToken = tokenProvider.generateAccessToken(
             employeeId = user.id.value,
             role = user.role.name,
             storeId = storeId
         )
 
-        val refreshToken = jwtTokenProvider.generateRefreshToken(
+        val refreshToken = tokenProvider.generateRefreshToken(
             employeeId = user.id.value
         )
 

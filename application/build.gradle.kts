@@ -18,9 +18,6 @@ dependencies {
     // Domain dependency
     implementation(project(":domain"))
 
-    // Infrastructure dependency (for JWT and security components)
-    implementation(project(":infrastructure"))
-
     // Spring Context for @Service, @Transactional
     implementation(libs.spring.boot.starter.validation)
     implementation("org.springframework:spring-context")

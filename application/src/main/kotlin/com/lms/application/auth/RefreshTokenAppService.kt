@@ -6,10 +6,10 @@ import com.lms.domain.common.DomainContext
 import com.lms.domain.exception.InvalidTokenException
 import com.lms.domain.exception.TokenUserInactiveException
 import com.lms.domain.exception.UserNotFoundException
+import com.lms.domain.model.auth.TokenProvider
 import com.lms.domain.model.employee.EmployeeRepository
 import com.lms.domain.model.user.UserId
 import com.lms.domain.model.user.UserRepository
-import com.lms.infrastructure.security.jwt.JwtTokenProvider
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -21,17 +21,17 @@ import org.springframework.transaction.annotation.Transactional
 class RefreshTokenAppService(
     private val userRepository: UserRepository,
     private val employeeRepository: EmployeeRepository,
-    private val jwtTokenProvider: JwtTokenProvider
+    private val tokenProvider: TokenProvider
 ) {
 
     fun execute(context: DomainContext, command: RefreshTokenCommand): RefreshTokenResult {
         // 1. Refresh Token 검증
-        if (!jwtTokenProvider.validateToken(command.refreshToken)) {
+        if (!tokenProvider.validateToken(command.refreshToken)) {
             throw InvalidTokenException()
         }
 
         // 2. Refresh Token에서 employeeId 추출
-        val employeeId = jwtTokenProvider.extractEmployeeId(command.refreshToken)
+        val employeeId = tokenProvider.extractEmployeeId(command.refreshToken)
 
         // 3. 사용자 조회 및 검증
         val user = userRepository.findById(UserId(employeeId))
@@ -46,7 +46,7 @@ class RefreshTokenAppService(
         val storeId = employee?.storeId?.value
 
         // 5. 새로운 Access Token 생성
-        val newAccessToken = jwtTokenProvider.generateAccessToken(
+        val newAccessToken = tokenProvider.generateAccessToken(
             employeeId = user.id.value,
             role = user.role.name,
             storeId = storeId
