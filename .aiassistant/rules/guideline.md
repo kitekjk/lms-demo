@@ -15,13 +15,17 @@
 ### 1. Build Environment
 - **Kotlin DSL**: 모든 Gradle 스크립트는 Kotlin DSL(`build.gradle.kts`, `settings.gradle.kts`)을 사용한다.
 - **Version Catalog**: 의존성 버전 관리는 `gradle/libs.versions.toml` 파일을 통해 수행한다. (기존 `buildSrc` 방식 지양)
+- **Spring Boot 버전**: Spring Boot 3.x 버전 중 최신 안정 버전(Stable Release)을 사용한다. (현재: 3.5.9)
+- **Code Quality**: Spotless + ktlint를 사용하여 코드 스타일을 자동 관리한다.
 
 **`gradle/libs.versions.toml` 표준 예시:**
 ```toml
 [versions]
-kotlin = "1.9.22"
-springBoot = "3.2.2"
-dependencyManagement = "1.1.4"
+kotlin = "2.1.0"
+springBoot = "3.5.9"
+springDependencyManagement = "1.1.7"
+spotless = "7.0.2"
+ktlint = "1.5.0"
 
 [libraries]
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }
@@ -33,7 +37,8 @@ spring-boot-starter-web = { group = "org.springframework.boot", name = "spring-b
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
 spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
-spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "dependencyManagement" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
 ```
 
 ### 2. Multi-Module Configuration
@@ -57,19 +62,71 @@ plugins {
     alias(libs.plugins.kotlin.spring) apply false
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
+    alias(libs.plugins.spotless) apply false
 }
 
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
     apply(plugin = "org.jetbrains.kotlin.plugin.spring")
     apply(plugin = "io.spring.dependency-management")
+    apply(plugin = "com.diffplug.spotless")
 
     repositories {
         mavenCentral()
     }
-    
+
+    // Spotless 설정
+    configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+        kotlin {
+            target("**/*.kt")
+            targetExclude("**/build/**/*.kt")
+            ktlint(rootProject.libs.versions.ktlint.get())
+                .editorConfigOverride(
+                    mapOf(
+                        "ktlint_standard_no-wildcard-imports" to "disabled",
+                        "ktlint_standard_trailing-comma-on-call-site" to "disabled",
+                        "ktlint_standard_trailing-comma-on-declaration-site" to "disabled",
+                        "ktlint_standard_filename" to "disabled",
+                        "max_line_length" to "120"
+                    )
+                )
+        }
+        kotlinGradle {
+            target("*.gradle.kts")
+            ktlint(rootProject.libs.versions.ktlint.get())
+        }
+    }
+
     // ... 공통 의존성 및 설정
 }
+```
+
+**`.editorconfig` 파일 생성 (프로젝트 루트):**
+```editorconfig
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+[*.{kt,kts}]
+indent_size = 4
+indent_style = space
+max_line_length = 120
+ij_kotlin_imports_layout = *
+
+[*.{yml,yaml}]
+indent_size = 2
+indent_style = space
+
+[*.md]
+trim_trailing_whitespace = false
+
+[*.{json,toml}]
+indent_size = 2
+indent_style = space
 ```
 
 ---
@@ -208,7 +265,25 @@ class PlaceOrderAppService(
 - Repository, 외부 API 구현체 등
 - domain의 인터페이스를 구현
 
-**예시:**
+#### 3.1 Enum 타입 변환
+
+**Enum을 데이터베이스에 저장할 때는 반드시 `AttributeConverter`를 사용한다.**
+- JPA의 `@Enumerated` 어노테이션 사용 금지
+- `@Converter(autoApply = true)`를 사용하여 전역 적용
+- 명시적인 타입 변환으로 데이터베이스 값 제어
+
+**AttributeConverter 예시:**
+```kotlin
+@Converter(autoApply = true)
+class RoleConverter : AttributeConverter<Role, String> {
+    override fun convertToDatabaseColumn(attribute: Role?): String? = attribute?.name
+
+    override fun convertToEntityAttribute(dbData: String?): Role? =
+        dbData?.let { Role.valueOf(it) }
+}
+```
+
+**Repository 예시:**
 ```kotlin
 @Repository
 class OrderRepositoryImpl(
@@ -268,6 +343,8 @@ class OrderController(
 - 기술 구현체는 domain 인터페이스 구현
 - Spring Data JPA 등은 여기에만 위치
 - 외부 API 연동도 여기에 구현
+- **Enum 타입은 반드시 AttributeConverter 사용** (`@Enumerated` 금지)
+- `@Converter(autoApply = true)`로 전역 적용하여 명시적 타입 변환
 
 ### ✅ interfaces
 
