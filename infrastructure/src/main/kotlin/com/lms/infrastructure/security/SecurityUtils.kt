@@ -1,5 +1,6 @@
 package com.lms.infrastructure.security
 
+import com.lms.infrastructure.security.jwt.JwtAuthenticationDetails
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.context.SecurityContextHolder
@@ -84,4 +85,30 @@ object SecurityUtils {
      * @return 권한 목록
      */
     fun getCurrentUserAuthorities(): Collection<GrantedAuthority> = getAuthentication()?.authorities ?: emptyList()
+
+    /**
+     * 현재 인증된 사용자의 매장 ID 조회
+     * @return 매장 ID 또는 null
+     */
+    fun getCurrentStoreId(): String? {
+        val authentication = getAuthentication() ?: return null
+        val details = authentication.details as? JwtAuthenticationDetails
+        return details?.storeId
+    }
+
+    /**
+     * 현재 사용자가 특정 매장에 속해있는지 확인
+     * @param storeId 확인할 매장 ID
+     * @return true if user belongs to the store
+     */
+    fun belongsToStore(storeId: String): Boolean = getCurrentStoreId() == storeId
+
+    /**
+     * 현재 사용자의 JwtAuthenticationDetails 조회
+     * @return JwtAuthenticationDetails 또는 null
+     */
+    fun getCurrentDetails(): JwtAuthenticationDetails? {
+        val authentication = getAuthentication() ?: return null
+        return authentication.details as? JwtAuthenticationDetails
+    }
 }
