@@ -29,7 +29,6 @@ class LeaveRequestEntity(
     @Column(name = "employee_id", nullable = false, length = 36)
     var employeeId: String,
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "leave_type", nullable = false, length = 20)
     var leaveType: String,
 
@@ -39,7 +38,6 @@ class LeaveRequestEntity(
     @Column(name = "end_date", nullable = false)
     var endDate: LocalDate,
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false, length = 20)
     var status: String,
 

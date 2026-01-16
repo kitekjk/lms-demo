@@ -145,10 +145,10 @@ task-master list --status=pending
 
 ## 🛠️ 기술 스택
 
-- **Language**: Kotlin 1.9.22
-- **Framework**: Spring Boot 3.2.2
+- **Language**: Kotlin 2.1.0
+- **Framework**: Spring Boot 3.5.9
 - **Build Tool**: Gradle 8.5 with Kotlin DSL
-- **Database**: JPA/Hibernate
+- **Database**: JPA/Hibernate 6.6.39
 - **Security**: Spring Security + JWT
 - **Architecture**: DDD + Clean Architecture
 

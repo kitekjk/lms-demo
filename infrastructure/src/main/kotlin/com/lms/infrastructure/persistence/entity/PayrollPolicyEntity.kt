@@ -26,7 +26,6 @@ class PayrollPolicyEntity(
     @Column(name = "payroll_policy_id", nullable = false, length = 36)
     val id: String = UUID.randomUUID().toString(),
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "policy_type", nullable = false, length = 30)
     var policyType: String,
 

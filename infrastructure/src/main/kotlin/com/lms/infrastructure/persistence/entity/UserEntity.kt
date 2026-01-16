@@ -28,7 +28,6 @@ class UserEntity(
     @Column(nullable = false, length = 255)
     var password: String,
 
-    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     var role: String,  // Role enum의 name
 
