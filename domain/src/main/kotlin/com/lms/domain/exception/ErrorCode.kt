@@ -19,4 +19,9 @@ object ErrorCode {
     // 매장 관련 (STORE)
     const val STORE_NOT_FOUND = "STORE001"
     const val DUPLICATE_STORE_NAME = "STORE002"
+
+    // 근로자 관련 (EMPLOYEE)
+    const val EMPLOYEE_NOT_FOUND = "EMP001"
+    const val DUPLICATE_EMPLOYEE_USER = "EMP002"
+    const val UNAUTHORIZED_STORE_ACCESS = "EMP003"
 }
