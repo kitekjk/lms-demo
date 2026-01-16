@@ -18,7 +18,12 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
     indexes = [
         Index(name = "idx_attendance_employee", columnList = "employee_id"),
         Index(name = "idx_attendance_date", columnList = "attendance_date"),
-        Index(name = "idx_attendance_status", columnList = "status")
+        Index(name = "idx_attendance_status", columnList = "status"),
+        Index(name = "idx_attendance_employee_date", columnList = "employee_id,attendance_date"),
+        Index(name = "idx_attendance_schedule", columnList = "work_schedule_id")
+    ],
+    uniqueConstraints = [
+        UniqueConstraint(name = "uk_attendance_schedule", columnNames = ["work_schedule_id"])
     ]
 )
 @EntityListeners(AuditingEntityListener::class)

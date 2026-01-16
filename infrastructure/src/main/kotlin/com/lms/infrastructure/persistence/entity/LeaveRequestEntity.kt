@@ -19,7 +19,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
     indexes = [
         Index(name = "idx_leave_employee", columnList = "employee_id"),
         Index(name = "idx_leave_status", columnList = "status"),
-        Index(name = "idx_leave_dates", columnList = "start_date,end_date")
+        Index(name = "idx_leave_dates", columnList = "start_date,end_date"),
+        Index(name = "idx_leave_employee_status", columnList = "employee_id,status"),
+        Index(name = "idx_leave_type", columnList = "leave_type")
     ]
 )
 @EntityListeners(AuditingEntityListener::class)

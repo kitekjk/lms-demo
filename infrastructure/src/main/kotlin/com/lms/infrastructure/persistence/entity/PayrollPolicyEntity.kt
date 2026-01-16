@@ -18,7 +18,11 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
     name = "payroll_policies",
     indexes = [
         Index(name = "idx_policy_type", columnList = "policy_type"),
-        Index(name = "idx_policy_effective", columnList = "effective_from,effective_to")
+        Index(name = "idx_policy_effective", columnList = "effective_from,effective_to"),
+        Index(name = "idx_policy_type_effective", columnList = "policy_type,effective_from,effective_to")
+    ],
+    uniqueConstraints = [
+        UniqueConstraint(name = "uk_policy_type_effective", columnNames = ["policy_type", "effective_from"])
     ]
 )
 @EntityListeners(AuditingEntityListener::class)
