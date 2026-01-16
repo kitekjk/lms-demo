@@ -16,15 +16,28 @@ import org.springframework.transaction.annotation.Transactional
 @Repository
 interface PayrollPolicyJpaRepository : JpaRepository<PayrollPolicyEntity, String> {
     fun findByPolicyType(policyType: String): List<PayrollPolicyEntity>
+    fun findByIsActive(isActive: Boolean): List<PayrollPolicyEntity>
 
     @Query(
         """
         SELECT pp FROM PayrollPolicyEntity pp
         WHERE pp.effectiveFrom <= :date
         AND (pp.effectiveTo IS NULL OR pp.effectiveTo >= :date)
+        AND pp.isActive = true
     """
     )
     fun findEffectivePoliciesOn(@Param("date") date: LocalDate): List<PayrollPolicyEntity>
+
+    @Query(
+        "SELECT p FROM PayrollPolicyEntity p WHERE p.policyType = :policyType AND p.isActive = true AND p.effectiveFrom <= :targetDate AND (p.effectiveTo IS NULL OR p.effectiveTo >= :targetDate)"
+    )
+    fun findEffectivePolicyByTypeAt(
+        @Param("policyType") policyType: String,
+        @Param("targetDate") targetDate: LocalDate
+    ): PayrollPolicyEntity?
+
+    @Query("SELECT p FROM PayrollPolicyEntity p WHERE p.policyType = :policyType AND p.isActive = true")
+    fun findActiveByPolicyType(@Param("policyType") policyType: String): List<PayrollPolicyEntity>
 }
 
 @Repository

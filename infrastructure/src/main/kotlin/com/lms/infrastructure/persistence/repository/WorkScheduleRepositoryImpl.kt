@@ -9,6 +9,8 @@ import com.lms.infrastructure.persistence.entity.WorkScheduleEntity
 import com.lms.infrastructure.persistence.mapper.WorkScheduleMapper
 import java.time.LocalDate
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,15 +18,34 @@ import org.springframework.transaction.annotation.Transactional
 interface WorkScheduleJpaRepository : JpaRepository<WorkScheduleEntity, String> {
     fun findByEmployeeId(employeeId: String): List<WorkScheduleEntity>
     fun findByStoreId(storeId: String): List<WorkScheduleEntity>
+    fun findByWorkDate(workDate: LocalDate): List<WorkScheduleEntity>
+    fun findByEmployeeIdAndWorkDate(employeeId: String, workDate: LocalDate): WorkScheduleEntity?
+    fun findByStoreIdAndWorkDate(storeId: String, workDate: LocalDate): List<WorkScheduleEntity>
+
+    @Query(
+        "SELECT w FROM WorkScheduleEntity w WHERE w.employeeId = :employeeId AND w.workDate BETWEEN :startDate AND :endDate"
+    )
     fun findByEmployeeIdAndWorkDateBetween(
-        employeeId: String,
-        startDate: LocalDate,
-        endDate: LocalDate
+        @Param("employeeId") employeeId: String,
+        @Param("startDate") startDate: LocalDate,
+        @Param("endDate") endDate: LocalDate
     ): List<WorkScheduleEntity>
+
+    @Query(
+        "SELECT w FROM WorkScheduleEntity w WHERE w.storeId = :storeId AND w.workDate BETWEEN :startDate AND :endDate"
+    )
     fun findByStoreIdAndWorkDateBetween(
-        storeId: String,
-        startDate: LocalDate,
-        endDate: LocalDate
+        @Param("storeId") storeId: String,
+        @Param("startDate") startDate: LocalDate,
+        @Param("endDate") endDate: LocalDate
+    ): List<WorkScheduleEntity>
+
+    @Query(
+        "SELECT w FROM WorkScheduleEntity w WHERE w.isConfirmed = true AND w.workDate BETWEEN :startDate AND :endDate"
+    )
+    fun findConfirmedSchedulesByDateRange(
+        @Param("startDate") startDate: LocalDate,
+        @Param("endDate") endDate: LocalDate
     ): List<WorkScheduleEntity>
 }
 

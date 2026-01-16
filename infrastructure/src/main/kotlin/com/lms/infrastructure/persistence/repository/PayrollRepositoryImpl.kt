@@ -7,16 +7,42 @@ import com.lms.domain.model.payroll.PayrollPeriod
 import com.lms.domain.model.payroll.PayrollRepository
 import com.lms.infrastructure.persistence.entity.PayrollEntity
 import com.lms.infrastructure.persistence.mapper.PayrollMapper
+import java.time.LocalDate
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
 @Repository
 interface PayrollJpaRepository : JpaRepository<PayrollEntity, String> {
     fun findByEmployeeId(employeeId: String): List<PayrollEntity>
-    fun findByEmployeeIdAndPeriod(employeeId: String, period: String): PayrollEntity?
-    fun findByPeriod(period: String): List<PayrollEntity>
-    fun findByEmployeeIdAndIsPaidFalse(employeeId: String): List<PayrollEntity>
+    fun findByIsPaid(isPaid: Boolean): List<PayrollEntity>
+    fun findByEmployeeIdAndIsPaid(employeeId: String, isPaid: Boolean): List<PayrollEntity>
+
+    @Query(
+        "SELECT p FROM PayrollEntity p WHERE p.employeeId = :employeeId AND p.payPeriodStart >= :startDate AND p.payPeriodEnd <= :endDate"
+    )
+    fun findByEmployeeIdAndPayPeriod(
+        @Param("employeeId") employeeId: String,
+        @Param("startDate") startDate: LocalDate,
+        @Param("endDate") endDate: LocalDate
+    ): List<PayrollEntity>
+
+    @Query("SELECT p FROM PayrollEntity p WHERE p.payPeriodStart >= :startDate AND p.payPeriodEnd <= :endDate")
+    fun findByPayPeriod(
+        @Param("startDate") startDate: LocalDate,
+        @Param("endDate") endDate: LocalDate
+    ): List<PayrollEntity>
+
+    @Query(
+        "SELECT SUM(p.totalPay) FROM PayrollEntity p WHERE p.employeeId = :employeeId AND p.payPeriodStart >= :startDate AND p.payPeriodEnd <= :endDate"
+    )
+    fun calculateTotalPayByEmployeeAndPeriod(
+        @Param("employeeId") employeeId: String,
+        @Param("startDate") startDate: LocalDate,
+        @Param("endDate") endDate: LocalDate
+    ): Double?
 }
 
 @Repository
@@ -37,15 +63,32 @@ class PayrollRepositoryImpl(private val jpaRepository: PayrollJpaRepository) : P
         jpaRepository.findByEmployeeId(employeeId.value)
             .map { PayrollMapper.toDomain(it) }
 
-    override fun findByEmployeeIdAndPeriod(employeeId: EmployeeId, period: PayrollPeriod): Payroll? =
-        jpaRepository.findByEmployeeIdAndPeriod(employeeId.value, period.value)
-            ?.let { PayrollMapper.toDomain(it) }
+    override fun findByEmployeeIdAndPeriod(employeeId: EmployeeId, period: PayrollPeriod): Payroll? {
+        val yearMonth = period.toYearMonth()
+        val startDate = yearMonth.atDay(1)
+        val endDate = yearMonth.atEndOfMonth()
 
-    override fun findByPeriod(period: PayrollPeriod): List<Payroll> = jpaRepository.findByPeriod(period.value)
-        .map { PayrollMapper.toDomain(it) }
+        return jpaRepository.findByEmployeeIdAndPayPeriod(
+            employeeId.value,
+            startDate,
+            endDate
+        ).firstOrNull()
+            ?.let { PayrollMapper.toDomain(it) }
+    }
+
+    override fun findByPeriod(period: PayrollPeriod): List<Payroll> {
+        val yearMonth = period.toYearMonth()
+        val startDate = yearMonth.atDay(1)
+        val endDate = yearMonth.atEndOfMonth()
+
+        return jpaRepository.findByPayPeriod(
+            startDate,
+            endDate
+        ).map { PayrollMapper.toDomain(it) }
+    }
 
     override fun findUnpaidByEmployeeId(employeeId: EmployeeId): List<Payroll> =
-        jpaRepository.findByEmployeeIdAndIsPaidFalse(employeeId.value)
+        jpaRepository.findByEmployeeIdAndIsPaid(employeeId.value, false)
             .map { PayrollMapper.toDomain(it) }
 
     override fun delete(id: PayrollId) {

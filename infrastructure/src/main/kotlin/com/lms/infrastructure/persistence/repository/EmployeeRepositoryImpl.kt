@@ -8,6 +8,8 @@ import com.lms.domain.model.user.UserId
 import com.lms.infrastructure.persistence.entity.EmployeeEntity
 import com.lms.infrastructure.persistence.mapper.EmployeeMapper
 import org.springframework.data.jpa.repository.JpaRepository
+import org.springframework.data.jpa.repository.Query
+import org.springframework.data.repository.query.Param
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
 
@@ -18,7 +20,18 @@ import org.springframework.transaction.annotation.Transactional
 interface EmployeeJpaRepositoryInterface : JpaRepository<EmployeeEntity, String> {
     fun findByUserId(userId: String): EmployeeEntity?
     fun findByStoreId(storeId: String): List<EmployeeEntity>
+    fun findByIsActive(isActive: Boolean): List<EmployeeEntity>
+    fun findByStoreIdAndIsActive(storeId: String, isActive: Boolean): List<EmployeeEntity>
     fun findByStoreIdAndIsActiveTrue(storeId: String): List<EmployeeEntity>
+
+    @Query("SELECT e FROM EmployeeEntity e WHERE e.employeeType = :employeeType")
+    fun findByEmployeeType(@Param("employeeType") employeeType: String): List<EmployeeEntity>
+
+    @Query("SELECT COUNT(e) FROM EmployeeEntity e WHERE e.storeId = :storeId AND e.isActive = true")
+    fun countActiveEmployeesByStore(@Param("storeId") storeId: String): Long
+
+    @Query("SELECT e FROM EmployeeEntity e WHERE e.name LIKE %:name%")
+    fun searchByName(@Param("name") name: String): List<EmployeeEntity>
 }
 
 /**

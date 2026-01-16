@@ -32,6 +32,14 @@ interface LeaveRequestJpaRepository : JpaRepository<LeaveRequestEntity, String> 
         @Param("startDate") startDate: LocalDate,
         @Param("endDate") endDate: LocalDate
     ): List<LeaveRequestEntity>
+
+    @Query(
+        "SELECT l FROM LeaveRequestEntity l WHERE l.status = 'APPROVED' AND :targetDate BETWEEN l.startDate AND l.endDate"
+    )
+    fun findApprovedLeavesByDate(@Param("targetDate") targetDate: LocalDate): List<LeaveRequestEntity>
+
+    @Query("SELECT l FROM LeaveRequestEntity l WHERE l.leaveType = :leaveType")
+    fun findByLeaveType(@Param("leaveType") leaveType: String): List<LeaveRequestEntity>
 }
 
 @Repository
