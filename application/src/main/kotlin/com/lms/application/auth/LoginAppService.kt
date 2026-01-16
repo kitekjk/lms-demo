@@ -4,7 +4,8 @@ import com.lms.application.auth.dto.LoginCommand
 import com.lms.application.auth.dto.LoginResult
 import com.lms.application.auth.dto.UserInfo
 import com.lms.domain.common.DomainContext
-import com.lms.domain.exception.DomainException
+import com.lms.domain.exception.AuthenticationFailedException
+import com.lms.domain.exception.InactiveUserException
 import com.lms.domain.model.employee.EmployeeRepository
 import com.lms.domain.model.user.Email
 import com.lms.domain.model.user.UserRepository
@@ -28,16 +29,16 @@ class LoginAppService(
     fun execute(context: DomainContext, command: LoginCommand): LoginResult {
         // 1. 이메일로 사용자 조회
         val user = userRepository.findByEmail(Email(command.email))
-            ?: throw DomainException("AUTH001", "이메일 또는 비밀번호가 일치하지 않습니다.")
+            ?: throw AuthenticationFailedException()
 
         // 2. 비밀번호 검증
         if (!passwordEncoder.matches(command.password, user.password.encodedValue)) {
-            throw DomainException("AUTH001", "이메일 또는 비밀번호가 일치하지 않습니다.")
+            throw AuthenticationFailedException()
         }
 
         // 3. 사용자 활성화 상태 확인
         if (!user.isActive) {
-            throw DomainException("AUTH002", "비활성화된 사용자입니다.")
+            throw InactiveUserException()
         }
 
         // 4. 로그인 처리 (lastLoginAt 업데이트)

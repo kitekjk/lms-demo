@@ -17,10 +17,10 @@ import org.springframework.transaction.annotation.Transactional
 @Repository
 interface AttendanceRecordJpaRepository : JpaRepository<AttendanceRecordEntity, String> {
     fun findByEmployeeId(employeeId: String): List<AttendanceRecordEntity>
-    fun findByScheduleId(scheduleId: String): AttendanceRecordEntity?
+    fun findByWorkScheduleId(scheduleId: String): AttendanceRecordEntity?
 
     @Query(
-        "SELECT a FROM AttendanceRecordEntity a WHERE a.employeeId = :employeeId AND DATE(a.checkInTime) = :workDate"
+        "SELECT a FROM AttendanceRecordEntity a WHERE a.employeeId = :employeeId AND a.attendanceDate = :workDate"
     )
     fun findByEmployeeIdAndWorkDate(
         @Param("employeeId") employeeId: String,
@@ -28,7 +28,7 @@ interface AttendanceRecordJpaRepository : JpaRepository<AttendanceRecordEntity, 
     ): List<AttendanceRecordEntity>
 
     @Query(
-        "SELECT a FROM AttendanceRecordEntity a WHERE a.employeeId = :employeeId AND DATE(a.checkInTime) BETWEEN :startDate AND :endDate"
+        "SELECT a FROM AttendanceRecordEntity a WHERE a.employeeId = :employeeId AND a.attendanceDate BETWEEN :startDate AND :endDate"
     )
     fun findByEmployeeIdAndDateRange(
         @Param("employeeId") employeeId: String,
@@ -41,7 +41,7 @@ interface AttendanceRecordJpaRepository : JpaRepository<AttendanceRecordEntity, 
 
     fun findByEmployeeIdAndStatus(employeeId: String, status: String): List<AttendanceRecordEntity>
 
-    @Query("SELECT a FROM AttendanceRecordEntity a WHERE a.checkOutTime IS NULL AND DATE(a.checkInTime) < CURRENT_DATE")
+    @Query("SELECT a FROM AttendanceRecordEntity a WHERE a.checkOutTime IS NULL AND a.attendanceDate < CURRENT_DATE")
     fun findMissingCheckouts(): List<AttendanceRecordEntity>
 }
 

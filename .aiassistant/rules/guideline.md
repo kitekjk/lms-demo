@@ -217,25 +217,64 @@ abstract class DomainEventBase<T> : DomainEvent<T> {
 
 #### 1.4 domain 예외 모듈 구조
 
-- 도메인 내에서 발생한 예외는 항상 DomainException 상속 받은 예외를 만들어서 사용
-- DomainException, DomainExceptionBase 를 상속 받는다
-- 예외 케이스에 따라 추가적인 정보를 같이 포함 시킬 수 있다.
-- 예외 코드(ErrorCode)를 체계화 하여 정리 한다.
+- 도메인 내에서 발생한 예외는 항상 DomainException을 상속받은 구체적인 예외 클래스를 만들어서 사용
+- **DomainException은 abstract class로 선언하여 직접 사용 금지**
+- 각 오류 케이스별로 구체적인 예외 클래스를 생성
+- 에러 코드는 예외 클래스 내부에 캡슐화하여 숨김
+- 예외 케이스에 따라 추가적인 정보를 생성자로 전달 가능
 
-**DomainException 예시:**
+**DomainException 기본 구조:**
 ```kotlin
-open class DomainException(
+// 추상 클래스로 선언하여 직접 인스턴스화 방지
+abstract class DomainException(
     val code: String,
     message: String,
-    originalError: Throwable? = null
-) : RuntimeException(message, originalError)
-
-enum class ErrorCode(val code: String, val message: String) {
-    ImpossibleCancel("OA050001", "취소 불가한 상태 입니다."),
-    NoRefundPolicy("OA052001", "환불 정책이 없습니다."),
-    InvalidItem("OA010001", "정상적인 상품아이템이 아닙니다.")
-}
+    cause: Throwable? = null
+) : RuntimeException(message, cause)
 ```
+
+**구체적인 예외 클래스 예시:**
+```kotlin
+// 인증 관련 예외
+class AuthenticationFailedException(
+    message: String = "이메일 또는 비밀번호가 일치하지 않습니다.",
+    cause: Throwable? = null
+) : DomainException("AUTH001", message, cause)
+
+class InactiveUserException(
+    message: String = "비활성화된 사용자입니다.",
+    cause: Throwable? = null
+) : DomainException("AUTH002", message, cause)
+
+// 등록 관련 예외 (추가 정보 포함 예시)
+class DuplicateEmailException(
+    email: String,
+    cause: Throwable? = null
+) : DomainException("REG001", "이미 등록된 이메일입니다: $email", cause)
+
+class InvalidRoleException(
+    role: String,
+    cause: Throwable? = null
+) : DomainException("REG002", "유효하지 않은 역할입니다: $role", cause)
+```
+
+**사용 예시:**
+```kotlin
+// ❌ 잘못된 사용 (DomainException 직접 사용)
+throw DomainException("AUTH001", "인증 실패")
+
+// ✅ 올바른 사용 (구체적인 예외 클래스 사용)
+throw AuthenticationFailedException()
+
+// ✅ 추가 정보를 포함한 예외
+throw DuplicateEmailException(email = "user@example.com")
+```
+
+**이점:**
+- 타입 안전성 향상 (컴파일 타임에 예외 타입 체크)
+- 에러 코드 캡슐화로 코드 가독성 향상
+- 특정 예외에 대한 catch 블록 작성 용이
+- IDE 자동완성 지원으로 개발 생산성 향상
 
 ### 2. application 모듈
 

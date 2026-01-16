@@ -3,7 +3,8 @@ package com.lms.application.auth
 import com.lms.application.auth.dto.RegisterCommand
 import com.lms.application.auth.dto.UserInfo
 import com.lms.domain.common.DomainContext
-import com.lms.domain.exception.DomainException
+import com.lms.domain.exception.DuplicateEmailException
+import com.lms.domain.exception.InvalidRoleException
 import com.lms.domain.model.user.Email
 import com.lms.domain.model.user.Password
 import com.lms.domain.model.user.Role
@@ -25,14 +26,14 @@ class RegisterAppService(private val userRepository: UserRepository, private val
         // 1. 이메일 중복 확인
         val email = Email(command.email)
         if (userRepository.existsByEmail(email)) {
-            throw DomainException("REG001", "이미 등록된 이메일입니다: ${command.email}")
+            throw DuplicateEmailException(command.email)
         }
 
         // 2. 역할 검증
         val role = try {
             Role.valueOf(command.role)
         } catch (e: IllegalArgumentException) {
-            throw DomainException("REG002", "유효하지 않은 역할입니다: ${command.role}")
+            throw InvalidRoleException(command.role)
         }
 
         // 3. 비밀번호 암호화
