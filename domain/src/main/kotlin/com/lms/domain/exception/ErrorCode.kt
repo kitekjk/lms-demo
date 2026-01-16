@@ -24,4 +24,10 @@ object ErrorCode {
     const val EMPLOYEE_NOT_FOUND = "EMP001"
     const val DUPLICATE_EMPLOYEE_USER = "EMP002"
     const val UNAUTHORIZED_STORE_ACCESS = "EMP003"
+
+    // 출퇴근 관련 (ATTENDANCE)
+    const val ATTENDANCE_NOT_FOUND = "ATT001"
+    const val ALREADY_CHECKED_IN = "ATT002"
+    const val NOT_CHECKED_IN = "ATT003"
+    const val ALREADY_CHECKED_OUT = "ATT004"
 }
