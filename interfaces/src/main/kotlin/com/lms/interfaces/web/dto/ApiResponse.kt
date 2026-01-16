@@ -18,45 +18,37 @@ data class ApiResponse<T>(
         /**
          * 성공 응답 (데이터 포함)
          */
-        fun <T> success(data: T, message: String = "Success"): ApiResponse<T> {
-            return ApiResponse(
-                success = true,
-                message = message,
-                data = data
-            )
-        }
+        fun <T> success(data: T, message: String = "Success"): ApiResponse<T> = ApiResponse(
+            success = true,
+            message = message,
+            data = data
+        )
 
         /**
          * 성공 응답 (데이터 없음)
          */
-        fun success(message: String = "Success"): ApiResponse<Unit> {
-            return ApiResponse(
-                success = true,
-                message = message,
-                data = null
-            )
-        }
+        fun success(message: String = "Success"): ApiResponse<Unit> = ApiResponse(
+            success = true,
+            message = message,
+            data = null
+        )
 
         /**
          * 실패 응답 (에러 메시지만)
          */
-        fun <T> error(message: String): ApiResponse<T> {
-            return ApiResponse(
-                success = false,
-                message = message,
-                data = null
-            )
-        }
+        fun <T> error(message: String): ApiResponse<T> = ApiResponse(
+            success = false,
+            message = message,
+            data = null
+        )
 
         /**
          * 실패 응답 (데이터 포함)
          */
-        fun <T> error(message: String, data: T): ApiResponse<T> {
-            return ApiResponse(
-                success = false,
-                message = message,
-                data = data
-            )
-        }
+        fun <T> error(message: String, data: T): ApiResponse<T> = ApiResponse(
+            success = false,
+            message = message,
+            data = data
+        )
     }
 }

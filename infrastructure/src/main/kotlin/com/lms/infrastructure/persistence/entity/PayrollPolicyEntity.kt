@@ -2,13 +2,13 @@ package com.lms.infrastructure.persistence.entity
 
 import com.lms.domain.model.payroll.PolicyType
 import jakarta.persistence.*
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.math.BigDecimal
 import java.time.Instant
 import java.time.LocalDate
 import java.util.*
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 
 /**
  * 급여 정책 JPA Entity
@@ -60,7 +60,5 @@ class PayrollPolicyEntity(
 
     override fun hashCode(): Int = id.hashCode()
 
-    override fun toString(): String {
-        return "PayrollPolicyEntity(id='$id', policyType='$policyType')"
-    }
+    override fun toString(): String = "PayrollPolicyEntity(id='$id', policyType='$policyType')"
 }

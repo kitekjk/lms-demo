@@ -1,12 +1,12 @@
 package com.lms.infrastructure.persistence.entity
 
 import jakarta.persistence.*
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 
 /**
  * 급여 JPA Entity
@@ -30,7 +30,7 @@ class PayrollEntity(
     var employeeId: String,
 
     @Column(name = "period", nullable = false, length = 7)
-    var period: String,  // YYYY-MM format
+    var period: String, // YYYY-MM format
 
     @Column(name = "base_amount", nullable = false, precision = 15, scale = 2)
     var baseAmount: BigDecimal,
@@ -71,7 +71,5 @@ class PayrollEntity(
 
     override fun hashCode(): Int = id.hashCode()
 
-    override fun toString(): String {
-        return "PayrollEntity(id='$id', employeeId='$employeeId', period='$period')"
-    }
+    override fun toString(): String = "PayrollEntity(id='$id', employeeId='$employeeId', period='$period')"
 }

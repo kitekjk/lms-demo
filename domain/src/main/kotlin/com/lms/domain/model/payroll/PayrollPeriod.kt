@@ -15,17 +15,12 @@ value class PayrollPeriod(val value: String) {
         }
     }
 
-    fun toYearMonth(): YearMonth {
-        return YearMonth.parse(value, DateTimeFormatter.ofPattern("yyyy-MM"))
-    }
+    fun toYearMonth(): YearMonth = YearMonth.parse(value, DateTimeFormatter.ofPattern("yyyy-MM"))
 
     companion object {
-        fun from(yearMonth: YearMonth): PayrollPeriod {
-            return PayrollPeriod(yearMonth.format(DateTimeFormatter.ofPattern("yyyy-MM")))
-        }
+        fun from(yearMonth: YearMonth): PayrollPeriod =
+            PayrollPeriod(yearMonth.format(DateTimeFormatter.ofPattern("yyyy-MM")))
 
-        fun of(year: Int, month: Int): PayrollPeriod {
-            return from(YearMonth.of(year, month))
-        }
+        fun of(year: Int, month: Int): PayrollPeriod = from(YearMonth.of(year, month))
     }
 }

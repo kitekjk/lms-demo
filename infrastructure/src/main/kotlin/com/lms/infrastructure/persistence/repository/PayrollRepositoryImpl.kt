@@ -21,9 +21,7 @@ interface PayrollJpaRepository : JpaRepository<PayrollEntity, String> {
 
 @Repository
 @Transactional
-class PayrollRepositoryImpl(
-    private val jpaRepository: PayrollJpaRepository
-) : PayrollRepository {
+class PayrollRepositoryImpl(private val jpaRepository: PayrollJpaRepository) : PayrollRepository {
 
     override fun save(payroll: Payroll): Payroll {
         val entity = PayrollMapper.toEntity(payroll)
@@ -31,31 +29,24 @@ class PayrollRepositoryImpl(
         return PayrollMapper.toDomain(saved)
     }
 
-    override fun findById(id: PayrollId): Payroll? {
-        return jpaRepository.findById(id.value)
-            .map { PayrollMapper.toDomain(it) }
-            .orElse(null)
-    }
+    override fun findById(id: PayrollId): Payroll? = jpaRepository.findById(id.value)
+        .map { PayrollMapper.toDomain(it) }
+        .orElse(null)
 
-    override fun findByEmployeeId(employeeId: EmployeeId): List<Payroll> {
-        return jpaRepository.findByEmployeeId(employeeId.value)
+    override fun findByEmployeeId(employeeId: EmployeeId): List<Payroll> =
+        jpaRepository.findByEmployeeId(employeeId.value)
             .map { PayrollMapper.toDomain(it) }
-    }
 
-    override fun findByEmployeeIdAndPeriod(employeeId: EmployeeId, period: PayrollPeriod): Payroll? {
-        return jpaRepository.findByEmployeeIdAndPeriod(employeeId.value, period.value)
+    override fun findByEmployeeIdAndPeriod(employeeId: EmployeeId, period: PayrollPeriod): Payroll? =
+        jpaRepository.findByEmployeeIdAndPeriod(employeeId.value, period.value)
             ?.let { PayrollMapper.toDomain(it) }
-    }
 
-    override fun findByPeriod(period: PayrollPeriod): List<Payroll> {
-        return jpaRepository.findByPeriod(period.value)
-            .map { PayrollMapper.toDomain(it) }
-    }
+    override fun findByPeriod(period: PayrollPeriod): List<Payroll> = jpaRepository.findByPeriod(period.value)
+        .map { PayrollMapper.toDomain(it) }
 
-    override fun findUnpaidByEmployeeId(employeeId: EmployeeId): List<Payroll> {
-        return jpaRepository.findByEmployeeIdAndIsPaidFalse(employeeId.value)
+    override fun findUnpaidByEmployeeId(employeeId: EmployeeId): List<Payroll> =
+        jpaRepository.findByEmployeeIdAndIsPaidFalse(employeeId.value)
             .map { PayrollMapper.toDomain(it) }
-    }
 
     override fun delete(id: PayrollId) {
         jpaRepository.deleteById(id.value)

@@ -1,11 +1,11 @@
 package com.lms.infrastructure.persistence.entity
 
 import jakarta.persistence.*
+import java.time.Instant
+import java.util.*
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.Instant
-import java.util.*
 
 /**
  * Store JPA Entity
@@ -46,11 +46,7 @@ class StoreEntity(
         return id == other.id
     }
 
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
+    override fun hashCode(): Int = id.hashCode()
 
-    override fun toString(): String {
-        return "StoreEntity(id='$id', name='$name', location='$location')"
-    }
+    override fun toString(): String = "StoreEntity(id='$id', name='$name', location='$location')"
 }

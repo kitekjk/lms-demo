@@ -28,18 +28,16 @@ data class Payroll private constructor(
             employeeId: EmployeeId,
             period: PayrollPeriod,
             amount: PayrollAmount
-        ): Payroll {
-            return Payroll(
-                id = PayrollId.generate(),
-                employeeId = employeeId,
-                period = period,
-                amount = amount,
-                calculatedAt = context.requestedAt,
-                isPaid = false,
-                paidAt = null,
-                createdAt = context.requestedAt
-            )
-        }
+        ): Payroll = Payroll(
+            id = PayrollId.generate(),
+            employeeId = employeeId,
+            period = period,
+            amount = amount,
+            calculatedAt = context.requestedAt,
+            isPaid = false,
+            paidAt = null,
+            createdAt = context.requestedAt
+        )
 
         /**
          * 기존 급여 재구성 (Repository에서 조회 시)
@@ -54,7 +52,14 @@ data class Payroll private constructor(
             paidAt: Instant?,
             createdAt: Instant
         ): Payroll = Payroll(
-            id, employeeId, period, amount, calculatedAt, isPaid, paidAt, createdAt
+            id,
+            employeeId,
+            period,
+            amount,
+            calculatedAt,
+            isPaid,
+            paidAt,
+            createdAt
         )
     }
 

@@ -24,9 +24,7 @@ interface StoreJpaRepositoryInterface : JpaRepository<StoreEntity, String> {
  */
 @Repository
 @Transactional
-class StoreRepositoryImpl(
-    private val jpaRepository: StoreJpaRepositoryInterface
-) : StoreRepository {
+class StoreRepositoryImpl(private val jpaRepository: StoreJpaRepositoryInterface) : StoreRepository {
 
     override fun save(store: Store): Store {
         val entity = StoreMapper.toEntity(store)
@@ -34,21 +32,15 @@ class StoreRepositoryImpl(
         return StoreMapper.toDomain(saved)
     }
 
-    override fun findById(storeId: StoreId): Store? {
-        return jpaRepository.findById(storeId.value)
-            .map { StoreMapper.toDomain(it) }
-            .orElse(null)
-    }
+    override fun findById(storeId: StoreId): Store? = jpaRepository.findById(storeId.value)
+        .map { StoreMapper.toDomain(it) }
+        .orElse(null)
 
-    override fun findByName(name: StoreName): Store? {
-        return jpaRepository.findByName(name.value)
-            ?.let { StoreMapper.toDomain(it) }
-    }
+    override fun findByName(name: StoreName): Store? = jpaRepository.findByName(name.value)
+        ?.let { StoreMapper.toDomain(it) }
 
-    override fun findAll(): List<Store> {
-        return jpaRepository.findAll()
-            .map { StoreMapper.toDomain(it) }
-    }
+    override fun findAll(): List<Store> = jpaRepository.findAll()
+        .map { StoreMapper.toDomain(it) }
 
     override fun delete(storeId: StoreId) {
         jpaRepository.deleteById(storeId.value)

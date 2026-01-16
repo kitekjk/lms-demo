@@ -46,9 +46,7 @@ class GlobalExceptionHandler {
      * Spring Security 인증 실패 시 발생
      */
     @ExceptionHandler(AuthenticationException::class)
-    fun handleAuthenticationException(
-        ex: AuthenticationException
-    ): ResponseEntity<ApiResponse<Unit>> {
+    fun handleAuthenticationException(ex: AuthenticationException): ResponseEntity<ApiResponse<Unit>> {
         log.warn("Authentication failed: {}", ex.message)
 
         return ResponseEntity
@@ -60,9 +58,7 @@ class GlobalExceptionHandler {
      * 인증 실패 예외 처리 (커스텀)
      */
     @ExceptionHandler(UnauthorizedException::class)
-    fun handleUnauthorizedException(
-        ex: UnauthorizedException
-    ): ResponseEntity<ApiResponse<Unit>> {
+    fun handleUnauthorizedException(ex: UnauthorizedException): ResponseEntity<ApiResponse<Unit>> {
         log.warn("Unauthorized: {}", ex.message)
 
         return ResponseEntity
@@ -75,9 +71,7 @@ class GlobalExceptionHandler {
      * Spring Security 권한 체크 실패 시 발생
      */
     @ExceptionHandler(AccessDeniedException::class)
-    fun handleAccessDeniedException(
-        ex: AccessDeniedException
-    ): ResponseEntity<ApiResponse<Unit>> {
+    fun handleAccessDeniedException(ex: AccessDeniedException): ResponseEntity<ApiResponse<Unit>> {
         log.warn("Access denied: {}", ex.message)
 
         return ResponseEntity
@@ -89,9 +83,7 @@ class GlobalExceptionHandler {
      * 권한 없음 예외 처리 (커스텀)
      */
     @ExceptionHandler(ForbiddenException::class)
-    fun handleForbiddenException(
-        ex: ForbiddenException
-    ): ResponseEntity<ApiResponse<Unit>> {
+    fun handleForbiddenException(ex: ForbiddenException): ResponseEntity<ApiResponse<Unit>> {
         log.warn("Forbidden: {}", ex.message)
 
         return ResponseEntity
@@ -103,9 +95,7 @@ class GlobalExceptionHandler {
      * 엔티티 조회 실패 예외 처리
      */
     @ExceptionHandler(EntityNotFoundException::class)
-    fun handleEntityNotFoundException(
-        ex: EntityNotFoundException
-    ): ResponseEntity<ApiResponse<Unit>> {
+    fun handleEntityNotFoundException(ex: EntityNotFoundException): ResponseEntity<ApiResponse<Unit>> {
         log.warn("Entity not found: {}", ex.message)
 
         return ResponseEntity
@@ -117,9 +107,7 @@ class GlobalExceptionHandler {
      * 비즈니스 로직 예외 처리
      */
     @ExceptionHandler(BusinessException::class)
-    fun handleBusinessException(
-        ex: BusinessException
-    ): ResponseEntity<ApiResponse<Unit>> {
+    fun handleBusinessException(ex: BusinessException): ResponseEntity<ApiResponse<Unit>> {
         log.warn("Business exception: {}", ex.message)
 
         return ResponseEntity
@@ -131,9 +119,7 @@ class GlobalExceptionHandler {
      * IllegalArgumentException 처리
      */
     @ExceptionHandler(IllegalArgumentException::class)
-    fun handleIllegalArgumentException(
-        ex: IllegalArgumentException
-    ): ResponseEntity<ApiResponse<Unit>> {
+    fun handleIllegalArgumentException(ex: IllegalArgumentException): ResponseEntity<ApiResponse<Unit>> {
         log.warn("Illegal argument: {}", ex.message)
 
         return ResponseEntity
@@ -145,9 +131,7 @@ class GlobalExceptionHandler {
      * IllegalStateException 처리
      */
     @ExceptionHandler(IllegalStateException::class)
-    fun handleIllegalStateException(
-        ex: IllegalStateException
-    ): ResponseEntity<ApiResponse<Unit>> {
+    fun handleIllegalStateException(ex: IllegalStateException): ResponseEntity<ApiResponse<Unit>> {
         log.warn("Illegal state: {}", ex.message)
 
         return ResponseEntity
@@ -159,9 +143,7 @@ class GlobalExceptionHandler {
      * 기타 모든 예외 처리
      */
     @ExceptionHandler(Exception::class)
-    fun handleException(
-        ex: Exception
-    ): ResponseEntity<ApiResponse<Unit>> {
+    fun handleException(ex: Exception): ResponseEntity<ApiResponse<Unit>> {
         log.error("Unexpected error occurred", ex)
 
         return ResponseEntity

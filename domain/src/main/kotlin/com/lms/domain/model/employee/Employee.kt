@@ -12,7 +12,7 @@ import java.time.Instant
  */
 data class Employee private constructor(
     val id: EmployeeId,
-    val userId: UserId,              // User 1:1 관계
+    val userId: UserId, // User 1:1 관계
     val name: EmployeeName,
     val employeeType: EmployeeType,
     val storeId: StoreId?,
@@ -63,8 +63,14 @@ data class Employee private constructor(
             isActive: Boolean,
             createdAt: Instant
         ): Employee = Employee(
-            id, userId, name, employeeType, storeId,
-            remainingLeave, isActive, createdAt
+            id,
+            userId,
+            name,
+            employeeType,
+            storeId,
+            remainingLeave,
+            isActive,
+            createdAt
         )
     }
 
@@ -87,16 +93,12 @@ data class Employee private constructor(
     /**
      * 매장 배정
      */
-    fun assignStore(context: DomainContext, storeId: StoreId): Employee {
-        return this.copy(storeId = storeId)
-    }
+    fun assignStore(context: DomainContext, storeId: StoreId): Employee = this.copy(storeId = storeId)
 
     /**
      * 근로자 유형 변경
      */
-    fun changeType(context: DomainContext, newType: EmployeeType): Employee {
-        return this.copy(employeeType = newType)
-    }
+    fun changeType(context: DomainContext, newType: EmployeeType): Employee = this.copy(employeeType = newType)
 
     /**
      * 비활성화

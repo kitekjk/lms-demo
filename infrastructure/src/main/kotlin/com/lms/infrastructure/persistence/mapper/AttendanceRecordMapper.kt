@@ -12,37 +12,33 @@ object AttendanceRecordMapper {
     /**
      * Entity → Domain 변환
      */
-    fun toDomain(entity: AttendanceRecordEntity): AttendanceRecord {
-        return AttendanceRecord.reconstruct(
-            id = AttendanceRecordId.from(entity.id),
-            employeeId = EmployeeId.from(entity.employeeId),
-            workScheduleId = entity.workScheduleId?.let { WorkScheduleId.from(it) },
-            attendanceDate = entity.attendanceDate,
-            attendanceTime = AttendanceTime(
-                checkInTime = entity.checkInTime,
-                checkOutTime = entity.checkOutTime
-            ),
-            status = entity.status,
-            note = entity.note,
-            createdAt = entity.createdAt
-        )
-    }
+    fun toDomain(entity: AttendanceRecordEntity): AttendanceRecord = AttendanceRecord.reconstruct(
+        id = AttendanceRecordId.from(entity.id),
+        employeeId = EmployeeId.from(entity.employeeId),
+        workScheduleId = entity.workScheduleId?.let { WorkScheduleId.from(it) },
+        attendanceDate = entity.attendanceDate,
+        attendanceTime = AttendanceTime(
+            checkInTime = entity.checkInTime,
+            checkOutTime = entity.checkOutTime
+        ),
+        status = entity.status,
+        note = entity.note,
+        createdAt = entity.createdAt
+    )
 
     /**
      * Domain → Entity 변환
      */
-    fun toEntity(domain: AttendanceRecord): AttendanceRecordEntity {
-        return AttendanceRecordEntity(
-            id = domain.id.value,
-            employeeId = domain.employeeId.value,
-            workScheduleId = domain.workScheduleId?.value,
-            attendanceDate = domain.attendanceDate,
-            checkInTime = domain.attendanceTime.checkInTime,
-            checkOutTime = domain.attendanceTime.checkOutTime,
-            status = domain.status,
-            note = domain.note
-        )
-    }
+    fun toEntity(domain: AttendanceRecord): AttendanceRecordEntity = AttendanceRecordEntity(
+        id = domain.id.value,
+        employeeId = domain.employeeId.value,
+        workScheduleId = domain.workScheduleId?.value,
+        attendanceDate = domain.attendanceDate,
+        checkInTime = domain.attendanceTime.checkInTime,
+        checkOutTime = domain.attendanceTime.checkOutTime,
+        status = domain.status,
+        note = domain.note
+    )
 
     /**
      * Domain 변경사항을 Entity에 반영

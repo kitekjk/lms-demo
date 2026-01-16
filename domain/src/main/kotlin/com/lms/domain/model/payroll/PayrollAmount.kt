@@ -26,10 +26,8 @@ data class PayrollAmount(
     /**
      * 총 급여 계산 (기본급 + 초과근무수당 - 공제액)
      */
-    fun calculateTotal(): BigDecimal {
-        return (baseAmount + overtimeAmount - deductions)
-            .setScale(2, RoundingMode.HALF_UP)
-    }
+    fun calculateTotal(): BigDecimal = (baseAmount + overtimeAmount - deductions)
+        .setScale(2, RoundingMode.HALF_UP)
 
     /**
      * 초과근무수당 추가
@@ -55,12 +53,10 @@ data class PayrollAmount(
         /**
          * 기본 급여만으로 생성
          */
-        fun fromBase(baseAmount: BigDecimal): PayrollAmount {
-            return PayrollAmount(
-                baseAmount = baseAmount,
-                overtimeAmount = BigDecimal.ZERO,
-                deductions = BigDecimal.ZERO
-            )
-        }
+        fun fromBase(baseAmount: BigDecimal): PayrollAmount = PayrollAmount(
+            baseAmount = baseAmount,
+            overtimeAmount = BigDecimal.ZERO,
+            deductions = BigDecimal.ZERO
+        )
     }
 }

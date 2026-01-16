@@ -2,12 +2,12 @@ package com.lms.infrastructure.persistence.entity
 
 import com.lms.domain.model.employee.EmployeeType
 import jakarta.persistence.*
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.math.BigDecimal
 import java.time.Instant
 import java.util.*
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 
 /**
  * Employee JPA Entity
@@ -29,7 +29,7 @@ class EmployeeEntity(
     val id: String = UUID.randomUUID().toString(),
 
     @Column(name = "user_id", nullable = false, length = 36)
-    var userId: String,  // User 1:1 관계
+    var userId: String, // User 1:1 관계
 
     @Column(nullable = false, length = 100)
     var name: String,
@@ -63,11 +63,7 @@ class EmployeeEntity(
         return id == other.id
     }
 
-    override fun hashCode(): Int {
-        return id.hashCode()
-    }
+    override fun hashCode(): Int = id.hashCode()
 
-    override fun toString(): String {
-        return "EmployeeEntity(id='$id', name='$name', userId='$userId')"
-    }
+    override fun toString(): String = "EmployeeEntity(id='$id', name='$name', userId='$userId')"
 }

@@ -9,11 +9,7 @@ import jakarta.persistence.Converter
  */
 @Converter(autoApply = true)
 class PolicyTypeConverter : AttributeConverter<PolicyType, String> {
-    override fun convertToDatabaseColumn(attribute: PolicyType?): String? {
-        return attribute?.name
-    }
+    override fun convertToDatabaseColumn(attribute: PolicyType?): String? = attribute?.name
 
-    override fun convertToEntityAttribute(dbData: String?): PolicyType? {
-        return dbData?.let { PolicyType.valueOf(it) }
-    }
+    override fun convertToEntityAttribute(dbData: String?): PolicyType? = dbData?.let { PolicyType.valueOf(it) }
 }

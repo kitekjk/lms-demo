@@ -1,11 +1,11 @@
 package com.lms.interfaces.web.controller
 
 import com.lms.interfaces.web.dto.ApiResponse
+import java.time.LocalDateTime
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import java.time.LocalDateTime
 
 /**
  * Health Check 컨트롤러
@@ -31,9 +31,5 @@ class HealthController {
         )
     }
 
-    data class HealthStatus(
-        val status: String,
-        val timestamp: LocalDateTime,
-        val service: String
-    )
+    data class HealthStatus(val status: String, val timestamp: LocalDateTime, val service: String)
 }

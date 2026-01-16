@@ -9,11 +9,9 @@ import jakarta.persistence.Converter
  */
 @Converter(autoApply = true)
 class AttendanceStatusConverter : AttributeConverter<AttendanceStatus, String> {
-    override fun convertToDatabaseColumn(attribute: AttendanceStatus?): String? {
-        return attribute?.name
-    }
+    override fun convertToDatabaseColumn(attribute: AttendanceStatus?): String? = attribute?.name
 
-    override fun convertToEntityAttribute(dbData: String?): AttendanceStatus? {
-        return dbData?.let { AttendanceStatus.valueOf(it) }
+    override fun convertToEntityAttribute(dbData: String?): AttendanceStatus? = dbData?.let {
+        AttendanceStatus.valueOf(it)
     }
 }

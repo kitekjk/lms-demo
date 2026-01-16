@@ -1,13 +1,13 @@
 package com.lms.infrastructure.persistence.entity
 
 import jakarta.persistence.*
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
 import java.util.*
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 
 /**
  * 근무 일정 JPA Entity
@@ -63,7 +63,5 @@ class WorkScheduleEntity(
 
     override fun hashCode(): Int = id.hashCode()
 
-    override fun toString(): String {
-        return "WorkScheduleEntity(id='$id', employeeId='$employeeId', workDate=$workDate)"
-    }
+    override fun toString(): String = "WorkScheduleEntity(id='$id', employeeId='$employeeId', workDate=$workDate)"
 }

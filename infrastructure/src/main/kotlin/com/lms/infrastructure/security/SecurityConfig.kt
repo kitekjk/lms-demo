@@ -23,9 +23,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(prePostEnabled = true)
-class SecurityConfig(
-    private val jwtAuthenticationFilter: JwtAuthenticationFilter
-) {
+class SecurityConfig(private val jwtAuthenticationFilter: JwtAuthenticationFilter) {
 
     /**
      * Security Filter Chain 설정
@@ -35,28 +33,22 @@ class SecurityConfig(
         http
             // CSRF 비활성화 (JWT 사용)
             .csrf { it.disable() }
-
             // CORS 설정 활성화
             .cors { it.configurationSource(corsConfigurationSource()) }
-
             // Session 비활성화 (Stateless)
             .sessionManagement {
                 it.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             }
-
             // 요청 인가 설정
             .authorizeHttpRequests { auth ->
                 auth
                     // 인증 API는 모두 허용
                     .requestMatchers("/api/auth/**").permitAll()
-
                     // Actuator health check 허용
                     .requestMatchers("/actuator/health").permitAll()
-
                     // 그 외 모든 요청은 인증 필요
                     .anyRequest().authenticated()
             }
-
             // JWT 인증 필터 추가 (UsernamePasswordAuthenticationFilter 앞에)
             .addFilterBefore(
                 jwtAuthenticationFilter,
@@ -75,15 +67,20 @@ class SecurityConfig(
         val configuration = CorsConfiguration().apply {
             // 허용할 Origin (개발 환경)
             allowedOrigins = listOf(
-                "http://localhost:3000",      // Flutter Web (dev)
-                "http://localhost:8080",      // 로컬 테스트
+                "http://localhost:3000", // Flutter Web (dev)
+                "http://localhost:8080", // 로컬 테스트
                 "http://127.0.0.1:3000",
                 "http://127.0.0.1:8080"
             )
 
             // 허용할 HTTP 메서드
             allowedMethods = listOf(
-                "GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"
+                "GET",
+                "POST",
+                "PUT",
+                "PATCH",
+                "DELETE",
+                "OPTIONS"
             )
 
             // 허용할 헤더
@@ -117,7 +114,5 @@ class SecurityConfig(
      * BCrypt 알고리즘 사용 (strength 10)
      */
     @Bean
-    fun passwordEncoder(): PasswordEncoder {
-        return BCryptPasswordEncoder()
-    }
+    fun passwordEncoder(): PasswordEncoder = BCryptPasswordEncoder()
 }

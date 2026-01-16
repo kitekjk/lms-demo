@@ -20,12 +20,7 @@ data class User private constructor(
         /**
          * 새로운 사용자 생성
          */
-        fun create(
-            context: DomainContext,
-            email: Email,
-            password: Password,
-            role: Role
-        ): User {
+        fun create(context: DomainContext, email: Email, password: Password, role: Role): User {
             require(role != Role.SUPER_ADMIN) {
                 "SUPER_ADMIN은 시스템에서만 생성 가능합니다."
             }
@@ -66,12 +61,7 @@ data class User private constructor(
     /**
      * 비밀번호 변경
      */
-    fun changePassword(
-        context: DomainContext,
-        newPassword: Password
-    ): User {
-        return this.copy(password = newPassword)
-    }
+    fun changePassword(context: DomainContext, newPassword: Password): User = this.copy(password = newPassword)
 
     /**
      * 사용자 비활성화

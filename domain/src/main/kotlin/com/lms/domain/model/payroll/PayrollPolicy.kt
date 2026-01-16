@@ -27,16 +27,14 @@ data class PayrollPolicy private constructor(
             multiplier: PolicyMultiplier,
             effectivePeriod: PolicyEffectivePeriod,
             description: String?
-        ): PayrollPolicy {
-            return PayrollPolicy(
-                id = PayrollPolicyId.generate(),
-                policyType = policyType,
-                multiplier = multiplier,
-                effectivePeriod = effectivePeriod,
-                description = description,
-                createdAt = context.requestedAt
-            )
-        }
+        ): PayrollPolicy = PayrollPolicy(
+            id = PayrollPolicyId.generate(),
+            policyType = policyType,
+            multiplier = multiplier,
+            effectivePeriod = effectivePeriod,
+            description = description,
+            createdAt = context.requestedAt
+        )
 
         /**
          * 기존 급여 정책 재구성 (Repository에서 조회 시)
@@ -49,7 +47,12 @@ data class PayrollPolicy private constructor(
             description: String?,
             createdAt: Instant
         ): PayrollPolicy = PayrollPolicy(
-            id, policyType, multiplier, effectivePeriod, description, createdAt
+            id,
+            policyType,
+            multiplier,
+            effectivePeriod,
+            description,
+            createdAt
         )
     }
 
@@ -74,21 +77,15 @@ data class PayrollPolicy private constructor(
     /**
      * 특정 날짜에 유효한지 확인
      */
-    fun isEffectiveOn(date: LocalDate): Boolean {
-        return effectivePeriod.isEffectiveOn(date)
-    }
+    fun isEffectiveOn(date: LocalDate): Boolean = effectivePeriod.isEffectiveOn(date)
 
     /**
      * 현재 유효한지 확인
      */
-    fun isCurrentlyEffective(): Boolean {
-        return effectivePeriod.isCurrentlyEffective()
-    }
+    fun isCurrentlyEffective(): Boolean = effectivePeriod.isCurrentlyEffective()
 
     /**
      * 금액에 정책 배율 적용
      */
-    fun applyTo(baseAmount: BigDecimal): BigDecimal {
-        return baseAmount * multiplier.value
-    }
+    fun applyTo(baseAmount: BigDecimal): BigDecimal = baseAmount * multiplier.value
 }

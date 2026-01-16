@@ -2,11 +2,11 @@ package com.lms.infrastructure.persistence.entity
 
 import com.lms.domain.model.user.Role
 import jakarta.persistence.*
+import java.time.Instant
+import java.util.UUID
 import org.springframework.data.annotation.CreatedDate
 import org.springframework.data.annotation.LastModifiedDate
 import org.springframework.data.jpa.domain.support.AuditingEntityListener
-import java.time.Instant
-import java.util.UUID
 
 /**
  * User JPA Entity

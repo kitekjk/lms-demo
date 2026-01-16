@@ -3,12 +3,12 @@ package com.lms.infrastructure.persistence.entity
 import com.lms.domain.model.leave.LeaveStatus
 import com.lms.domain.model.leave.LeaveType
 import jakarta.persistence.*
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.Instant
 import java.time.LocalDate
 import java.util.*
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 
 /**
  * 휴가 신청 JPA Entity
@@ -73,7 +73,5 @@ class LeaveRequestEntity(
 
     override fun hashCode(): Int = id.hashCode()
 
-    override fun toString(): String {
-        return "LeaveRequestEntity(id='$id', employeeId='$employeeId', leaveType='$leaveType')"
-    }
+    override fun toString(): String = "LeaveRequestEntity(id='$id', employeeId='$employeeId', leaveType='$leaveType')"
 }

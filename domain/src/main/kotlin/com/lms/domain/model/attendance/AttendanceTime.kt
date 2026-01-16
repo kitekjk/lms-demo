@@ -6,10 +6,7 @@ import java.time.Instant
 /**
  * 출퇴근 시간 Value Object
  */
-data class AttendanceTime(
-    val checkInTime: Instant,
-    val checkOutTime: Instant?
-) {
+data class AttendanceTime(val checkInTime: Instant, val checkOutTime: Instant?) {
     init {
         if (checkOutTime != null) {
             require(!checkInTime.isAfter(checkOutTime)) {
@@ -26,11 +23,9 @@ data class AttendanceTime(
     /**
      * 실제 근무 시간 계산 (시간 단위)
      */
-    fun calculateActualWorkHours(): Double? {
-        return checkOutTime?.let {
-            val duration = Duration.between(checkInTime, it)
-            duration.toMinutes() / 60.0
-        }
+    fun calculateActualWorkHours(): Double? = checkOutTime?.let {
+        val duration = Duration.between(checkInTime, it)
+        duration.toMinutes() / 60.0
     }
 
     /**

@@ -31,20 +31,18 @@ data class LeaveRequest private constructor(
             leaveType: LeaveType,
             leavePeriod: LeavePeriod,
             reason: String?
-        ): LeaveRequest {
-            return LeaveRequest(
-                id = LeaveRequestId.generate(),
-                employeeId = employeeId,
-                leaveType = leaveType,
-                leavePeriod = leavePeriod,
-                status = LeaveStatus.PENDING,
-                reason = reason,
-                approvedBy = null,
-                approvedAt = null,
-                rejectionReason = null,
-                createdAt = context.requestedAt
-            )
-        }
+        ): LeaveRequest = LeaveRequest(
+            id = LeaveRequestId.generate(),
+            employeeId = employeeId,
+            leaveType = leaveType,
+            leavePeriod = leavePeriod,
+            status = LeaveStatus.PENDING,
+            reason = reason,
+            approvedBy = null,
+            approvedAt = null,
+            rejectionReason = null,
+            createdAt = context.requestedAt
+        )
 
         /**
          * 기존 휴가 신청 재구성 (Repository에서 조회 시)
@@ -130,7 +128,5 @@ data class LeaveRequest private constructor(
     /**
      * 다른 휴가 신청과 기간이 겹치는지 확인
      */
-    fun overlapsWith(other: LeaveRequest): Boolean {
-        return this.leavePeriod.overlapsWith(other.leavePeriod)
-    }
+    fun overlapsWith(other: LeaveRequest): Boolean = this.leavePeriod.overlapsWith(other.leavePeriod)
 }

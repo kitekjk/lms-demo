@@ -14,9 +14,7 @@ import org.springframework.transaction.annotation.Transactional
  */
 @Repository
 @Transactional
-class UserRepositoryImpl(
-    private val jpaRepository: UserJpaRepository
-) : UserRepository {
+class UserRepositoryImpl(private val jpaRepository: UserJpaRepository) : UserRepository {
 
     override fun save(user: User): User {
         val entity = UserMapper.toEntity(user)
@@ -24,20 +22,14 @@ class UserRepositoryImpl(
         return UserMapper.toDomain(saved)
     }
 
-    override fun findById(userId: UserId): User? {
-        return jpaRepository.findById(userId.value)
-            .map { UserMapper.toDomain(it) }
-            .orElse(null)
-    }
+    override fun findById(userId: UserId): User? = jpaRepository.findById(userId.value)
+        .map { UserMapper.toDomain(it) }
+        .orElse(null)
 
-    override fun findByEmail(email: Email): User? {
-        return jpaRepository.findByEmail(email.value)
-            ?.let { UserMapper.toDomain(it) }
-    }
+    override fun findByEmail(email: Email): User? = jpaRepository.findByEmail(email.value)
+        ?.let { UserMapper.toDomain(it) }
 
-    override fun existsByEmail(email: Email): Boolean {
-        return jpaRepository.existsByEmail(email.value)
-    }
+    override fun existsByEmail(email: Email): Boolean = jpaRepository.existsByEmail(email.value)
 
     override fun delete(userId: UserId) {
         jpaRepository.deleteById(userId.value)

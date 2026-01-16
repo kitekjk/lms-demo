@@ -12,41 +12,37 @@ object LeaveRequestMapper {
     /**
      * Entity → Domain 변환
      */
-    fun toDomain(entity: LeaveRequestEntity): LeaveRequest {
-        return LeaveRequest.reconstruct(
-            id = LeaveRequestId.from(entity.id),
-            employeeId = EmployeeId.from(entity.employeeId),
-            leaveType = entity.leaveType,
-            leavePeriod = LeavePeriod(
-                startDate = entity.startDate,
-                endDate = entity.endDate
-            ),
-            status = entity.status,
-            reason = entity.reason,
-            approvedBy = entity.approvedBy?.let { UserId.from(it) },
-            approvedAt = entity.approvedAt,
-            rejectionReason = entity.rejectionReason,
-            createdAt = entity.createdAt
-        )
-    }
+    fun toDomain(entity: LeaveRequestEntity): LeaveRequest = LeaveRequest.reconstruct(
+        id = LeaveRequestId.from(entity.id),
+        employeeId = EmployeeId.from(entity.employeeId),
+        leaveType = entity.leaveType,
+        leavePeriod = LeavePeriod(
+            startDate = entity.startDate,
+            endDate = entity.endDate
+        ),
+        status = entity.status,
+        reason = entity.reason,
+        approvedBy = entity.approvedBy?.let { UserId.from(it) },
+        approvedAt = entity.approvedAt,
+        rejectionReason = entity.rejectionReason,
+        createdAt = entity.createdAt
+    )
 
     /**
      * Domain → Entity 변환
      */
-    fun toEntity(domain: LeaveRequest): LeaveRequestEntity {
-        return LeaveRequestEntity(
-            id = domain.id.value,
-            employeeId = domain.employeeId.value,
-            leaveType = domain.leaveType,
-            startDate = domain.leavePeriod.startDate,
-            endDate = domain.leavePeriod.endDate,
-            status = domain.status,
-            reason = domain.reason,
-            approvedBy = domain.approvedBy?.value,
-            approvedAt = domain.approvedAt,
-            rejectionReason = domain.rejectionReason
-        )
-    }
+    fun toEntity(domain: LeaveRequest): LeaveRequestEntity = LeaveRequestEntity(
+        id = domain.id.value,
+        employeeId = domain.employeeId.value,
+        leaveType = domain.leaveType,
+        startDate = domain.leavePeriod.startDate,
+        endDate = domain.leavePeriod.endDate,
+        status = domain.status,
+        reason = domain.reason,
+        approvedBy = domain.approvedBy?.value,
+        approvedAt = domain.approvedAt,
+        rejectionReason = domain.rejectionReason
+    )
 
     /**
      * Domain 변경사항을 Entity에 반영

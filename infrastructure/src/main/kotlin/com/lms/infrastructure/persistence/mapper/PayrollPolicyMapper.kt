@@ -29,16 +29,14 @@ object PayrollPolicyMapper {
     /**
      * Domain → Entity 변환
      */
-    fun toEntity(domain: PayrollPolicy): PayrollPolicyEntity {
-        return PayrollPolicyEntity(
-            id = domain.id.value,
-            policyType = domain.policyType,
-            multiplier = domain.multiplier.value,
-            effectiveFrom = domain.effectivePeriod.effectiveFrom,
-            effectiveTo = domain.effectivePeriod.effectiveTo,
-            description = domain.description
-        )
-    }
+    fun toEntity(domain: PayrollPolicy): PayrollPolicyEntity = PayrollPolicyEntity(
+        id = domain.id.value,
+        policyType = domain.policyType,
+        multiplier = domain.multiplier.value,
+        effectiveFrom = domain.effectivePeriod.effectiveFrom,
+        effectiveTo = domain.effectivePeriod.effectiveTo,
+        description = domain.description
+    )
 
     /**
      * Domain 변경사항을 Entity에 반영

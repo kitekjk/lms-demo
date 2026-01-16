@@ -18,10 +18,6 @@ interface WorkScheduleRepository {
         startDate: LocalDate,
         endDate: LocalDate
     ): List<WorkSchedule>
-    fun findByStoreIdAndDateRange(
-        storeId: StoreId,
-        startDate: LocalDate,
-        endDate: LocalDate
-    ): List<WorkSchedule>
+    fun findByStoreIdAndDateRange(storeId: StoreId, startDate: LocalDate, endDate: LocalDate): List<WorkSchedule>
     fun delete(id: WorkScheduleId)
 }

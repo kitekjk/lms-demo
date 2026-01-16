@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.jpa) apply false
     alias(libs.plugins.spring.boot) apply false
     alias(libs.plugins.spring.dependency.management) apply false
+    alias(libs.plugins.spotless) apply false
 }
 
 allprojects {
@@ -17,6 +18,7 @@ allprojects {
 
 subprojects {
     apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "com.diffplug.spotless")
 
     tasks.withType<JavaCompile> {
         sourceCompatibility = "17"
@@ -47,5 +49,26 @@ subprojects {
 
     tasks.withType<Test> {
         useJUnitPlatform()
+    }
+
+    configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+        kotlin {
+            target("**/*.kt")
+            targetExclude("**/build/**/*.kt")
+            ktlint(rootProject.libs.versions.ktlint.get())
+                .editorConfigOverride(
+                    mapOf(
+                        "ktlint_standard_no-wildcard-imports" to "disabled",
+                        "ktlint_standard_trailing-comma-on-call-site" to "disabled",
+                        "ktlint_standard_trailing-comma-on-declaration-site" to "disabled",
+                        "ktlint_standard_filename" to "disabled",
+                        "max_line_length" to "120"
+                    )
+                )
+        }
+        kotlinGradle {
+            target("*.gradle.kts")
+            ktlint(rootProject.libs.versions.ktlint.get())
+        }
     }
 }

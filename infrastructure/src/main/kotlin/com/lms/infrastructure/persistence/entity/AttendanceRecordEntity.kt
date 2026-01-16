@@ -2,12 +2,12 @@ package com.lms.infrastructure.persistence.entity
 
 import com.lms.domain.model.attendance.AttendanceStatus
 import jakarta.persistence.*
-import org.springframework.data.annotation.CreatedDate
-import org.springframework.data.annotation.LastModifiedDate
-import org.springframework.data.jpa.domain.support.AuditingEntityListener
 import java.time.Instant
 import java.time.LocalDate
 import java.util.*
+import org.springframework.data.annotation.CreatedDate
+import org.springframework.data.annotation.LastModifiedDate
+import org.springframework.data.jpa.domain.support.AuditingEntityListener
 
 /**
  * 출퇴근 기록 JPA Entity
@@ -66,7 +66,5 @@ class AttendanceRecordEntity(
 
     override fun hashCode(): Int = id.hashCode()
 
-    override fun toString(): String {
-        return "AttendanceRecordEntity(id='$id', employeeId='$employeeId', date=$attendanceDate)"
-    }
+    override fun toString(): String = "AttendanceRecordEntity(id='$id', employeeId='$employeeId', date=$attendanceDate)"
 }

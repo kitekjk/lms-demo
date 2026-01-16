@@ -9,11 +9,7 @@ import jakarta.persistence.Converter
  */
 @Converter(autoApply = true)
 class LeaveTypeConverter : AttributeConverter<LeaveType, String> {
-    override fun convertToDatabaseColumn(attribute: LeaveType?): String? {
-        return attribute?.name
-    }
+    override fun convertToDatabaseColumn(attribute: LeaveType?): String? = attribute?.name
 
-    override fun convertToEntityAttribute(dbData: String?): LeaveType? {
-        return dbData?.let { LeaveType.valueOf(it) }
-    }
+    override fun convertToEntityAttribute(dbData: String?): LeaveType? = dbData?.let { LeaveType.valueOf(it) }
 }

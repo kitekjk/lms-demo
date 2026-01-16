@@ -33,20 +33,18 @@ object PayrollMapper {
     /**
      * Domain → Entity 변환
      */
-    fun toEntity(domain: Payroll): PayrollEntity {
-        return PayrollEntity(
-            id = domain.id.value,
-            employeeId = domain.employeeId.value,
-            period = domain.period.value,
-            baseAmount = domain.amount.baseAmount,
-            overtimeAmount = domain.amount.overtimeAmount,
-            deductions = domain.amount.deductions,
-            totalAmount = domain.amount.calculateTotal(),
-            calculatedAt = domain.calculatedAt,
-            isPaid = domain.isPaid,
-            paidAt = domain.paidAt
-        )
-    }
+    fun toEntity(domain: Payroll): PayrollEntity = PayrollEntity(
+        id = domain.id.value,
+        employeeId = domain.employeeId.value,
+        period = domain.period.value,
+        baseAmount = domain.amount.baseAmount,
+        overtimeAmount = domain.amount.overtimeAmount,
+        deductions = domain.amount.deductions,
+        totalAmount = domain.amount.calculateTotal(),
+        calculatedAt = domain.calculatedAt,
+        isPaid = domain.isPaid,
+        paidAt = domain.paidAt
+    )
 
     /**
      * Domain 변경사항을 Entity에 반영

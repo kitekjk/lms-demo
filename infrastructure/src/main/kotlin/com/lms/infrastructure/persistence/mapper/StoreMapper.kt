@@ -13,26 +13,22 @@ object StoreMapper {
     /**
      * Entity → Domain 변환
      */
-    fun toDomain(entity: StoreEntity): Store {
-        return Store.reconstruct(
-            id = StoreId(entity.id),
-            name = StoreName(entity.name),
-            location = StoreLocation(entity.location),
-            createdAt = entity.createdAt
-        )
-    }
+    fun toDomain(entity: StoreEntity): Store = Store.reconstruct(
+        id = StoreId(entity.id),
+        name = StoreName(entity.name),
+        location = StoreLocation(entity.location),
+        createdAt = entity.createdAt
+    )
 
     /**
      * Domain → Entity 변환
      * Note: createdAt은 JPA Auditing에 의해 자동 설정됨
      */
-    fun toEntity(domain: Store): StoreEntity {
-        return StoreEntity(
-            id = domain.id.value,
-            name = domain.name.value,
-            location = domain.location.value
-        )
-    }
+    fun toEntity(domain: Store): StoreEntity = StoreEntity(
+        id = domain.id.value,
+        name = domain.name.value,
+        location = domain.location.value
+    )
 
     /**
      * Domain 변경사항을 Entity에 반영

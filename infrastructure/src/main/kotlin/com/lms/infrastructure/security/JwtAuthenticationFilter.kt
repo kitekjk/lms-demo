@@ -15,9 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter
  * SecurityContext에 인증 정보를 설정합니다.
  */
 @Component
-class JwtAuthenticationFilter(
-    private val jwtTokenProvider: JwtTokenProvider
-) : OncePerRequestFilter() {
+class JwtAuthenticationFilter(private val jwtTokenProvider: JwtTokenProvider) : OncePerRequestFilter() {
 
     private val log = LoggerFactory.getLogger(javaClass)
 

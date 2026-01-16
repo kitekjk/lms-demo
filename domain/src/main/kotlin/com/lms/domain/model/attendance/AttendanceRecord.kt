@@ -7,7 +7,6 @@ import com.lms.domain.model.schedule.WorkScheduleId
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
-import kotlin.math.abs
 
 /**
  * 출퇴근 기록 Aggregate Root
@@ -60,8 +59,14 @@ data class AttendanceRecord private constructor(
             note: String?,
             createdAt: Instant
         ): AttendanceRecord = AttendanceRecord(
-            id, employeeId, workScheduleId, attendanceDate,
-            attendanceTime, status, note, createdAt
+            id,
+            employeeId,
+            workScheduleId,
+            attendanceDate,
+            attendanceTime,
+            status,
+            note,
+            createdAt
         )
 
         /**
@@ -102,16 +107,16 @@ data class AttendanceRecord private constructor(
 
         val newStatus = when {
             // 지각 체크 (허용 시간 고려)
-            actualCheckIn.isAfter(scheduledStartTime.plusMinutes(LATE_TOLERANCE_MINUTES))
-                && actualCheckOut.isBefore(scheduledEndTime) -> AttendanceStatus.LATE
+            actualCheckIn.isAfter(scheduledStartTime.plusMinutes(LATE_TOLERANCE_MINUTES)) &&
+                actualCheckOut.isBefore(scheduledEndTime) -> AttendanceStatus.LATE
 
             // 조퇴 체크
-            !actualCheckIn.isAfter(scheduledStartTime.plusMinutes(LATE_TOLERANCE_MINUTES))
-                && actualCheckOut.isBefore(scheduledEndTime) -> AttendanceStatus.EARLY_LEAVE
+            !actualCheckIn.isAfter(scheduledStartTime.plusMinutes(LATE_TOLERANCE_MINUTES)) &&
+                actualCheckOut.isBefore(scheduledEndTime) -> AttendanceStatus.EARLY_LEAVE
 
             // 지각 + 조퇴
-            actualCheckIn.isAfter(scheduledStartTime.plusMinutes(LATE_TOLERANCE_MINUTES))
-                && actualCheckOut.isBefore(scheduledEndTime) -> AttendanceStatus.LATE
+            actualCheckIn.isAfter(scheduledStartTime.plusMinutes(LATE_TOLERANCE_MINUTES)) &&
+                actualCheckOut.isBefore(scheduledEndTime) -> AttendanceStatus.LATE
 
             // 정상
             else -> AttendanceStatus.NORMAL
@@ -123,16 +128,12 @@ data class AttendanceRecord private constructor(
     /**
      * 메모 추가/수정
      */
-    fun updateNote(context: DomainContext, note: String): AttendanceRecord {
-        return this.copy(note = note)
-    }
+    fun updateNote(context: DomainContext, note: String): AttendanceRecord = this.copy(note = note)
 
     /**
      * 결근 처리
      */
-    fun markAsAbsent(context: DomainContext): AttendanceRecord {
-        return this.copy(status = AttendanceStatus.ABSENT)
-    }
+    fun markAsAbsent(context: DomainContext): AttendanceRecord = this.copy(status = AttendanceStatus.ABSENT)
 
     /**
      * 실제 근무 시간 계산

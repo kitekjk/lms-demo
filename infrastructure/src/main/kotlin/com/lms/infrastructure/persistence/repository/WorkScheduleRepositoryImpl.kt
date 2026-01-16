@@ -7,10 +7,10 @@ import com.lms.domain.model.schedule.WorkScheduleRepository
 import com.lms.domain.model.store.StoreId
 import com.lms.infrastructure.persistence.entity.WorkScheduleEntity
 import com.lms.infrastructure.persistence.mapper.WorkScheduleMapper
+import java.time.LocalDate
 import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 import org.springframework.transaction.annotation.Transactional
-import java.time.LocalDate
 
 @Repository
 interface WorkScheduleJpaRepository : JpaRepository<WorkScheduleEntity, String> {
@@ -30,9 +30,7 @@ interface WorkScheduleJpaRepository : JpaRepository<WorkScheduleEntity, String> 
 
 @Repository
 @Transactional
-class WorkScheduleRepositoryImpl(
-    private val jpaRepository: WorkScheduleJpaRepository
-) : WorkScheduleRepository {
+class WorkScheduleRepositoryImpl(private val jpaRepository: WorkScheduleJpaRepository) : WorkScheduleRepository {
 
     override fun save(workSchedule: WorkSchedule): WorkSchedule {
         val entity = WorkScheduleMapper.toEntity(workSchedule)
@@ -40,45 +38,36 @@ class WorkScheduleRepositoryImpl(
         return WorkScheduleMapper.toDomain(saved)
     }
 
-    override fun findById(id: WorkScheduleId): WorkSchedule? {
-        return jpaRepository.findById(id.value)
-            .map { WorkScheduleMapper.toDomain(it) }
-            .orElse(null)
-    }
+    override fun findById(id: WorkScheduleId): WorkSchedule? = jpaRepository.findById(id.value)
+        .map { WorkScheduleMapper.toDomain(it) }
+        .orElse(null)
 
-    override fun findByEmployeeId(employeeId: EmployeeId): List<WorkSchedule> {
-        return jpaRepository.findByEmployeeId(employeeId.value)
+    override fun findByEmployeeId(employeeId: EmployeeId): List<WorkSchedule> =
+        jpaRepository.findByEmployeeId(employeeId.value)
             .map { WorkScheduleMapper.toDomain(it) }
-    }
 
-    override fun findByStoreId(storeId: StoreId): List<WorkSchedule> {
-        return jpaRepository.findByStoreId(storeId.value)
-            .map { WorkScheduleMapper.toDomain(it) }
-    }
+    override fun findByStoreId(storeId: StoreId): List<WorkSchedule> = jpaRepository.findByStoreId(storeId.value)
+        .map { WorkScheduleMapper.toDomain(it) }
 
     override fun findByEmployeeIdAndDateRange(
         employeeId: EmployeeId,
         startDate: LocalDate,
         endDate: LocalDate
-    ): List<WorkSchedule> {
-        return jpaRepository.findByEmployeeIdAndWorkDateBetween(
-            employeeId.value,
-            startDate,
-            endDate
-        ).map { WorkScheduleMapper.toDomain(it) }
-    }
+    ): List<WorkSchedule> = jpaRepository.findByEmployeeIdAndWorkDateBetween(
+        employeeId.value,
+        startDate,
+        endDate
+    ).map { WorkScheduleMapper.toDomain(it) }
 
     override fun findByStoreIdAndDateRange(
         storeId: StoreId,
         startDate: LocalDate,
         endDate: LocalDate
-    ): List<WorkSchedule> {
-        return jpaRepository.findByStoreIdAndWorkDateBetween(
-            storeId.value,
-            startDate,
-            endDate
-        ).map { WorkScheduleMapper.toDomain(it) }
-    }
+    ): List<WorkSchedule> = jpaRepository.findByStoreIdAndWorkDateBetween(
+        storeId.value,
+        startDate,
+        endDate
+    ).map { WorkScheduleMapper.toDomain(it) }
 
     override fun delete(id: WorkScheduleId) {
         jpaRepository.deleteById(id.value)

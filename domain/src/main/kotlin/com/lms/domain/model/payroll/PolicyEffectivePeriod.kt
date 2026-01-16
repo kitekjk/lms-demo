@@ -5,10 +5,7 @@ import java.time.LocalDate
 /**
  * 정책 유효 기간 Value Object
  */
-data class PolicyEffectivePeriod(
-    val effectiveFrom: LocalDate,
-    val effectiveTo: LocalDate?
-) {
+data class PolicyEffectivePeriod(val effectiveFrom: LocalDate, val effectiveTo: LocalDate?) {
     init {
         if (effectiveTo != null) {
             require(!effectiveFrom.isAfter(effectiveTo)) {
@@ -29,9 +26,7 @@ data class PolicyEffectivePeriod(
     /**
      * 현재 유효한지 확인
      */
-    fun isCurrentlyEffective(): Boolean {
-        return isEffectiveOn(LocalDate.now())
-    }
+    fun isCurrentlyEffective(): Boolean = isEffectiveOn(LocalDate.now())
 
     /**
      * 종료일 설정
@@ -47,8 +42,6 @@ data class PolicyEffectivePeriod(
         /**
          * 무기한 유효한 정책
          */
-        fun indefinite(startDate: LocalDate): PolicyEffectivePeriod {
-            return PolicyEffectivePeriod(startDate, null)
-        }
+        fun indefinite(startDate: LocalDate): PolicyEffectivePeriod = PolicyEffectivePeriod(startDate, null)
     }
 }

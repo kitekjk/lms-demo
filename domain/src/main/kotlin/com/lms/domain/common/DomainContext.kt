@@ -8,13 +8,13 @@ import java.util.UUID
  * HTTP, Kafka 등 외부 요청에서 추출한 메타데이터
  */
 interface DomainContext {
-    val serviceName: String      // 요청 도메인/서비스명
-    val userId: String            // 사용자 ID
-    val userName: String          // 사용자 이름
-    val roleId: String            // 역할 ID (Role enum의 name)
-    val requestId: UUID           // 요청 추적용 UUID
-    val requestedAt: Instant      // 요청 시각
-    val clientIp: String          // 클라이언트 IP
+    val serviceName: String // 요청 도메인/서비스명
+    val userId: String // 사용자 ID
+    val userName: String // 사용자 이름
+    val roleId: String // 역할 ID (Role enum의 name)
+    val requestId: UUID // 요청 추적용 UUID
+    val requestedAt: Instant // 요청 시각
+    val clientIp: String // 클라이언트 IP
 }
 
 /**

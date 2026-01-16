@@ -28,6 +28,10 @@ mockk = "1.13.9"
 springMockk = "4.0.2"
 kotest = "5.8.0"
 
+# Code Quality
+spotless = "7.0.2"
+ktlint = "1.5.0"
+
 [libraries]
 # Kotlin
 kotlin-reflect = { group = "org.jetbrains.kotlin", name = "kotlin-reflect" }
@@ -67,3 +71,4 @@ kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotl
 kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
 spring-boot = { id = "org.springframework.boot", version.ref = "springBoot" }
 spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "springDependencyManagement" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

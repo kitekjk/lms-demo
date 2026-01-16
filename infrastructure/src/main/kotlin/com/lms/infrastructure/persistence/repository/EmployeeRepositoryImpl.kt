@@ -27,9 +27,7 @@ interface EmployeeJpaRepositoryInterface : JpaRepository<EmployeeEntity, String>
  */
 @Repository
 @Transactional
-class EmployeeRepositoryImpl(
-    private val jpaRepository: EmployeeJpaRepositoryInterface
-) : EmployeeRepository {
+class EmployeeRepositoryImpl(private val jpaRepository: EmployeeJpaRepositoryInterface) : EmployeeRepository {
 
     override fun save(employee: Employee): Employee {
         val entity = EmployeeMapper.toEntity(employee)
@@ -37,31 +35,22 @@ class EmployeeRepositoryImpl(
         return EmployeeMapper.toDomain(saved)
     }
 
-    override fun findById(employeeId: EmployeeId): Employee? {
-        return jpaRepository.findById(employeeId.value)
-            .map { EmployeeMapper.toDomain(it) }
-            .orElse(null)
-    }
+    override fun findById(employeeId: EmployeeId): Employee? = jpaRepository.findById(employeeId.value)
+        .map { EmployeeMapper.toDomain(it) }
+        .orElse(null)
 
-    override fun findByUserId(userId: UserId): Employee? {
-        return jpaRepository.findByUserId(userId.value)
-            ?.let { EmployeeMapper.toDomain(it) }
-    }
+    override fun findByUserId(userId: UserId): Employee? = jpaRepository.findByUserId(userId.value)
+        ?.let { EmployeeMapper.toDomain(it) }
 
-    override fun findByStoreId(storeId: StoreId): List<Employee> {
-        return jpaRepository.findByStoreId(storeId.value)
-            .map { EmployeeMapper.toDomain(it) }
-    }
+    override fun findByStoreId(storeId: StoreId): List<Employee> = jpaRepository.findByStoreId(storeId.value)
+        .map { EmployeeMapper.toDomain(it) }
 
-    override fun findActiveByStoreId(storeId: StoreId): List<Employee> {
-        return jpaRepository.findByStoreIdAndIsActiveTrue(storeId.value)
+    override fun findActiveByStoreId(storeId: StoreId): List<Employee> =
+        jpaRepository.findByStoreIdAndIsActiveTrue(storeId.value)
             .map { EmployeeMapper.toDomain(it) }
-    }
 
-    override fun findAll(): List<Employee> {
-        return jpaRepository.findAll()
-            .map { EmployeeMapper.toDomain(it) }
-    }
+    override fun findAll(): List<Employee> = jpaRepository.findAll()
+        .map { EmployeeMapper.toDomain(it) }
 
     override fun delete(employeeId: EmployeeId) {
         jpaRepository.deleteById(employeeId.value)

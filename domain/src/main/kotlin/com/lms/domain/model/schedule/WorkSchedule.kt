@@ -28,17 +28,15 @@ data class WorkSchedule private constructor(
             storeId: StoreId,
             workDate: WorkDate,
             workTime: WorkTime
-        ): WorkSchedule {
-            return WorkSchedule(
-                id = WorkScheduleId.generate(),
-                employeeId = employeeId,
-                storeId = storeId,
-                workDate = workDate,
-                workTime = workTime,
-                isConfirmed = false,
-                createdAt = context.requestedAt
-            )
-        }
+        ): WorkSchedule = WorkSchedule(
+            id = WorkScheduleId.generate(),
+            employeeId = employeeId,
+            storeId = storeId,
+            workDate = workDate,
+            workTime = workTime,
+            isConfirmed = false,
+            createdAt = context.requestedAt
+        )
 
         /**
          * 기존 근무 일정 재구성 (Repository에서 조회 시)
@@ -52,7 +50,13 @@ data class WorkSchedule private constructor(
             isConfirmed: Boolean,
             createdAt: Instant
         ): WorkSchedule = WorkSchedule(
-            id, employeeId, storeId, workDate, workTime, isConfirmed, createdAt
+            id,
+            employeeId,
+            storeId,
+            workDate,
+            workTime,
+            isConfirmed,
+            createdAt
         )
     }
 

@@ -3,21 +3,19 @@ package com.lms.infrastructure.security
 import com.lms.infrastructure.config.JwtProperties
 import io.jsonwebtoken.*
 import io.jsonwebtoken.security.Keys
+import java.nio.charset.StandardCharsets
+import java.util.*
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.stereotype.Component
-import java.nio.charset.StandardCharsets
-import java.util.*
 
 /**
  * JWT 토큰 생성 및 검증 프로바이더
  */
 @Component
-class JwtTokenProvider(
-    private val jwtProperties: JwtProperties
-) {
+class JwtTokenProvider(private val jwtProperties: JwtProperties) {
     private val secretKey = Keys.hmacShaKeyFor(
         jwtProperties.secretKey.toByteArray(StandardCharsets.UTF_8)
     )
@@ -64,37 +62,29 @@ class JwtTokenProvider(
     /**
      * 토큰에서 사용자 ID 추출
      */
-    fun getUserIdFromToken(token: String): String {
-        return getClaims(token).subject
-    }
+    fun getUserIdFromToken(token: String): String = getClaims(token).subject
 
     /**
      * 토큰에서 역할 추출
      */
-    fun getRoleFromToken(token: String): String {
-        return getClaims(token)["role"] as String
-    }
+    fun getRoleFromToken(token: String): String = getClaims(token)["role"] as String
 
     /**
      * 토큰에서 매장 ID 추출
      */
-    fun getStoreIdFromToken(token: String): String? {
-        return getClaims(token)["storeId"] as String?
-    }
+    fun getStoreIdFromToken(token: String): String? = getClaims(token)["storeId"] as String?
 
     /**
      * 토큰 유효성 검증
      * @return true if valid, false otherwise
      */
-    fun validateToken(token: String): Boolean {
-        return try {
-            getClaims(token)
-            true
-        } catch (e: JwtException) {
-            false
-        } catch (e: IllegalArgumentException) {
-            false
-        }
+    fun validateToken(token: String): Boolean = try {
+        getClaims(token)
+        true
+    } catch (e: JwtException) {
+        false
+    } catch (e: IllegalArgumentException) {
+        false
     }
 
     /**
@@ -114,40 +104,32 @@ class JwtTokenProvider(
     /**
      * 토큰에서 Claims 추출
      */
-    private fun getClaims(token: String): Claims {
-        return Jwts.parser()
-            .verifyWith(secretKey)
-            .build()
-            .parseSignedClaims(token)
-            .payload
-    }
+    private fun getClaims(token: String): Claims = Jwts.parser()
+        .verifyWith(secretKey)
+        .build()
+        .parseSignedClaims(token)
+        .payload
 
     /**
      * 토큰 타입 확인 (access/refresh)
      */
-    fun getTokenType(token: String): String {
-        return getClaims(token)["type"] as String
-    }
+    fun getTokenType(token: String): String = getClaims(token)["type"] as String
 
     /**
      * Access Token인지 확인
      */
-    fun isAccessToken(token: String): Boolean {
-        return try {
-            getTokenType(token) == "access"
-        } catch (e: Exception) {
-            false
-        }
+    fun isAccessToken(token: String): Boolean = try {
+        getTokenType(token) == "access"
+    } catch (e: Exception) {
+        false
     }
 
     /**
      * Refresh Token인지 확인
      */
-    fun isRefreshToken(token: String): Boolean {
-        return try {
-            getTokenType(token) == "refresh"
-        } catch (e: Exception) {
-            false
-        }
+    fun isRefreshToken(token: String): Boolean = try {
+        getTokenType(token) == "refresh"
+    } catch (e: Exception) {
+        false
     }
 }
