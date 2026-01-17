@@ -1146,9 +1146,10 @@
               2
             ],
             "details": "## 구현 범위\n\n### 1. DashboardScreen\n- **위치**: `lib/features/admin/dashboard/presentation/dashboard_screen.dart`\n- AdminLayout으로 래핑\n- SingleChildScrollView 내부 Column 레이아웃\n- GridView.count (4열) 통계 카드 배치\n- 출근 현황 요약 위젯\n- 최근 활동 위젯\n\n### 2. StoreStatsCard\n- **위치**: `lib/features/admin/dashboard/presentation/widgets/store_stats_card.dart`\n- 타이틀, 값, 아이콘, 색상 props\n- Card elevation: 2\n- childAspectRatio: 2\n- 통계 카드 4개:\n  - 전체 매장 (Icons.store, Colors.blue)\n  - 전체 근로자 (Icons.people, Colors.green)\n  - 금일 출근 (Icons.check_circle, Colors.orange)\n  - 휴가 중 (Icons.beach_access, Colors.purple)\n\n### 3. AttendanceSummaryWidget\n- **위치**: `lib/features/admin/dashboard/presentation/widgets/attendance_summary_widget.dart`\n- 오늘 날짜 기준 출근 현황 표시\n- 정상 출근, 지각, 조퇴, 결근 수 표시\n- 가로 바 차트 또는 리스트 형태\n\n### 4. RecentActivitiesWidget\n- **위치**: `lib/features/admin/dashboard/presentation/widgets/recent_activities_widget.dart`\n- 최근 활동 목록 (휴가 신청, 출퇴근 기록 수정 등)\n- ListView.builder 사용\n- 각 활동: ListTile (타이틀, 서브타이틀, 시간)\n\n### 5. DashboardProvider\n- **위치**: `lib/features/admin/dashboard/presentation/dashboard_provider.dart`\n- FutureProvider 사용\n- API 호출: `GET /api/admin/dashboard/stats`\n- 응답 데이터: DashboardStats 모델로 파싱\n\n### 6. 도메인 모델\n- **위치**: `lib/features/admin/dashboard/domain/models/dashboard_stats.dart`\n- DashboardStats: totalStores, totalEmployees, todayAttendance, onLeave, attendanceSummary, recentActivities\n\n## API 엔드포인트 (백엔드 구현 필요)\n- `GET /api/admin/dashboard/stats`\n- 응답 예시:\n```json\n{\n  \"totalStores\": 5,\n  \"totalEmployees\": 120,\n  \"todayAttendance\": 95,\n  \"onLeave\": 8,\n  \"attendanceSummary\": {\n    \"normal\": 85,\n    \"late\": 7,\n    \"earlyLeave\": 3,\n    \"absent\": 0\n  },\n  \"recentActivities\": [\n    { \"type\": \"leave_request\", \"employeeName\": \"홍길동\", \"action\": \"휴가 신청\", \"timestamp\": \"2026-01-17T10:30:00Z\" }\n  ]\n}\n```\n\n## 테스트 시나리오\n- ✅ 대시보드 통계 카드 4개 렌더링\n- ✅ API 호출 후 데이터 표시\n- ✅ 로딩 상태 표시\n- ✅ 에러 상태 표시",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Widget 테스트:\n- StoreStatsCard 렌더링 및 props 테스트\n- AttendanceSummaryWidget 데이터 바인딩 테스트\n\nIntegration 테스트:\n- DashboardProvider API 호출 테스트\n- Mock 데이터로 대시보드 화면 렌더링 테스트",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2026-01-17T06:36:45.003Z"
           },
           {
             "id": 4,
@@ -1175,7 +1176,7 @@
             "parentId": "undefined"
           }
         ],
-        "updatedAt": "2026-01-17T06:35:07.958Z"
+        "updatedAt": "2026-01-17T06:36:45.003Z"
       },
       {
         "id": "18",
@@ -1199,7 +1200,7 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-01-17T06:35:07.958Z",
+      "lastModified": "2026-01-17T06:36:45.003Z",
       "taskCount": 18,
       "completedCount": 14,
       "tags": [
