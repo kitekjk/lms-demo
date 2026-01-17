@@ -15,6 +15,11 @@ import com.lms.interfaces.web.dto.WorkScheduleCreateRequest
 import com.lms.interfaces.web.dto.WorkScheduleListResponse
 import com.lms.interfaces.web.dto.WorkScheduleResponse
 import com.lms.interfaces.web.dto.WorkScheduleUpdateRequest
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import java.time.LocalDate
 import org.springframework.format.annotation.DateTimeFormat
@@ -27,6 +32,7 @@ import org.springframework.web.bind.annotation.*
  * 근무 일정 관리 REST API 컨트롤러
  * 관리자의 일정 생성/수정/삭제 및 조회 기능 제공
  */
+@Tag(name = "근무 일정", description = "근무 일정 생성, 조회, 수정, 삭제 API")
 @RestController
 @RequestMapping("/api/schedules")
 class WorkScheduleController(
@@ -43,6 +49,17 @@ class WorkScheduleController(
      * 근무 일정 생성
      * SUPER_ADMIN과 MANAGER만 가능
      */
+    @Operation(
+        summary = "근무 일정 생성",
+        description = "새로운 근무 일정을 생성합니다. MANAGER와 SUPER_ADMIN 권한이 필요합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "201", description = "일정 생성 성공"),
+        ApiResponse(responseCode = "400", description = "잘못된 요청"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "403", description = "권한 없음")
+    )
     @PostMapping
     @PreAuthorize("hasAnyRole('MANAGER', 'SUPER_ADMIN')")
     fun createSchedule(
@@ -67,6 +84,16 @@ class WorkScheduleController(
      * 근무 일정 조회 (필터링 지원)
      * employeeId, storeId, startDate, endDate 쿼리 파라미터로 필터링 가능
      */
+    @Operation(
+        summary = "근무 일정 조회",
+        description = "근무 일정을 조회합니다. employeeId, storeId, startDate, endDate 파라미터로 필터링 가능합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "조회 성공"),
+        ApiResponse(responseCode = "400", description = "필수 파라미터 누락"),
+        ApiResponse(responseCode = "401", description = "인증 실패")
+    )
     @GetMapping
     @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER', 'SUPER_ADMIN')")
     fun getSchedules(
@@ -107,6 +134,15 @@ class WorkScheduleController(
      * 본인 근무 일정 조회
      * 현재 로그인한 근로자의 일정만 조회
      */
+    @Operation(
+        summary = "본인 근무 일정 조회",
+        description = "현재 로그인한 사용자의 근무 일정을 조회합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "조회 성공"),
+        ApiResponse(responseCode = "401", description = "인증 실패")
+    )
     @GetMapping("/my-schedule")
     @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER', 'SUPER_ADMIN')")
     fun getMySchedule(): ResponseEntity<WorkScheduleListResponse> {
@@ -127,6 +163,16 @@ class WorkScheduleController(
     /**
      * 근무 일정 단건 조회
      */
+    @Operation(
+        summary = "근무 일정 상세 조회",
+        description = "특정 근무 일정의 상세 정보를 조회합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "조회 성공"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "404", description = "일정을 찾을 수 없음")
+    )
     @GetMapping("/{scheduleId}")
     @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER', 'SUPER_ADMIN')")
     fun getSchedule(@PathVariable scheduleId: String): ResponseEntity<WorkScheduleResponse> {
@@ -141,6 +187,18 @@ class WorkScheduleController(
      * 근무 일정 수정
      * SUPER_ADMIN과 MANAGER만 가능
      */
+    @Operation(
+        summary = "근무 일정 수정",
+        description = "근무 일정을 수정합니다. MANAGER와 SUPER_ADMIN 권한이 필요합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "수정 성공"),
+        ApiResponse(responseCode = "400", description = "잘못된 요청"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "403", description = "권한 없음"),
+        ApiResponse(responseCode = "404", description = "일정을 찾을 수 없음")
+    )
     @PutMapping("/{scheduleId}")
     @PreAuthorize("hasAnyRole('MANAGER', 'SUPER_ADMIN')")
     fun updateSchedule(
@@ -164,6 +222,17 @@ class WorkScheduleController(
      * 근무 일정 삭제
      * SUPER_ADMIN과 MANAGER만 가능
      */
+    @Operation(
+        summary = "근무 일정 삭제",
+        description = "근무 일정을 삭제합니다. MANAGER와 SUPER_ADMIN 권한이 필요합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "204", description = "삭제 성공"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "403", description = "권한 없음"),
+        ApiResponse(responseCode = "404", description = "일정을 찾을 수 없음")
+    )
     @DeleteMapping("/{scheduleId}")
     @PreAuthorize("hasAnyRole('MANAGER', 'SUPER_ADMIN')")
     fun deleteSchedule(@PathVariable scheduleId: String): ResponseEntity<Void> {

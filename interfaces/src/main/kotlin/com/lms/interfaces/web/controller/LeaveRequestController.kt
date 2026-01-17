@@ -15,6 +15,11 @@ import com.lms.interfaces.web.dto.LeaveRejectionRequest
 import com.lms.interfaces.web.dto.LeaveRequestCreateRequest
 import com.lms.interfaces.web.dto.LeaveRequestListResponse
 import com.lms.interfaces.web.dto.LeaveRequestResponse
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.*
  * 휴가 관리 REST API 컨트롤러
  * 근로자의 휴가 신청/취소 및 매니저의 승인/반려 기능 제공
  */
+@Tag(name = "휴가 관리", description = "휴가 신청, 승인, 반려, 취소 API")
 @RestController
 @RequestMapping("/api/leaves")
 class LeaveRequestController(
@@ -41,6 +47,16 @@ class LeaveRequestController(
      * 휴가 신청
      * EMPLOYEE 권한 필요
      */
+    @Operation(
+        summary = "휴가 신청",
+        description = "새로운 휴가를 신청합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "201", description = "휴가 신청 성공"),
+        ApiResponse(responseCode = "400", description = "잘못된 요청"),
+        ApiResponse(responseCode = "401", description = "인증 실패")
+    )
     @PostMapping
     @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER', 'SUPER_ADMIN')")
     fun createLeaveRequest(
@@ -68,6 +84,15 @@ class LeaveRequestController(
     /**
      * 본인 휴가 신청 내역 조회
      */
+    @Operation(
+        summary = "본인 휴가 신청 내역 조회",
+        description = "로그인한 사용자의 휴가 신청 내역을 조회합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "조회 성공"),
+        ApiResponse(responseCode = "401", description = "인증 실패")
+    )
     @GetMapping("/my-leaves")
     @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER', 'SUPER_ADMIN')")
     fun getMyLeaveRequests(): ResponseEntity<LeaveRequestListResponse> {
@@ -89,6 +114,16 @@ class LeaveRequestController(
      * 매장별 휴가 신청 목록 조회 (관리자용)
      * MANAGER와 SUPER_ADMIN만 가능
      */
+    @Operation(
+        summary = "매장별 휴가 신청 목록 조회",
+        description = "특정 매장의 모든 휴가 신청 내역을 조회합니다. MANAGER와 SUPER_ADMIN 권한이 필요합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "조회 성공"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "403", description = "권한 없음")
+    )
     @GetMapping
     @PreAuthorize("hasAnyRole('MANAGER', 'SUPER_ADMIN')")
     fun getLeaveRequestsByStore(@RequestParam storeId: String): ResponseEntity<LeaveRequestListResponse> {
@@ -106,6 +141,16 @@ class LeaveRequestController(
      * 대기 중인 휴가 신청 목록 조회 (관리자용)
      * MANAGER와 SUPER_ADMIN만 가능
      */
+    @Operation(
+        summary = "대기 중인 휴가 신청 목록 조회",
+        description = "승인 대기 중인 모든 휴가 신청을 조회합니다. MANAGER와 SUPER_ADMIN 권한이 필요합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "조회 성공"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "403", description = "권한 없음")
+    )
     @GetMapping("/pending")
     @PreAuthorize("hasAnyRole('MANAGER', 'SUPER_ADMIN')")
     fun getPendingLeaveRequests(): ResponseEntity<LeaveRequestListResponse> {
@@ -123,6 +168,17 @@ class LeaveRequestController(
      * 휴가 승인 (관리자용)
      * MANAGER와 SUPER_ADMIN만 가능
      */
+    @Operation(
+        summary = "휴가 승인",
+        description = "휴가 신청을 승인합니다. MANAGER와 SUPER_ADMIN 권한이 필요합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "승인 성공"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "403", description = "권한 없음"),
+        ApiResponse(responseCode = "404", description = "휴가 신청을 찾을 수 없음")
+    )
     @PatchMapping("/{leaveId}/approve")
     @PreAuthorize("hasAnyRole('MANAGER', 'SUPER_ADMIN')")
     fun approveLeaveRequest(
@@ -139,6 +195,18 @@ class LeaveRequestController(
      * 휴가 반려 (관리자용)
      * MANAGER와 SUPER_ADMIN만 가능
      */
+    @Operation(
+        summary = "휴가 반려",
+        description = "휴가 신청을 반려합니다. MANAGER와 SUPER_ADMIN 권한이 필요합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "반려 성공"),
+        ApiResponse(responseCode = "400", description = "잘못된 요청"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "403", description = "권한 없음"),
+        ApiResponse(responseCode = "404", description = "휴가 신청을 찾을 수 없음")
+    )
     @PatchMapping("/{leaveId}/reject")
     @PreAuthorize("hasAnyRole('MANAGER', 'SUPER_ADMIN')")
     fun rejectLeaveRequest(
@@ -160,6 +228,16 @@ class LeaveRequestController(
      * 휴가 신청 취소
      * EMPLOYEE 권한 필요 (본인만 취소 가능)
      */
+    @Operation(
+        summary = "휴가 신청 취소",
+        description = "본인이 신청한 휴가를 취소합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "204", description = "취소 성공"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "404", description = "휴가 신청을 찾을 수 없음")
+    )
     @DeleteMapping("/{leaveId}")
     @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER', 'SUPER_ADMIN')")
     fun cancelLeaveRequest(context: DomainContext, @PathVariable leaveId: String): ResponseEntity<Void> {

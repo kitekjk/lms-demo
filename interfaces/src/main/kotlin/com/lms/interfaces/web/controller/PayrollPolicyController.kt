@@ -12,6 +12,11 @@ import com.lms.interfaces.web.dto.PayrollPolicyCreateRequest
 import com.lms.interfaces.web.dto.PayrollPolicyListResponse
 import com.lms.interfaces.web.dto.PayrollPolicyResponse
 import com.lms.interfaces.web.dto.PayrollPolicyUpdateRequest
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -22,6 +27,7 @@ import org.springframework.web.bind.annotation.*
  * 급여 정책 관리 REST API 컨트롤러
  * SUPER_ADMIN만 정책 생성/수정/삭제 가능
  */
+@Tag(name = "급여 정책", description = "급여 정책 생성, 조회, 수정, 삭제 API")
 @RestController
 @RequestMapping("/api/payroll-policies")
 class PayrollPolicyController(
@@ -35,6 +41,17 @@ class PayrollPolicyController(
      * 급여 정책 생성
      * SUPER_ADMIN 권한 필요
      */
+    @Operation(
+        summary = "급여 정책 생성",
+        description = "새로운 급여 정책을 생성합니다. SUPER_ADMIN 권한이 필요합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "201", description = "정책 생성 성공"),
+        ApiResponse(responseCode = "400", description = "잘못된 요청"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "403", description = "권한 없음")
+    )
     @PostMapping
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     fun createPolicy(
@@ -59,6 +76,15 @@ class PayrollPolicyController(
      * 현재 유효한 정책 조회
      * 모든 인증된 사용자 접근 가능
      */
+    @Operation(
+        summary = "현재 유효한 급여 정책 조회",
+        description = "현재 적용 중인 모든 급여 정책을 조회합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "조회 성공"),
+        ApiResponse(responseCode = "401", description = "인증 실패")
+    )
     @GetMapping("/active")
     @PreAuthorize("hasAnyRole('EMPLOYEE', 'MANAGER', 'SUPER_ADMIN')")
     fun getActivePolicies(): ResponseEntity<PayrollPolicyListResponse> {
@@ -76,6 +102,16 @@ class PayrollPolicyController(
      * 정책 유형별 조회
      * MANAGER와 SUPER_ADMIN만 가능
      */
+    @Operation(
+        summary = "급여 정책 조회",
+        description = "급여 정책을 조회합니다. policyType 파라미터로 유형별 필터링 가능합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "조회 성공"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "403", description = "권한 없음")
+    )
     @GetMapping
     @PreAuthorize("hasAnyRole('MANAGER', 'SUPER_ADMIN')")
     fun getPoliciesByType(
@@ -100,6 +136,18 @@ class PayrollPolicyController(
      * 급여 정책 수정
      * SUPER_ADMIN 권한 필요
      */
+    @Operation(
+        summary = "급여 정책 수정",
+        description = "급여 정책을 수정합니다. SUPER_ADMIN 권한이 필요합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "200", description = "수정 성공"),
+        ApiResponse(responseCode = "400", description = "잘못된 요청"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "403", description = "권한 없음"),
+        ApiResponse(responseCode = "404", description = "정책을 찾을 수 없음")
+    )
     @PutMapping("/{policyId}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     fun updatePolicy(
@@ -123,6 +171,17 @@ class PayrollPolicyController(
      * 급여 정책 삭제
      * SUPER_ADMIN 권한 필요
      */
+    @Operation(
+        summary = "급여 정책 삭제",
+        description = "급여 정책을 삭제합니다. SUPER_ADMIN 권한이 필요합니다.",
+        security = [SecurityRequirement(name = "Bearer Authentication")]
+    )
+    @ApiResponses(
+        ApiResponse(responseCode = "204", description = "삭제 성공"),
+        ApiResponse(responseCode = "401", description = "인증 실패"),
+        ApiResponse(responseCode = "403", description = "권한 없음"),
+        ApiResponse(responseCode = "404", description = "정책을 찾을 수 없음")
+    )
     @DeleteMapping("/{policyId}")
     @PreAuthorize("hasRole('SUPER_ADMIN')")
     fun deletePolicy(@PathVariable policyId: String): ResponseEntity<Void> {
