@@ -723,9 +723,10 @@
               3
             ],
             "details": "1. DTO 클래스 생성: PayrollCalculationRequest(employeeId, period), PayrollBatchRequest(storeId, period), PayrollResponse(payrollId, employeeId, period, baseAmount, overtimeAmount, totalAmount, status, calculatedAt), PayrollDetailResponse(workDate, workType, hours, rate, multiplier, amount), PayrollListResponse\n2. PayrollController 클래스 생성 및 PayrollService 의존성 주입\n3. POST /api/payroll/calculate: 급여 산정 실행 (@PreAuthorize SUPER_ADMIN/MANAGER)\n4. GET /api/payroll: 급여 내역 조회 (매장/기간 필터링, @RequestParam)\n5. GET /api/payroll/my-payroll: 본인 급여 내역 조회 (EMPLOYEE)\n6. GET /api/payroll/{payrollId}: 급여 상세 조회\n7. 입력 검증 (@Valid) 및 예외 처리",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "1. 급여 산정 API 통합 테스트\n2. 급여 조회 API 테스트 (필터링 포함)\n3. 본인 급여 조회 API 테스트\n4. 권한 검증 테스트 (SUPER_ADMIN/MANAGER/EMPLOYEE)\n5. 입력 검증 테스트\n6. 예외 응답 테스트",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2026-01-17T01:36:33.262Z"
           },
           {
             "id": 5,
@@ -743,7 +744,7 @@
         "complexity": 9,
         "recommendedSubtasks": 5,
         "expansionPrompt": "Payroll 엔티티 및 Repository, 급여 계산 엔진(근무시간/유형/가산율 계산), PayrollService(개별/배치 급여 산정), PayrollController 및 DTO, 급여 자동 산정 배치 처리를 포함하는 5개의 세부 작업으로 분해하세요. 각 작업은 출퇴근 기록, 근무 일정, 휴가, 가산율을 통합하는 복잡한 계산 로직과 배치 처리를 포함해야 합니다.",
-        "updatedAt": "2026-01-17T00:53:03.420Z"
+        "updatedAt": "2026-01-17T01:36:33.262Z"
       },
       {
         "id": "10",
@@ -929,7 +930,7 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-01-17T00:53:03.420Z",
+      "lastModified": "2026-01-17T01:36:33.263Z",
       "taskCount": 17,
       "completedCount": 9,
       "tags": [
