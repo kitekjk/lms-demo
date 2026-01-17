@@ -366,6 +366,140 @@ fun login(context: DomainContext): User {
 }
 ```
 
+## 🔮 향후 개선 과제 (Future Improvements)
+
+### 1. Multi-Instance 환경에서의 배치 처리 개선
+
+#### 현재 구현의 한계
+
+현재 급여 자동 산정 배치는 Spring의 `@Scheduled` 어노테이션을 사용하여 구현되어 있습니다:
+
+```kotlin
+@Component
+class PayrollBatchScheduler {
+    @Scheduled(cron = "0 0 1 L * ?")  // 매월 말일 01:00 실행
+    fun executeMonthlyPayrollCalculation() { ... }
+}
+```
+
+**문제점**: 대용량 처리를 위해 애플리케이션 인스턴스를 여러 개 실행하는 Multi-Instance 환경에서, 모든 인스턴스가 동시에 스케줄된 작업을 실행하게 되어 **중복 실행 문제**가 발생합니다.
+
+#### 권장 해결 방안
+
+##### A. 단기 해결책: ShedLock (분산 락)
+
+**적용 시점**: 인스턴스 2~5개 정도의 소규모 클러스터 환경
+
+```kotlin
+@Component
+class PayrollBatchScheduler {
+    @Scheduled(cron = "0 0 1 L * ?")
+    @SchedulerLock(name = "payrollBatchScheduler",
+                   lockAtMostFor = "10m",
+                   lockAtLeastFor = "5m")
+    fun executeMonthlyPayrollCalculation() { ... }
+}
+```
+
+**장점**:
+- 기존 코드 최소 변경 (어노테이션 추가만)
+- 빠른 적용 가능 (설정 5분)
+- DB 기반 분산 락으로 중복 실행 방지
+
+**단점**:
+- 배치 재시작, 실패 복구 기능 없음
+- 복잡한 워크플로우 처리 어려움
+
+##### B. 중기 해결책: Spring Batch + Quartz (별도 모듈)
+
+**적용 시점**: 직원 수 5,000명 이상, 복잡한 배치 작업 3개 이상
+
+```
+lms-demo/
+├── domain/
+├── application/
+├── infrastructure/
+├── interfaces/
+└── batch/              # 새로운 배치 전용 모듈
+    ├── config/         # Spring Batch, Quartz 설정
+    ├── job/            # BatchJob 정의
+    └── scheduler/      # Quartz Scheduler
+```
+
+**Spring Batch 구조**:
+```kotlin
+@Configuration
+class PayrollBatchJobConfig {
+    @Bean
+    fun payrollBatchJob(): Job = jobBuilder.get("payrollBatchJob")
+        .start(readEmployeesStep())
+        .next(calculatePayrollStep())
+        .next(savePayrollStep())
+        .build()
+}
+```
+
+**장점**:
+- Enterprise급 배치 처리 (Chunk 단위 처리, 재시작, Skip/Retry)
+- Quartz Clustering으로 Multi-Instance 지원
+- 배치 실행 이력 및 모니터링 기능
+
+**단점**:
+- 초기 설정 복잡도 높음 (러닝커브)
+- 별도 모듈 관리 필요
+
+##### C. 장기 해결책: Temporal Workflow
+
+**적용 시점**: 복잡한 워크플로우 오케스트레이션이 필요한 경우
+
+```kotlin
+@WorkflowInterface
+interface PayrollWorkflow {
+    @WorkflowMethod
+    fun executeMonthlyPayroll(period: YearMonth): PayrollResult
+}
+
+class PayrollWorkflowImpl : PayrollWorkflow {
+    override fun executeMonthlyPayroll(period: YearMonth): PayrollResult {
+        val employees = activities.getActiveEmployees()
+        val results = employees.map { emp ->
+            activities.calculatePayroll(emp, period)  // 병렬 실행
+        }
+        return activities.aggregateResults(results)
+    }
+}
+```
+
+**장점**:
+- 복잡한 워크플로우 오케스트레이션 (조건 분기, 병렬 처리, 재시도)
+- 자동 상태 관리 및 장애 복구
+- 확장성 높음 (수평 확장)
+
+**단점**:
+- Temporal 서버 인프라 필요
+- 학습 곡선 가장 높음
+
+#### 마이그레이션 트리거
+
+다음 조건 중 하나라도 해당되면 개선 고려:
+
+| 조건 | 권장 솔루션 |
+|------|------------|
+| 애플리케이션 인스턴스 2개 이상 실행 | ShedLock |
+| 직원 수 5,000명 이상 | Spring Batch + Quartz |
+| 배치 작업 3개 이상 (급여, 정산, 리포트 등) | Spring Batch + Quartz |
+| 복잡한 워크플로우 오케스트레이션 필요 | Temporal Workflow |
+| 배치 실패 시 특정 단계부터 재시작 필요 | Spring Batch + Quartz |
+
+#### 참고 자료
+
+- [ShedLock Documentation](https://github.com/lukas-krecan/ShedLock)
+- [Spring Batch Reference](https://spring.io/projects/spring-batch)
+- [Quartz Scheduler Clustering](http://www.quartz-scheduler.org/documentation/2.4.0-SNAPSHOT/configuration/ConfigJDBCJobStoreClustering.html)
+- [Temporal Workflow](https://temporal.io/)
+
+---
+
 ## 📚 참고 문서
 
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - 아키텍처 상세 설명
