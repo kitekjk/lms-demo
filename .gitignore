@@ -46,6 +46,9 @@ dev-debug.log
 .env.local
 .env.*.local
 
+# MCP configuration with secrets
+.mcp.json
+
 # TaskMaster AI - Runtime files only (keep tasks and docs in git)
 .taskmaster/config.json
 .taskmaster/state.json

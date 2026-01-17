@@ -4,7 +4,7 @@
       "command": "npx",
       "args": ["-y", "--package=task-master-ai", "task-master-ai"],
       "env": {
-        "CLAUDE_CODE_OAUTH_TOKEN": "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"
+        "CLAUDE_CODE_OAUTH_TOKEN": "your-oauth-token-here"
       }
     }
   }
