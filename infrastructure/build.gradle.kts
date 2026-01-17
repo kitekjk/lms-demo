@@ -35,6 +35,9 @@ dependencies {
     compileOnly("jakarta.servlet:jakarta.servlet-api")
     testImplementation("jakarta.servlet:jakarta.servlet-api")
 
+    // API Documentation
+    implementation(libs.springdoc.openapi.starter)
+
     // JWT
     implementation(libs.jjwt.api)
     runtimeOnly(libs.jjwt.impl)

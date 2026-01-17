@@ -44,7 +44,12 @@ class SecurityConfig(private val jwtAuthenticationFilter: JwtAuthenticationFilte
                     .requestMatchers(
                         "/api/auth/**",
                         "/health",
-                        "/actuator/health"
+                        "/actuator/health",
+                        // Swagger UI
+                        "/swagger-ui/**",
+                        "/swagger-ui.html",
+                        "/api-docs/**",
+                        "/v3/api-docs/**"
                     ).permitAll()
                     // OPTIONS 요청은 모두 허용 (CORS preflight)
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()

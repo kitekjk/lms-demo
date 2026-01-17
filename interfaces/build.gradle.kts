@@ -27,6 +27,9 @@ dependencies {
     // Jackson for Kotlin
     implementation(libs.jackson.module.kotlin)
 
+    // API Documentation
+    implementation(libs.springdoc.openapi.starter)
+
     // Testing
     testImplementation(libs.spring.boot.starter.test)
     testImplementation(libs.spring.mockk)
