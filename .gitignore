@@ -46,12 +46,12 @@ dev-debug.log
 .env.local
 .env.*.local
 
-# TaskMaster AI - Generated and runtime files
+# TaskMaster AI - Runtime files only (keep tasks and docs in git)
 .taskmaster/config.json
 .taskmaster/state.json
-.taskmaster/tasks/
 .taskmaster/reports/
-.taskmaster/templates/
+.taskmaster/tasks/*.md
+!.taskmaster/tasks/tasks.json
 
 # Claude Code - Local settings
 .claude/settings.local.json
