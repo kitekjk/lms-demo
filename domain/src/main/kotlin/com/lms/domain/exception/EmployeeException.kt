@@ -17,3 +17,9 @@ class DuplicateEmployeeUserException(userId: String, cause: Throwable? = null) :
  */
 class UnauthorizedStoreAccessException(message: String = "해당 매장에 대한 접근 권한이 없습니다.", cause: Throwable? = null) :
     DomainException(ErrorCode.UNAUTHORIZED_STORE_ACCESS, message, cause)
+
+/**
+ * 급여 산정 대상 직원이 없을 때 발생하는 예외
+ */
+class NoEmployeesFoundException(target: String, cause: Throwable? = null) :
+    DomainException(ErrorCode.NO_EMPLOYEES_FOUND, "급여 산정 대상 직원이 없습니다: $target", cause)

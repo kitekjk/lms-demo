@@ -62,6 +62,13 @@ class EmployeeRepositoryImpl(private val jpaRepository: EmployeeJpaRepositoryInt
         jpaRepository.findByStoreIdAndIsActiveTrue(storeId.value)
             .map { EmployeeMapper.toDomain(it) }
 
+    override fun findByStoreIdAndActive(storeId: StoreId, isActive: Boolean): List<Employee> =
+        jpaRepository.findByStoreIdAndIsActive(storeId.value, isActive)
+            .map { EmployeeMapper.toDomain(it) }
+
+    override fun findByActive(isActive: Boolean): List<Employee> = jpaRepository.findByIsActive(isActive)
+        .map { EmployeeMapper.toDomain(it) }
+
     override fun findAll(): List<Employee> = jpaRepository.findAll()
         .map { EmployeeMapper.toDomain(it) }
 

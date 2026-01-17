@@ -21,6 +21,8 @@ value class PayrollPeriod(val value: String) {
         fun from(yearMonth: YearMonth): PayrollPeriod =
             PayrollPeriod(yearMonth.format(DateTimeFormatter.ofPattern("yyyy-MM")))
 
+        fun from(value: String): PayrollPeriod = PayrollPeriod(value)
+
         fun of(year: Int, month: Int): PayrollPeriod = from(YearMonth.of(year, month))
     }
 }

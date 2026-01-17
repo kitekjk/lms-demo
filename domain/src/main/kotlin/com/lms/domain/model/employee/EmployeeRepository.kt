@@ -13,6 +13,8 @@ interface EmployeeRepository {
     fun findByUserId(userId: UserId): Employee?
     fun findByStoreId(storeId: StoreId): List<Employee>
     fun findActiveByStoreId(storeId: StoreId): List<Employee>
+    fun findByStoreIdAndActive(storeId: StoreId, isActive: Boolean): List<Employee>
+    fun findByActive(isActive: Boolean): List<Employee>
     fun findAll(): List<Employee>
     fun delete(employeeId: EmployeeId)
 }

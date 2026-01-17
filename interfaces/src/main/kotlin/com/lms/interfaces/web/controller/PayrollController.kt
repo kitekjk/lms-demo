@@ -1,15 +1,12 @@
 package com.lms.interfaces.web.controller
 
-import com.lms.application.payroll.CalculatePayrollAppService
-import com.lms.application.payroll.GetMyPayrollAppService
-import com.lms.application.payroll.GetPayrollAppService
-import com.lms.application.payroll.GetPayrollsByPeriodAppService
+import com.lms.application.payroll.*
 import com.lms.domain.common.DomainContext
-import com.lms.interfaces.web.dto.PayrollCalculateRequest
-import com.lms.interfaces.web.dto.PayrollResponse
-import com.lms.interfaces.web.dto.PayrollWithDetailsResponse
+import com.lms.interfaces.web.dto.*
 import jakarta.validation.Valid
+import java.time.Instant
 import java.time.YearMonth
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
@@ -23,7 +20,9 @@ class PayrollController(
     private val calculatePayrollAppService: CalculatePayrollAppService,
     private val getPayrollAppService: GetPayrollAppService,
     private val getMyPayrollAppService: GetMyPayrollAppService,
-    private val getPayrollsByPeriodAppService: GetPayrollsByPeriodAppService
+    private val getPayrollsByPeriodAppService: GetPayrollsByPeriodAppService,
+    private val executePayrollBatchAppService: ExecutePayrollBatchAppService,
+    private val getPayrollBatchHistoriesAppService: GetPayrollBatchHistoriesAppService
 ) {
     /**
      * 급여 계산 실행
@@ -72,5 +71,34 @@ class PayrollController(
     fun getPayrollsByPeriod(@RequestParam(required = true) period: YearMonth): ResponseEntity<List<PayrollResponse>> {
         val results = getPayrollsByPeriodAppService.execute(period)
         return ResponseEntity.ok(results.map { PayrollResponse.from(it) })
+    }
+
+    /**
+     * 수동 배치 실행
+     * SUPER_ADMIN만 실행 가능
+     */
+    @PostMapping("/batch")
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    fun executePayrollBatch(
+        context: DomainContext,
+        @Valid @RequestBody request: PayrollBatchExecuteRequest
+    ): ResponseEntity<PayrollBatchHistoryResponse> {
+        val command = request.toCommand()
+        val result = executePayrollBatchAppService.execute(context, command)
+        return ResponseEntity.ok(PayrollBatchHistoryResponse.from(result))
+    }
+
+    /**
+     * 배치 실행 이력 조회
+     * MANAGER/SUPER_ADMIN만 접근 가능
+     */
+    @GetMapping("/batch-history")
+    @PreAuthorize("hasAnyRole('MANAGER', 'SUPER_ADMIN')")
+    fun getPayrollBatchHistories(
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) startDate: Instant?,
+        @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) endDate: Instant?
+    ): ResponseEntity<List<PayrollBatchHistoryResponse>> {
+        val results = getPayrollBatchHistoriesAppService.execute(startDate, endDate)
+        return ResponseEntity.ok(results.map { PayrollBatchHistoryResponse.from(it) })
     }
 }

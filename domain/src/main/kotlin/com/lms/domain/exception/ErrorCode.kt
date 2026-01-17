@@ -24,6 +24,7 @@ object ErrorCode {
     const val EMPLOYEE_NOT_FOUND = "EMP001"
     const val DUPLICATE_EMPLOYEE_USER = "EMP002"
     const val UNAUTHORIZED_STORE_ACCESS = "EMP003"
+    const val NO_EMPLOYEES_FOUND = "EMP004"
 
     // 출퇴근 관련 (ATTENDANCE)
     const val ATTENDANCE_NOT_FOUND = "ATT001"
