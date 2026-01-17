@@ -27,64 +27,115 @@ class HomeScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.check_circle_outline,
-                size: 80,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-              const SizedBox(height: 24),
-              Text(
-                '로그인 성공!',
-                style: Theme.of(context).textTheme.headlineMedium,
-              ),
-              const SizedBox(height: 16),
-              if (user != null) ...[
-                Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '사용자 정보',
-                          style: Theme.of(context).textTheme.titleLarge,
-                        ),
-                        const Divider(),
-                        _buildInfoRow('이메일', user.email),
-                        _buildInfoRow('역할', user.role),
-                        _buildInfoRow('상태', user.isActive ? '활성' : '비활성'),
-                      ],
-                    ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // 사용자 정보 카드
+            if (user != null)
+              Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Icon(Icons.person, size: 32),
+                          const SizedBox(width: 12),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                user.email,
+                                style: Theme.of(context).textTheme.titleMedium,
+                              ),
+                              Text(
+                                user.role,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ],
-          ),
+              ),
+            const SizedBox(height: 24),
+
+            // 메뉴 그리드
+            Expanded(
+              child: GridView.count(
+                crossAxisCount: 2,
+                mainAxisSpacing: 16,
+                crossAxisSpacing: 16,
+                children: [
+                  _buildMenuCard(
+                    context,
+                    icon: Icons.access_time,
+                    title: '출퇴근 체크',
+                    color: Colors.blue,
+                    onTap: () => context.push(RouteNames.attendance),
+                  ),
+                  _buildMenuCard(
+                    context,
+                    icon: Icons.calendar_today,
+                    title: '근무 일정',
+                    color: Colors.green,
+                    onTap: () => context.push(RouteNames.schedule),
+                  ),
+                  _buildMenuCard(
+                    context,
+                    icon: Icons.beach_access,
+                    title: '휴가 신청',
+                    color: Colors.orange,
+                    onTap: () => context.push(RouteNames.leave),
+                  ),
+                  _buildMenuCard(
+                    context,
+                    icon: Icons.attach_money,
+                    title: '급여 조회',
+                    color: Colors.purple,
+                    onTap: () => context.push(RouteNames.payroll),
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildInfoRow(String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          SizedBox(
-            width: 80,
-            child: Text(
-              label,
-              style: const TextStyle(fontWeight: FontWeight.bold),
+  Widget _buildMenuCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return Card(
+      elevation: 4,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, size: 64, color: color),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+              textAlign: TextAlign.center,
             ),
-          ),
-          Expanded(child: Text(value)),
-        ],
+          ],
+        ),
       ),
     );
   }
