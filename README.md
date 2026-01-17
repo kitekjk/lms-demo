@@ -180,6 +180,40 @@ task-master list --status=pending
 cp .env.example .env
 ```
 
+### 새 환경에서 프로젝트 설정
+
+다른 컴퓨터나 새로운 환경에서 프로젝트를 시작할 때:
+
+```bash
+# 1. 저장소 클론
+git clone <repository-url>
+cd lms-demo
+
+# 2. 환경 변수 설정
+cp .env.example .env
+# .env 파일을 편집하여 필요한 값 설정
+
+# 3. MCP 설정 (Claude Code 사용 시)
+cp .mcp.json.example .mcp.json
+# .mcp.json 파일을 편집하여 OAuth 토큰 설정
+
+# 4. TaskMaster AI 설정
+task-master models --setup
+# API 키 입력 (tasks.json은 이미 Git에 포함되어 있음)
+
+# 5. 빌드 및 실행
+./gradlew build
+./gradlew :interfaces:bootRun
+```
+
+**주요 파일 관리:**
+- ✅ `.taskmaster/tasks/tasks.json` - Git에 포함 (작업 정보 유지)
+- ✅ `.taskmaster/docs/` - Git에 포함 (PRD 문서)
+- ✅ `CLAUDE.md`, `.aiassistant/rules/` - Git에 포함 (AI 가이드)
+- ❌ `.env` - Git 제외 (환경별 설정)
+- ❌ `.mcp.json` - Git 제외 (개인 OAuth 토큰)
+- ❌ `.taskmaster/config.json` - Git 제외 (개인 API 키)
+
 ### 코드 품질 관리 (Spotless)
 
 이 프로젝트는 [Spotless](https://github.com/diffplug/spotless)와 [ktlint](https://github.com/pinterest/ktlint)를 사용하여 코드 스타일을 자동으로 관리합니다.
