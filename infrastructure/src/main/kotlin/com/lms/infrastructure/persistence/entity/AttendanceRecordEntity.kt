@@ -1,6 +1,7 @@
 package com.lms.infrastructure.persistence.entity
 
 import com.lms.domain.model.attendance.AttendanceStatus
+import com.lms.infrastructure.persistence.attendance.AttendanceRecordEntityListener
 import jakarta.persistence.*
 import java.time.Instant
 import java.time.LocalDate
@@ -26,7 +27,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener
         UniqueConstraint(name = "uk_attendance_schedule", columnNames = ["work_schedule_id"])
     ]
 )
-@EntityListeners(AuditingEntityListener::class)
+@EntityListeners(AuditingEntityListener::class, AttendanceRecordEntityListener::class)
 class AttendanceRecordEntity(
     @Id
     @Column(name = "attendance_record_id", nullable = false, length = 36)
@@ -62,6 +63,16 @@ class AttendanceRecordEntity(
     @Column(name = "updated_at", nullable = false)
     var updatedAt: Instant = Instant.now()
         protected set
+
+    // AuditLog를 위한 변경 전 상태 스냅샷 (@Transient)
+    @Transient
+    var originalCheckInTime: Instant? = null
+
+    @Transient
+    var originalCheckOutTime: Instant? = null
+
+    @Transient
+    var originalNote: String? = null
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
