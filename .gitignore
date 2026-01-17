@@ -87,3 +87,26 @@ hs_err_pid*
 # virtual machine crash logs
 hs_err_pid*
 replay_pid*
+
+# Flutter
+lms_mobile_web/.dart_tool/
+lms_mobile_web/.packages
+lms_mobile_web/.pub/
+lms_mobile_web/build/
+
+# Flutter iOS
+lms_mobile_web/ios/Pods/
+lms_mobile_web/ios/.symlinks/
+lms_mobile_web/ios/Flutter/Flutter.framework
+lms_mobile_web/ios/Flutter/Flutter.podspec
+
+# Flutter Android
+lms_mobile_web/android/.gradle/
+lms_mobile_web/android/captures/
+lms_mobile_web/android/local.properties
+
+# Flutter Web
+lms_mobile_web/web/flutter_service_worker.js
+
+# Flutter environment
+lms_mobile_web/.env
