@@ -194,10 +194,7 @@ cp .env.example .env
 # .env 파일을 편집하여 필요한 값 설정
 
 # 3. Claude Code MCP 설정 (TaskMaster AI 사용 시)
-# 사용자 레벨에서 MCP 서버 추가 (안전하고 권장됨)
-claude mcp add task-master-ai --scope user \
-  --env TASK_MASTER_TOOLS="core" \
-  -- npx -y task-master-ai@latest
+claude mcp add task-master-ai --scope user -- npx -y task-master-ai@latest
 
 # 4. TaskMaster AI CLI 설정
 task-master models --setup
