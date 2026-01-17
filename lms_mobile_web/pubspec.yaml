@@ -44,6 +44,9 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
 
+  integration_test:
+    sdk: flutter
+
   # 코드 생성
   build_runner: ^2.4.9
   freezed: ^2.5.2
@@ -55,6 +58,7 @@ dev_dependencies:
 
   # 테스팅
   mockito: ^5.4.4
+  patrol: ^3.14.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
