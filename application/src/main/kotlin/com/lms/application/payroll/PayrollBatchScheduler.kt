@@ -60,7 +60,7 @@ class PayrollBatchScheduler(private val executePayrollBatchAppService: ExecutePa
         override val userId: String = "SYSTEM"
         override val userName: String = "시스템"
         override val roleId: String = "SYSTEM"
-        override val requestId: UUID = UUID.randomUUID()
+        override val requestId: String = UUID.randomUUID().toString()
         override val requestedAt: Instant = Instant.now()
         override val clientIp: String = "127.0.0.1"
     }

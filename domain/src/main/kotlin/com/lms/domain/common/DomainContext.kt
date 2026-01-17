@@ -12,7 +12,7 @@ interface DomainContext {
     val userId: String // 사용자 ID
     val userName: String // 사용자 이름
     val roleId: String // 역할 ID (Role enum의 name)
-    val requestId: UUID // 요청 추적용 UUID
+    val requestId: String // 요청 추적용 ID (UUID, Trace ID 등)
     val requestedAt: Instant // 요청 시각
     val clientIp: String // 클라이언트 IP
 }
@@ -25,7 +25,7 @@ data class DomainContextBase(
     override val userId: String,
     override val userName: String,
     override val roleId: String,
-    override val requestId: UUID = UUID.randomUUID(),
+    override val requestId: String = UUID.randomUUID().toString(),
     override val requestedAt: Instant = Instant.now(),
     override val clientIp: String
 ) : DomainContext

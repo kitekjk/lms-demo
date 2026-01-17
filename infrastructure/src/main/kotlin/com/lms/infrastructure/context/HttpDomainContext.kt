@@ -13,7 +13,7 @@ data class HttpDomainContext(
     override val userId: String,
     override val userName: String,
     override val roleId: String,
-    override val requestId: UUID,
+    override val requestId: String,
     override val requestedAt: Instant,
     override val clientIp: String
 ) : DomainContext {
@@ -31,7 +31,7 @@ data class HttpDomainContext(
             userId = userId,
             userName = userName,
             roleId = roleId,
-            requestId = UUID.randomUUID(),
+            requestId = UUID.randomUUID().toString(),
             requestedAt = Instant.now(),
             clientIp = extractClientIp(request)
         )
@@ -44,7 +44,7 @@ data class HttpDomainContext(
             userId = "system",
             userName = "System",
             roleId = "SYSTEM",
-            requestId = UUID.randomUUID(),
+            requestId = UUID.randomUUID().toString(),
             requestedAt = Instant.now(),
             clientIp = "127.0.0.1"
         )

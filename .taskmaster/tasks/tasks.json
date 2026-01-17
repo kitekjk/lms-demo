@@ -676,7 +676,7 @@
           "7",
           "8"
         ],
-        "status": "in-progress",
+        "status": "done",
         "subtasks": [
           {
             "id": 1,
@@ -736,16 +736,16 @@
               3
             ],
             "details": "1. PayrollBatchScheduler 클래스 생성 및 @EnableScheduling 설정\n2. @Scheduled(cron = \"0 0 1 L * ?\") 어노테이션으로 매월 말일 01:00 실행 설정\n3. executeMonthlyPayrollCalculation(): 모든 매장 조회, 각 매장별 calculateBatch 호출\n4. 배치 실행 로그 기록 (시작/종료 시간, 처리 건수, 성공/실패)\n5. 배치 실패 시 알림 또는 재시도 로직 구현\n6. 수동 배치 실행 API 추가 (POST /api/payroll/batch, SUPER_ADMIN)\n7. 배치 실행 이력 조회 API 추가 (GET /api/payroll/batch-history)\n8. 트랜잭션 처리 및 대량 데이터 처리 최적화 (청크 단위 처리)",
-            "status": "in-progress",
+            "status": "done",
             "testStrategy": "1. 스케줄러 동작 테스트 (cron 표현식 검증)\n2. 배치 처리 테스트 (전체 매장 급여 산정)\n3. 배치 실행 로그 기록 테스트\n4. 배치 실패 시 롤백 테스트\n5. 수동 배치 실행 API 테스트\n6. 대량 데이터 처리 성능 테스트\n7. 배치 이력 조회 API 테스트",
             "parentId": "undefined",
-            "updatedAt": "2026-01-17T01:39:06.557Z"
+            "updatedAt": "2026-01-17T01:43:21.627Z"
           }
         ],
         "complexity": 9,
         "recommendedSubtasks": 5,
         "expansionPrompt": "Payroll 엔티티 및 Repository, 급여 계산 엔진(근무시간/유형/가산율 계산), PayrollService(개별/배치 급여 산정), PayrollController 및 DTO, 급여 자동 산정 배치 처리를 포함하는 5개의 세부 작업으로 분해하세요. 각 작업은 출퇴근 기록, 근무 일정, 휴가, 가산율을 통합하는 복잡한 계산 로직과 배치 처리를 포함해야 합니다.",
-        "updatedAt": "2026-01-17T01:39:06.557Z"
+        "updatedAt": "2026-01-17T01:43:21.627Z"
       },
       {
         "id": "10",
@@ -931,9 +931,9 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-01-17T01:39:06.557Z",
+      "lastModified": "2026-01-17T01:43:21.627Z",
       "taskCount": 17,
-      "completedCount": 9,
+      "completedCount": 10,
       "tags": [
         "master"
       ]
