@@ -20,10 +20,9 @@ class _AttendanceRecordsScreenState
   void initState() {
     super.initState();
     Future.microtask(() {
-      ref.read(attendanceProvider.notifier).loadRecords(
-            startDate: _startDate,
-            endDate: _endDate,
-          );
+      ref
+          .read(attendanceProvider.notifier)
+          .loadRecords(startDate: _startDate, endDate: _endDate);
     });
   }
 
@@ -44,10 +43,9 @@ class _AttendanceRecordsScreenState
         }
       });
 
-      ref.read(attendanceProvider.notifier).loadRecords(
-            startDate: _startDate,
-            endDate: _endDate,
-          );
+      ref
+          .read(attendanceProvider.notifier)
+          .loadRecords(startDate: _startDate, endDate: _endDate);
     }
   }
 
@@ -59,9 +57,7 @@ class _AttendanceRecordsScreenState
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('출퇴근 기록'),
-      ),
+      appBar: AppBar(title: const Text('출퇴근 기록')),
       body: Column(
         children: [
           // 날짜 필터
@@ -96,66 +92,58 @@ class _AttendanceRecordsScreenState
             child: attendanceState.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : attendanceState.records.isEmpty
-                    ? const Center(
-                        child: Text('출퇴근 기록이 없습니다'),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.all(16.0),
-                        itemCount: attendanceState.records.length,
-                        itemBuilder: (context, index) {
-                          final record = attendanceState.records[index];
-                          return Card(
-                            margin: const EdgeInsets.only(bottom: 12),
-                            child: ListTile(
-                              leading: CircleAvatar(
-                                backgroundColor: record.isComplete
-                                    ? Colors.green
-                                    : Colors.orange,
-                                child: Icon(
-                                  record.isComplete
-                                      ? Icons.check
-                                      : Icons.access_time,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              title: Text(
-                                dateFormat.format(record.attendanceDate),
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              subtitle: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const SizedBox(height: 4),
-                                  if (record.checkInTime != null)
-                                    Text(
-                                      '출근: ${timeFormat.format(record.checkInTime!)}',
-                                      style: const TextStyle(
-                                        color: Colors.green,
-                                      ),
-                                    ),
-                                  if (record.checkOutTime != null)
-                                    Text(
-                                      '퇴근: ${timeFormat.format(record.checkOutTime!)}',
-                                      style: const TextStyle(
-                                        color: Colors.red,
-                                      ),
-                                    ),
-                                  if (record.actualWorkHours != null)
-                                    Text(
-                                      '근무: ${record.actualWorkHours!.toStringAsFixed(1)}시간',
-                                      style: TextStyle(
-                                        color: theme.colorScheme.primary,
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              trailing: _buildStatusChip(record.status),
+                ? const Center(child: Text('출퇴근 기록이 없습니다'))
+                : ListView.builder(
+                    padding: const EdgeInsets.all(16.0),
+                    itemCount: attendanceState.records.length,
+                    itemBuilder: (context, index) {
+                      final record = attendanceState.records[index];
+                      return Card(
+                        margin: const EdgeInsets.only(bottom: 12),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: record.isComplete
+                                ? Colors.green
+                                : Colors.orange,
+                            child: Icon(
+                              record.isComplete
+                                  ? Icons.check
+                                  : Icons.access_time,
+                              color: Colors.white,
                             ),
-                          );
-                        },
-                      ),
+                          ),
+                          title: Text(
+                            dateFormat.format(record.attendanceDate),
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const SizedBox(height: 4),
+                              if (record.checkInTime != null)
+                                Text(
+                                  '출근: ${timeFormat.format(record.checkInTime!)}',
+                                  style: const TextStyle(color: Colors.green),
+                                ),
+                              if (record.checkOutTime != null)
+                                Text(
+                                  '퇴근: ${timeFormat.format(record.checkOutTime!)}',
+                                  style: const TextStyle(color: Colors.red),
+                                ),
+                              if (record.actualWorkHours != null)
+                                Text(
+                                  '근무: ${record.actualWorkHours!.toStringAsFixed(1)}시간',
+                                  style: TextStyle(
+                                    color: theme.colorScheme.primary,
+                                  ),
+                                ),
+                            ],
+                          ),
+                          trailing: _buildStatusChip(record.status),
+                        ),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -187,10 +175,7 @@ class _AttendanceRecordsScreenState
     return Chip(
       label: Text(
         label,
-        style: const TextStyle(
-          color: Colors.white,
-          fontSize: 12,
-        ),
+        style: const TextStyle(color: Colors.white, fontSize: 12),
       ),
       backgroundColor: color,
       padding: EdgeInsets.zero,

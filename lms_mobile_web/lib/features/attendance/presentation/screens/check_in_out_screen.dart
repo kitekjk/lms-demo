@@ -23,9 +23,9 @@ class _CheckInOutScreenState extends ConsumerState<CheckInOutScreen> {
 
   Future<void> _handleCheckIn() async {
     try {
-      await ref.read(attendanceProvider.notifier).checkIn(
-            _workScheduleIdController.text,
-          );
+      await ref
+          .read(attendanceProvider.notifier)
+          .checkIn(_workScheduleIdController.text);
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -38,10 +38,7 @@ class _CheckInOutScreenState extends ConsumerState<CheckInOutScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
         );
       }
     }
@@ -62,10 +59,7 @@ class _CheckInOutScreenState extends ConsumerState<CheckInOutScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
         );
       }
     }
@@ -152,8 +146,7 @@ class _CheckInOutScreenState extends ConsumerState<CheckInOutScreen> {
                               ),
                               Colors.red,
                             ),
-                            if (attendanceState
-                                    .todayRecord!.actualWorkHours !=
+                            if (attendanceState.todayRecord!.actualWorkHours !=
                                 null) ...[
                               const SizedBox(height: 8),
                               const Divider(),
@@ -190,7 +183,9 @@ class _CheckInOutScreenState extends ConsumerState<CheckInOutScreen> {
                 if (attendanceState.todayRecord == null ||
                     !attendanceState.todayRecord!.hasCheckedIn)
                   ElevatedButton(
-                    onPressed: attendanceState.isLoading ? null : _handleCheckIn,
+                    onPressed: attendanceState.isLoading
+                        ? null
+                        : _handleCheckIn,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       backgroundColor: Colors.green,
@@ -205,10 +200,7 @@ class _CheckInOutScreenState extends ConsumerState<CheckInOutScreen> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text(
-                            '출근 체크',
-                            style: TextStyle(fontSize: 20),
-                          ),
+                        : const Text('출근 체크', style: TextStyle(fontSize: 20)),
                   ),
 
                 // 퇴근 버튼
@@ -216,8 +208,9 @@ class _CheckInOutScreenState extends ConsumerState<CheckInOutScreen> {
                     attendanceState.todayRecord!.hasCheckedIn &&
                     !attendanceState.todayRecord!.hasCheckedOut)
                   ElevatedButton(
-                    onPressed:
-                        attendanceState.isLoading ? null : _handleCheckOut,
+                    onPressed: attendanceState.isLoading
+                        ? null
+                        : _handleCheckOut,
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 20),
                       backgroundColor: Colors.red,
@@ -232,10 +225,7 @@ class _CheckInOutScreenState extends ConsumerState<CheckInOutScreen> {
                               color: Colors.white,
                             ),
                           )
-                        : const Text(
-                            '퇴근 체크',
-                            style: TextStyle(fontSize: 20),
-                          ),
+                        : const Text('퇴근 체크', style: TextStyle(fontSize: 20)),
                   ),
 
                 // 완료 메시지
@@ -277,10 +267,7 @@ class _CheckInOutScreenState extends ConsumerState<CheckInOutScreen> {
       children: [
         Text(
           label,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w500,
-          ),
+          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
         Text(
           time,

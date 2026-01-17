@@ -20,8 +20,8 @@ class LoginResponse {
   }
 
   Map<String, dynamic> toJson() => {
-        'accessToken': accessToken,
-        'refreshToken': refreshToken,
-        'userInfo': userInfo.toJson(),
-      };
+    'accessToken': accessToken,
+    'refreshToken': refreshToken,
+    'userInfo': userInfo.toJson(),
+  };
 }

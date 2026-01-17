@@ -22,10 +22,7 @@ class AttendanceNotifier extends StateNotifier<AttendanceState> {
         clearError: true,
       );
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
@@ -40,10 +37,7 @@ class AttendanceNotifier extends StateNotifier<AttendanceState> {
         clearError: true,
       );
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
       rethrow;
     }
   }
@@ -59,10 +53,7 @@ class AttendanceNotifier extends StateNotifier<AttendanceState> {
         clearError: true,
       );
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
       rethrow;
     }
   }
@@ -81,10 +72,7 @@ class AttendanceNotifier extends StateNotifier<AttendanceState> {
         clearError: true,
       );
     } catch (e) {
-      state = state.copyWith(
-        isLoading: false,
-        error: e.toString(),
-      );
+      state = state.copyWith(isLoading: false, error: e.toString());
     }
   }
 
@@ -105,6 +93,6 @@ final dioProvider = Provider<Dio>((ref) {
 
 final attendanceProvider =
     StateNotifierProvider<AttendanceNotifier, AttendanceState>((ref) {
-  final attendanceService = ref.watch(attendanceServiceProvider);
-  return AttendanceNotifier(attendanceService);
-});
+      final attendanceService = ref.watch(attendanceServiceProvider);
+      return AttendanceNotifier(attendanceService);
+    });

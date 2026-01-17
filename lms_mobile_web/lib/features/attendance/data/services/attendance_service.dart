@@ -52,8 +52,10 @@ class AttendanceService {
       // ignore: avoid_dynamic_calls
       final records = response.data['records'] as List;
       return records
-          .map((record) =>
-              AttendanceRecord.fromJson(record as Map<String, dynamic>))
+          .map(
+            (record) =>
+                AttendanceRecord.fromJson(record as Map<String, dynamic>),
+          )
           .toList();
     } catch (e) {
       throw ErrorHandler.handleError(e);
@@ -63,10 +65,7 @@ class AttendanceService {
   Future<AttendanceRecord?> getTodayRecord() async {
     try {
       final today = DateTime.now();
-      final records = await getMyRecords(
-        startDate: today,
-        endDate: today,
-      );
+      final records = await getMyRecords(startDate: today, endDate: today);
 
       return records.isNotEmpty ? records.first : null;
     } catch (e) {

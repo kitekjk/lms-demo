@@ -45,17 +45,17 @@ class AttendanceRecord {
   }
 
   Map<String, dynamic> toJson() => {
-        'id': id,
-        'employeeId': employeeId,
-        'workScheduleId': workScheduleId,
-        'attendanceDate': attendanceDate.toIso8601String(),
-        'checkInTime': checkInTime?.toIso8601String(),
-        'checkOutTime': checkOutTime?.toIso8601String(),
-        'actualWorkHours': actualWorkHours,
-        'status': status,
-        'note': note,
-        'createdAt': createdAt.toIso8601String(),
-      };
+    'id': id,
+    'employeeId': employeeId,
+    'workScheduleId': workScheduleId,
+    'attendanceDate': attendanceDate.toIso8601String(),
+    'checkInTime': checkInTime?.toIso8601String(),
+    'checkOutTime': checkOutTime?.toIso8601String(),
+    'actualWorkHours': actualWorkHours,
+    'status': status,
+    'note': note,
+    'createdAt': createdAt.toIso8601String(),
+  };
 
   bool get hasCheckedIn => checkInTime != null;
   bool get hasCheckedOut => checkOutTime != null;

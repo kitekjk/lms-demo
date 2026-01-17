@@ -23,8 +23,7 @@ class AttendanceState {
   }) {
     return AttendanceState(
       isLoading: isLoading ?? this.isLoading,
-      todayRecord:
-          clearTodayRecord ? null : (todayRecord ?? this.todayRecord),
+      todayRecord: clearTodayRecord ? null : (todayRecord ?? this.todayRecord),
       records: records ?? this.records,
       error: clearError ? null : (error ?? this.error),
     );

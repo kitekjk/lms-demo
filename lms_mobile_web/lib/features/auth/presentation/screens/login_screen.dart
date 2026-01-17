@@ -30,10 +30,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     }
 
     try {
-      await ref.read(authProvider.notifier).login(
-            _emailController.text.trim(),
-            _passwordController.text,
-          );
+      await ref
+          .read(authProvider.notifier)
+          .login(_emailController.text.trim(), _passwordController.text);
 
       if (mounted) {
         context.go(RouteNames.home);
@@ -41,10 +40,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e.toString()),
-            backgroundColor: Colors.red,
-          ),
+          SnackBar(content: Text(e.toString()), backgroundColor: Colors.red),
         );
       }
     }
@@ -96,8 +92,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       if (value == null || value.isEmpty) {
                         return '이메일을 입력해주세요';
                       }
-                      if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                          .hasMatch(value)) {
+                      if (!RegExp(
+                        r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                      ).hasMatch(value)) {
                         return '올바른 이메일 형식이 아닙니다';
                       }
                       return null;
@@ -175,6 +172,16 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         ],
                       ),
                     ),
+
+                  // 관리자 로그인 링크
+                  const SizedBox(height: 16),
+                  TextButton.icon(
+                    onPressed: () {
+                      context.go(RouteNames.adminLogin);
+                    },
+                    icon: const Icon(Icons.admin_panel_settings),
+                    label: const Text('관리자로 로그인'),
+                  ),
                 ],
               ),
             ),

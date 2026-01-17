@@ -8,9 +8,5 @@ void main() async {
 
   await EnvConfig.load();
 
-  runApp(
-    const ProviderScope(
-      child: MyApp(),
-    ),
-  );
+  runApp(const ProviderScope(child: MyApp()));
 }

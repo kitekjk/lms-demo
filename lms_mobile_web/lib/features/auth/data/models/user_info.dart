@@ -21,11 +21,11 @@ class UserInfo {
   }
 
   Map<String, dynamic> toJson() => {
-        'userId': userId,
-        'email': email,
-        'role': role,
-        'isActive': isActive,
-      };
+    'userId': userId,
+    'email': email,
+    'role': role,
+    'isActive': isActive,
+  };
 
   bool get isSuperAdmin => role == 'SUPER_ADMIN';
   bool get isManager => role == 'MANAGER';

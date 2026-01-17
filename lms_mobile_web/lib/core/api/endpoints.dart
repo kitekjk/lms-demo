@@ -4,6 +4,7 @@ class ApiEndpoints {
   static const String register = '/auth/register';
   static const String refresh = '/auth/refresh';
   static const String logout = '/auth/logout';
+  static const String me = '/auth/me';
 
   // Attendance
   static const String checkIn = '/attendance/check-in';
