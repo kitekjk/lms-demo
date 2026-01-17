@@ -7,6 +7,7 @@ import 'package:lms_mobile_web/features/admin/employee/presentation/screens/empl
 import 'package:lms_mobile_web/features/admin/employee/presentation/screens/employee_list_screen.dart';
 import 'package:lms_mobile_web/features/admin/attendance/presentation/screens/attendance_management_screen.dart';
 import 'package:lms_mobile_web/features/admin/leave/presentation/screens/leave_management_screen.dart';
+import 'package:lms_mobile_web/features/admin/payroll/presentation/screens/payroll_management_screen.dart';
 import 'package:lms_mobile_web/features/admin/schedule/presentation/screens/schedule_calendar_screen.dart';
 import 'package:lms_mobile_web/features/admin/store/presentation/screens/store_form_screen.dart';
 import 'package:lms_mobile_web/features/admin/store/presentation/screens/store_list_screen.dart';
@@ -108,6 +109,12 @@ final appRouter = GoRouter(
       path: RouteNames.adminLeaves,
       name: 'adminLeaves',
       builder: (context, state) => const LeaveManagementScreen(),
+    ),
+    // Admin - Payroll
+    GoRoute(
+      path: RouteNames.adminPayroll,
+      name: 'adminPayroll',
+      builder: (context, state) => const PayrollManagementScreen(),
     ),
   ],
   errorBuilder: (context, state) =>

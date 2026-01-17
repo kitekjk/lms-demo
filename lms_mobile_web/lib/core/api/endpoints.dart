@@ -43,4 +43,11 @@ class ApiEndpoints {
   static const String pendingLeaves = '/leaves/pending';
   static String approveLeave(String id) => '/leaves/$id/approve';
   static String rejectLeave(String id) => '/leaves/$id/reject';
+
+  // Admin - Payroll
+  static const String payrolls = '/payroll';
+  static String payrollById(String id) => '/payroll/$id';
+  static const String calculatePayroll = '/payroll/calculate';
+  static const String payrollBatch = '/payroll/batch';
+  static const String payrollBatchHistory = '/payroll/batch-history';
 }
