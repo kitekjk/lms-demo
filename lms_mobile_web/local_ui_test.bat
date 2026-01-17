@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 REM 로컬 UI 테스트 - 실시간 모니터링 (Windows)
 setlocal enabledelayedexpansion
 

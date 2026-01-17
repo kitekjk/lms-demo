@@ -25,13 +25,13 @@ void main() {
       // await $(find.text('대시보드')).waitUntilVisible();
 
       // 3. 각 관리 화면 순회하며 오버플로우 체크
-      final screens = [
-        '매장 관리',
-        '근로자 관리',
-        '일정 관리',
-        '급여 관리',
-        '휴가 관리'
-      ];
+      // final screens = [
+      //   '매장 관리',
+      //   '근로자 관리',
+      //   '일정 관리',
+      //   '급여 관리',
+      //   '휴가 관리'
+      // ];
 
       // for (final screen in screens) {
       //   await $(find.text(screen)).tap();
