@@ -29,4 +29,8 @@ class ApiEndpoints {
   static const String employees = '/employees';
   static String employeeById(String id) => '/employees/$id';
   static String employeeDeactivate(String id) => '/employees/$id/deactivate';
+
+  // Admin - Schedules
+  static const String schedules = '/schedules';
+  static String scheduleById(String id) => '/schedules/$id';
 }
