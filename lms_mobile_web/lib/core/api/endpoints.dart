@@ -37,4 +37,10 @@ class ApiEndpoints {
   // Admin - Attendance
   static const String attendanceRecords = '/attendance/records';
   static String attendanceRecordById(String id) => '/attendance/records/$id';
+
+  // Admin - Leaves
+  static const String leaves = '/leaves';
+  static const String pendingLeaves = '/leaves/pending';
+  static String approveLeave(String id) => '/leaves/$id/approve';
+  static String rejectLeave(String id) => '/leaves/$id/reject';
 }
