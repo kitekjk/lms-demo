@@ -30,4 +30,11 @@ object ErrorCode {
     const val ALREADY_CHECKED_IN = "ATT002"
     const val NOT_CHECKED_IN = "ATT003"
     const val ALREADY_CHECKED_OUT = "ATT004"
+
+    // 근무 일정 관련 (SCHEDULE)
+    const val SCHEDULE_NOT_FOUND = "SCH001"
+    const val DUPLICATE_SCHEDULE = "SCH002"
+    const val CONFIRMED_SCHEDULE_CANNOT_BE_MODIFIED = "SCH003"
+    const val EMPLOYEE_NOT_BELONG_TO_STORE = "SCH004"
+    const val MANAGER_CAN_ONLY_MANAGE_OWN_STORE = "SCH005"
 }
