@@ -193,11 +193,13 @@ cd lms-demo
 cp .env.example .env
 # .env 파일을 편집하여 필요한 값 설정
 
-# 3. MCP 설정 (Claude Code 사용 시)
-cp .mcp.json.example .mcp.json
-# .mcp.json 파일을 편집하여 OAuth 토큰 설정
+# 3. Claude Code MCP 설정 (TaskMaster AI 사용 시)
+# 사용자 레벨에서 MCP 서버 추가 (안전하고 권장됨)
+claude mcp add task-master-ai --scope user \
+  --env TASK_MASTER_TOOLS="core" \
+  -- npx -y task-master-ai@latest
 
-# 4. TaskMaster AI 설정
+# 4. TaskMaster AI CLI 설정
 task-master models --setup
 # API 키 입력 (tasks.json은 이미 Git에 포함되어 있음)
 
@@ -206,13 +208,20 @@ task-master models --setup
 ./gradlew :interfaces:bootRun
 ```
 
+**MCP 설정 방식 비교:**
+
+| 방식 | 보안성 | 편의성 | 권장 여부 |
+|------|--------|--------|-----------|
+| `claude mcp add --scope user` | ✅ 높음 (토큰이 사용자 레벨) | ✅ 높음 (한 번만 설정) | ⭐ 권장 |
+| `.mcp.json` 파일 | ⚠️ 낮음 (프로젝트별 관리) | ⚠️ 중간 (프로젝트마다 설정) | ❌ 비권장 |
+
 **주요 파일 관리:**
 - ✅ `.taskmaster/tasks/tasks.json` - Git에 포함 (작업 정보 유지)
 - ✅ `.taskmaster/docs/` - Git에 포함 (PRD 문서)
 - ✅ `CLAUDE.md`, `.aiassistant/rules/` - Git에 포함 (AI 가이드)
 - ❌ `.env` - Git 제외 (환경별 설정)
-- ❌ `.mcp.json` - Git 제외 (개인 OAuth 토큰)
 - ❌ `.taskmaster/config.json` - Git 제외 (개인 API 키)
+- ⚠️ `.mcp.json` - 더 이상 사용 안 함 (사용자 레벨 MCP 사용)
 
 ### 코드 품질 관리 (Spotless)
 
