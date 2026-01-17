@@ -28,4 +28,18 @@ data class DomainContextBase(
     override val requestId: String = UUID.randomUUID().toString(),
     override val requestedAt: Instant = Instant.now(),
     override val clientIp: String
-) : DomainContext
+) : DomainContext {
+    companion object {
+        /**
+         * 시스템 내부 작업용 DomainContext 생성
+         * 배치 작업, 스케줄러 등에서 사용
+         */
+        fun system(serviceName: String = "system"): DomainContextBase = DomainContextBase(
+            serviceName = serviceName,
+            userId = "SYSTEM",
+            userName = "시스템",
+            roleId = "SYSTEM",
+            clientIp = "127.0.0.1"
+        )
+    }
+}

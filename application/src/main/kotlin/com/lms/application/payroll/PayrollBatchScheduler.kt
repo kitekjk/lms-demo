@@ -1,10 +1,8 @@
 package com.lms.application.payroll
 
 import com.lms.application.payroll.dto.ExecutePayrollBatchCommand
-import com.lms.domain.common.DomainContext
-import java.time.Instant
+import com.lms.domain.common.DomainContextBase
 import java.time.YearMonth
-import java.util.*
 import org.slf4j.LoggerFactory
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
@@ -32,7 +30,7 @@ class PayrollBatchScheduler(private val executePayrollBatchAppService: ExecutePa
             // 이전 달 급여 계산 (매월 말일에 이전 달 급여 산정)
             val previousMonth = YearMonth.now().minusMonths(1)
 
-            val context = createSystemContext()
+            val context = DomainContextBase.system("payroll-batch-scheduler")
             val command = ExecutePayrollBatchCommand(
                 period = previousMonth,
                 storeId = null // 전체 매장
@@ -50,18 +48,5 @@ class PayrollBatchScheduler(private val executePayrollBatchAppService: ExecutePa
         } catch (e: Exception) {
             logger.error("급여 자동 산정 배치 실행 중 오류 발생", e)
         }
-    }
-
-    /**
-     * 시스템 컨텍스트 생성
-     */
-    private fun createSystemContext(): DomainContext = object : DomainContext {
-        override val serviceName: String = "payroll-batch-scheduler"
-        override val userId: String = "SYSTEM"
-        override val userName: String = "시스템"
-        override val roleId: String = "SYSTEM"
-        override val requestId: String = UUID.randomUUID().toString()
-        override val requestedAt: Instant = Instant.now()
-        override val clientIp: String = "127.0.0.1"
     }
 }
