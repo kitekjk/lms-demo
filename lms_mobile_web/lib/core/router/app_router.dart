@@ -1,0 +1,20 @@
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lms_mobile_web/core/router/route_names.dart';
+import 'package:lms_mobile_web/features/auth/presentation/screens/login_screen.dart';
+
+final appRouter = GoRouter(
+  initialLocation: RouteNames.login,
+  routes: [
+    GoRoute(
+      path: RouteNames.login,
+      name: 'login',
+      builder: (context, state) => const LoginScreen(),
+    ),
+  ],
+  errorBuilder: (context, state) => Scaffold(
+    body: Center(
+      child: Text('페이지를 찾을 수 없습니다: ${state.uri}'),
+    ),
+  ),
+);
