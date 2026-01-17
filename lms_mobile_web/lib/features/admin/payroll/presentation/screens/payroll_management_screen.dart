@@ -42,13 +42,16 @@ class _PayrollManagementScreenState extends ConsumerState<PayrollManagementScree
                             ),
                       ),
                       const Spacer(),
-                      ElevatedButton.icon(
-                        onPressed: () => _showBatchExecuteDialog(context),
-                        icon: const Icon(Icons.calculate),
-                        label: const Text('급여 일괄 계산'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          foregroundColor: Colors.white,
+                      ConstrainedBox(
+                        constraints: const BoxConstraints(maxWidth: 200),
+                        child: ElevatedButton.icon(
+                          onPressed: () => _showBatchExecuteDialog(context),
+                          icon: const Icon(Icons.calculate),
+                          label: const Text('급여 일괄 계산'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue,
+                            foregroundColor: Colors.white,
+                          ),
                         ),
                       ),
                     ],

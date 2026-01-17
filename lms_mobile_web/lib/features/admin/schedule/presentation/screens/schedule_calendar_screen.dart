@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lms_mobile_web/features/admin/schedule/presentation/providers/schedule_provider.dart';
 import 'package:lms_mobile_web/features/admin/schedule/presentation/widgets/schedule_form_dialog.dart';
+import 'package:lms_mobile_web/features/admin/store/presentation/providers/store_provider.dart';
 import 'package:lms_mobile_web/shared/widgets/admin_layout.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -17,19 +18,25 @@ class _ScheduleCalendarScreenState extends ConsumerState<ScheduleCalendarScreen>
   DateTime _focusedDay = DateTime.now();
   DateTime _selectedDay = DateTime.now();
   CalendarFormat _calendarFormat = CalendarFormat.month;
+  String? _selectedStoreId;
 
   @override
   Widget build(BuildContext context) {
     // Get schedules for the selected month
     final startOfMonth = DateTime(_focusedDay.year, _focusedDay.month, 1);
     final endOfMonth = DateTime(_focusedDay.year, _focusedDay.month + 1, 0);
+    final storesAsync = ref.watch(storesProvider);
 
-    final filter = ScheduleFilter(
-      startDate: startOfMonth,
-      endDate: endOfMonth,
-    );
-
-    final schedulesAsync = ref.watch(schedulesProvider(filter));
+    // Only fetch schedules if a store is selected
+    AsyncValue<List<dynamic>>? schedulesAsync;
+    if (_selectedStoreId != null) {
+      final filter = ScheduleFilter(
+        storeId: _selectedStoreId,
+        startDate: startOfMonth,
+        endDate: endOfMonth,
+      );
+      schedulesAsync = ref.watch(schedulesProvider(filter));
+    }
 
     return AdminLayout(
       title: '근무 일정 관리',
@@ -45,10 +52,49 @@ class _ScheduleCalendarScreenState extends ConsumerState<ScheduleCalendarScreen>
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              ElevatedButton.icon(
-                onPressed: () => _showAddScheduleDialog(context),
-                icon: const Icon(Icons.add),
-                label: const Text('일정 추가'),
+              Row(
+                children: [
+                  // Store filter
+                  storesAsync.when(
+                    loading: () => const SizedBox(width: 200, child: LinearProgressIndicator()),
+                    error: (_, __) => const SizedBox.shrink(),
+                    data: (stores) => SizedBox(
+                      width: 200,
+                      child: DropdownButtonFormField<String?>(
+                        key: ValueKey(_selectedStoreId),
+                        initialValue: _selectedStoreId,
+                        decoration: const InputDecoration(
+                          labelText: '매장 필터',
+                          border: OutlineInputBorder(),
+                          contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        ),
+                        items: [
+                          const DropdownMenuItem<String?>(
+                            child: Text('전체 매장'),
+                          ),
+                          ...stores.map((store) => DropdownMenuItem(
+                            value: store.id,
+                            child: Text(store.name),
+                          )),
+                        ],
+                        onChanged: (value) {
+                          setState(() {
+                            _selectedStoreId = value;
+                          });
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 16),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 200),
+                    child: ElevatedButton.icon(
+                      onPressed: () => _showAddScheduleDialog(context),
+                      icon: const Icon(Icons.add),
+                      label: const Text('일정 추가'),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
@@ -63,51 +109,65 @@ class _ScheduleCalendarScreenState extends ConsumerState<ScheduleCalendarScreen>
                   child: Card(
                     child: Padding(
                       padding: const EdgeInsets.all(16.0),
-                      child: schedulesAsync.when(
-                        loading: () => const Center(child: CircularProgressIndicator()),
-                        error: (error, _) => Center(child: Text('오류: ${error.toString()}')),
-                        data: (schedules) {
-                          return TableCalendar(
-                            firstDay: DateTime.utc(2020, 1, 1),
-                            lastDay: DateTime.utc(2030, 12, 31),
-                            focusedDay: _focusedDay,
-                            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                            calendarFormat: _calendarFormat,
-                            onDaySelected: (selectedDay, focusedDay) {
-                              setState(() {
-                                _selectedDay = selectedDay;
-                                _focusedDay = focusedDay;
-                              });
-                            },
-                            onFormatChanged: (format) {
-                              setState(() {
-                                _calendarFormat = format;
-                              });
-                            },
-                            onPageChanged: (focusedDay) {
-                              setState(() {
-                                _focusedDay = focusedDay;
-                              });
-                            },
-                            eventLoader: (day) {
-                              return schedules
-                                  .where((schedule) => isSameDay(schedule.workDate, day))
-                                  .toList();
-                            },
-                            calendarStyle: CalendarStyle(
-                              markersMaxCount: 3,
-                              markerDecoration: BoxDecoration(
-                                color: Theme.of(context).colorScheme.primary,
-                                shape: BoxShape.circle,
+                      child: schedulesAsync == null
+                          ? Center(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.store_outlined, size: 64, color: Colors.grey.shade400),
+                                  const SizedBox(height: 16),
+                                  Text(
+                                    '매장을 선택하면 일정을 조회할 수 있습니다',
+                                    style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+                                  ),
+                                ],
                               ),
+                            )
+                          : schedulesAsync.when(
+                              loading: () => const Center(child: CircularProgressIndicator()),
+                              error: (error, _) => Center(child: Text('오류: ${error.toString()}')),
+                              data: (schedules) {
+                                return TableCalendar(
+                                  firstDay: DateTime.utc(2020, 1, 1),
+                                  lastDay: DateTime.utc(2030, 12, 31),
+                                  focusedDay: _focusedDay,
+                                  selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+                                  calendarFormat: _calendarFormat,
+                                  onDaySelected: (selectedDay, focusedDay) {
+                                    setState(() {
+                                      _selectedDay = selectedDay;
+                                      _focusedDay = focusedDay;
+                                    });
+                                  },
+                                  onFormatChanged: (format) {
+                                    setState(() {
+                                      _calendarFormat = format;
+                                    });
+                                  },
+                                  onPageChanged: (focusedDay) {
+                                    setState(() {
+                                      _focusedDay = focusedDay;
+                                    });
+                                  },
+                                  eventLoader: (day) {
+                                    return schedules
+                                        .where((schedule) => isSameDay(schedule.workDate, day))
+                                        .toList();
+                                  },
+                                  calendarStyle: CalendarStyle(
+                                    markersMaxCount: 3,
+                                    markerDecoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      shape: BoxShape.circle,
+                                    ),
+                                  ),
+                                  headerStyle: const HeaderStyle(
+                                    formatButtonVisible: true,
+                                    titleCentered: true,
+                                  ),
+                                );
+                              },
                             ),
-                            headerStyle: const HeaderStyle(
-                              formatButtonVisible: true,
-                              titleCentered: true,
-                            ),
-                          );
-                        },
-                      ),
                     ),
                   ),
                 ),
@@ -126,12 +186,16 @@ class _ScheduleCalendarScreenState extends ConsumerState<ScheduleCalendarScreen>
   }
 
   Widget _buildScheduleList() {
-    final filter = ScheduleFilter(
-      startDate: _selectedDay,
-      endDate: _selectedDay,
-    );
-
-    final schedulesAsync = ref.watch(schedulesProvider(filter));
+    // Only fetch schedules if a store is selected
+    AsyncValue<List<dynamic>>? schedulesAsync;
+    if (_selectedStoreId != null) {
+      final filter = ScheduleFilter(
+        storeId: _selectedStoreId,
+        startDate: _selectedDay,
+        endDate: _selectedDay,
+      );
+      schedulesAsync = ref.watch(schedulesProvider(filter));
+    }
     final dateFormat = DateFormat('yyyy년 MM월 dd일 (E)', 'ko_KR');
 
     return Card(
@@ -148,30 +212,44 @@ class _ScheduleCalendarScreenState extends ConsumerState<ScheduleCalendarScreen>
             ),
             const SizedBox(height: 16),
             Expanded(
-              child: schedulesAsync.when(
-                loading: () => const Center(child: CircularProgressIndicator()),
-                error: (error, _) => Center(child: Text('오류: ${error.toString()}')),
-                data: (schedules) {
-                  if (schedules.isEmpty) {
-                    return Center(
+              child: schedulesAsync == null
+                  ? Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(Icons.calendar_today_outlined, size: 48, color: Colors.grey),
+                          Icon(Icons.store_outlined, size: 64, color: Colors.grey.shade400),
                           const SizedBox(height: 16),
-                          const Text('일정이 없습니다'),
-                          const SizedBox(height: 16),
-                          ElevatedButton.icon(
-                            onPressed: () => _showAddScheduleDialog(context),
-                            icon: const Icon(Icons.add),
-                            label: const Text('일정 추가'),
+                          Text(
+                            '매장을 선택하면 일정을 조회할 수 있습니다',
+                            style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
                           ),
                         ],
                       ),
-                    );
-                  }
+                    )
+                  : schedulesAsync.when(
+                      loading: () => const Center(child: CircularProgressIndicator()),
+                      error: (error, _) => Center(child: Text('오류: ${error.toString()}')),
+                      data: (schedules) {
+                        if (schedules.isEmpty) {
+                          return Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const Icon(Icons.calendar_today_outlined, size: 48, color: Colors.grey),
+                                const SizedBox(height: 16),
+                                const Text('일정이 없습니다'),
+                                const SizedBox(height: 16),
+                                ElevatedButton.icon(
+                                  onPressed: () => _showAddScheduleDialog(context),
+                                  icon: const Icon(Icons.add),
+                                  label: const Text('일정 추가'),
+                                ),
+                              ],
+                            ),
+                          );
+                        }
 
-                  return ListView.separated(
+                        return ListView.separated(
                     itemCount: schedules.length,
                     separatorBuilder: (context, index) => const Divider(),
                     itemBuilder: (context, index) {
@@ -216,11 +294,11 @@ class _ScheduleCalendarScreenState extends ConsumerState<ScheduleCalendarScreen>
                             ),
                           ],
                         ),
-                      );
-                    },
-                  );
-                },
-              ),
+                        );
+                      },
+                    );
+                  },
+                ),
             ),
           ],
         ),

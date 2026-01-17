@@ -67,12 +67,15 @@ class _EmployeeListScreenState extends ConsumerState<EmployeeListScreen> {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      context.push('${RouteNames.adminEmployees}/new');
-                    },
-                    icon: const Icon(Icons.add),
-                    label: const Text('근로자 추가'),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 200),
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        context.push('${RouteNames.adminEmployees}/new');
+                      },
+                      icon: const Icon(Icons.add),
+                      label: const Text('근로자 추가'),
+                    ),
                   ),
                 ],
               ),

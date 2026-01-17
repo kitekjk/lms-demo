@@ -16,9 +16,17 @@ import org.springframework.transaction.annotation.Transactional
 
 @Repository
 interface LeaveRequestJpaRepository : JpaRepository<LeaveRequestEntity, String> {
-    fun findByEmployeeId(employeeId: String): List<LeaveRequestEntity>
-    fun findByEmployeeIdAndStatus(employeeId: String, status: String): List<LeaveRequestEntity>
-    fun findByStatus(status: String): List<LeaveRequestEntity>
+    @Query("SELECT lr FROM LeaveRequestEntity lr WHERE lr.employeeId = :employeeId")
+    fun findByEmployeeId(@Param("employeeId") employeeId: String): List<LeaveRequestEntity>
+
+    @Query("SELECT lr FROM LeaveRequestEntity lr WHERE lr.employeeId = :employeeId AND lr.status = :status")
+    fun findByEmployeeIdAndStatus(
+        @Param("employeeId") employeeId: String,
+        @Param("status") status: LeaveStatus
+    ): List<LeaveRequestEntity>
+
+    @Query("SELECT lr FROM LeaveRequestEntity lr WHERE lr.status = :status")
+    fun findByStatus(@Param("status") status: LeaveStatus): List<LeaveRequestEntity>
 
     @Query(
         """
@@ -61,7 +69,7 @@ class LeaveRequestRepositoryImpl(private val jpaRepository: LeaveRequestJpaRepos
             .map { LeaveRequestMapper.toDomain(it) }
 
     override fun findByEmployeeIdAndStatus(employeeId: EmployeeId, status: LeaveStatus): List<LeaveRequest> =
-        jpaRepository.findByEmployeeIdAndStatus(employeeId.value, status.name)
+        jpaRepository.findByEmployeeIdAndStatus(employeeId.value, status)
             .map { LeaveRequestMapper.toDomain(it) }
 
     override fun findByEmployeeIdAndDateRange(
@@ -74,7 +82,7 @@ class LeaveRequestRepositoryImpl(private val jpaRepository: LeaveRequestJpaRepos
         endDate
     ).map { LeaveRequestMapper.toDomain(it) }
 
-    override fun findPendingRequests(): List<LeaveRequest> = jpaRepository.findByStatus(LeaveStatus.PENDING.name)
+    override fun findPendingRequests(): List<LeaveRequest> = jpaRepository.findByStatus(LeaveStatus.PENDING)
         .map { LeaveRequestMapper.toDomain(it) }
 
     override fun delete(id: LeaveRequestId) {

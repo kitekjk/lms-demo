@@ -16,25 +16,32 @@ class StoreListScreen extends ConsumerWidget {
     return AdminLayout(
       title: '매장 관리',
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                '매장 목록',
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '매장 목록',
+                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 200),
+                    child: ElevatedButton.icon(
+                      onPressed: () {
+                        context.push('${RouteNames.adminStores}/new');
+                      },
+                      icon: const Icon(Icons.add),
+                      label: const Text('매장 추가'),
+                    ),
+                  ),
+                ],
               ),
-              ElevatedButton.icon(
-                onPressed: () {
-                  context.push('${RouteNames.adminStores}/new');
-                },
-                icon: const Icon(Icons.add),
-                label: const Text('매장 추가'),
-              ),
-            ],
+            ),
           ),
           const SizedBox(height: 24),
           Expanded(
