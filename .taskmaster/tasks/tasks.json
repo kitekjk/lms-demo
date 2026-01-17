@@ -1133,9 +1133,10 @@
               1
             ],
             "details": "## 구현 범위\n\n### 1. AdminLayout\n- **위치**: `lib/shared/widgets/admin_layout.dart`\n- Row 레이아웃: [AdminSidebar | Expanded(child)]\n- child에 24px 패딩 적용\n- AppBar 포함 (AdminAppBar)\n\n### 2. AdminSidebar\n- **위치**: `lib/shared/widgets/admin_sidebar.dart`\n- 고정 너비: 250px\n- DrawerHeader: \"LMS 관리자\" 타이틀 표시\n- 메뉴 항목:\n  - 대시보드 (/admin/dashboard)\n  - 매장 관리 (/admin/stores)\n  - 근로자 관리 (/admin/employees)\n  - 근무 일정 (/admin/schedules)\n  - 출퇴근 기록 (/admin/attendance)\n  - 휴가 관리 (/admin/leaves)\n  - 급여 관리 (/admin/payroll)\n  - 로그아웃 (/logout)\n- 현재 선택된 라우트 하이라이트\n- ListTile 위젯 사용, leading에 아이콘 표시\n\n### 3. AdminAppBar\n- **위치**: `lib/shared/widgets/admin_app_bar.dart`\n- 타이틀 표시 (각 화면별 동적 타이틀)\n- 우측에 사용자 정보 표시 (선택사항)\n\n### 4. 반응형 대응\n- 768px 이하: 사이드바 숨김, Drawer로 변환\n- 768px 이상: 사이드바 항상 표시\n\n## 라우팅 설정\n- **위치**: `lib/main_web_admin.dart`\n- MaterialApp routes 설정\n- initialRoute: '/admin/login'\n- 모든 관리 화면 라우트 등록\n\n## 테스트 시나리오\n- ✅ 사이드바 메뉴 클릭 시 라우팅 동작\n- ✅ 현재 선택된 메뉴 하이라이트\n- ✅ 로그아웃 클릭 시 토큰 삭제 및 로그인 화면 이동\n- ✅ 반응형 레이아웃 동작 (모바일/태블릿/데스크톱)",
-            "status": "pending",
+            "status": "done",
             "testStrategy": "Widget 테스트:\n- AdminLayout 렌더링 테스트\n- AdminSidebar 메뉴 항목 클릭 테스트\n- 라우팅 네비게이션 테스트\n\nGolden 테스트:\n- 사이드바 UI 스냅샷 테스트",
-            "parentId": "undefined"
+            "parentId": "undefined",
+            "updatedAt": "2026-01-17T06:35:07.958Z"
           },
           {
             "id": 3,
@@ -1174,7 +1175,7 @@
             "parentId": "undefined"
           }
         ],
-        "updatedAt": "2026-01-17T06:21:18.218Z"
+        "updatedAt": "2026-01-17T06:35:07.958Z"
       },
       {
         "id": "18",
@@ -1198,7 +1199,7 @@
     ],
     "metadata": {
       "version": "1.0.0",
-      "lastModified": "2026-01-17T06:21:18.218Z",
+      "lastModified": "2026-01-17T06:35:07.958Z",
       "taskCount": 18,
       "completedCount": 14,
       "tags": [

@@ -12,4 +12,8 @@ class RouteNames {
   static const String adminDashboard = '/admin/dashboard';
   static const String adminStores = '/admin/stores';
   static const String adminEmployees = '/admin/employees';
+  static const String adminSchedules = '/admin/schedules';
+  static const String adminAttendance = '/admin/attendance';
+  static const String adminLeaves = '/admin/leaves';
+  static const String adminPayroll = '/admin/payroll';
 }
