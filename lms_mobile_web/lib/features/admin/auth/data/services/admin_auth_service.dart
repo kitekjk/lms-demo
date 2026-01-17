@@ -15,9 +15,9 @@ class AdminAuthService {
         data: {'email': email, 'password': password},
       );
 
-      // ignore: avoid_dynamic_calls
-      final data = response.data['data'] as Map<String, dynamic>;
-      final user = AdminUser.fromJson(data['user'] as Map<String, dynamic>);
+      // 백엔드 응답: { accessToken, refreshToken, userInfo }
+      final data = response.data as Map<String, dynamic>;
+      final user = AdminUser.fromJson(data['userInfo'] as Map<String, dynamic>);
 
       // Validate admin role
       if (!user.isAdmin) {
