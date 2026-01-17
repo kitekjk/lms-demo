@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lms_mobile_web/core/router/route_names.dart';
 import 'package:lms_mobile_web/features/auth/presentation/screens/login_screen.dart';
+import 'package:lms_mobile_web/features/home/presentation/screens/home_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: RouteNames.login,
@@ -10,6 +11,11 @@ final appRouter = GoRouter(
       path: RouteNames.login,
       name: 'login',
       builder: (context, state) => const LoginScreen(),
+    ),
+    GoRoute(
+      path: RouteNames.home,
+      name: 'home',
+      builder: (context, state) => const HomeScreen(),
     ),
   ],
   errorBuilder: (context, state) => Scaffold(
