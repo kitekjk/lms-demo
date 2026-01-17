@@ -33,4 +33,8 @@ class ApiEndpoints {
   // Admin - Schedules
   static const String schedules = '/schedules';
   static String scheduleById(String id) => '/schedules/$id';
+
+  // Admin - Attendance
+  static const String attendanceRecords = '/attendance/records';
+  static String attendanceRecordById(String id) => '/attendance/records/$id';
 }

@@ -5,6 +5,7 @@ import 'package:lms_mobile_web/features/admin/auth/presentation/screens/admin_lo
 import 'package:lms_mobile_web/features/admin/dashboard/presentation/screens/admin_dashboard_screen.dart';
 import 'package:lms_mobile_web/features/admin/employee/presentation/screens/employee_form_screen.dart';
 import 'package:lms_mobile_web/features/admin/employee/presentation/screens/employee_list_screen.dart';
+import 'package:lms_mobile_web/features/admin/attendance/presentation/screens/attendance_management_screen.dart';
 import 'package:lms_mobile_web/features/admin/schedule/presentation/screens/schedule_calendar_screen.dart';
 import 'package:lms_mobile_web/features/admin/store/presentation/screens/store_form_screen.dart';
 import 'package:lms_mobile_web/features/admin/store/presentation/screens/store_list_screen.dart';
@@ -94,6 +95,12 @@ final appRouter = GoRouter(
       path: RouteNames.adminSchedules,
       name: 'adminSchedules',
       builder: (context, state) => const ScheduleCalendarScreen(),
+    ),
+    // Admin - Attendance
+    GoRoute(
+      path: RouteNames.adminAttendance,
+      name: 'adminAttendance',
+      builder: (context, state) => const AttendanceManagementScreen(),
     ),
   ],
   errorBuilder: (context, state) =>
