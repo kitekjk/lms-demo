@@ -1,5 +1,6 @@
 package com.lms.interfaces.web.exception
 
+import com.lms.domain.exception.DomainException
 import com.lms.interfaces.web.dto.ApiResponse
 import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatus
@@ -101,6 +102,19 @@ class GlobalExceptionHandler {
         return ResponseEntity
             .status(HttpStatus.NOT_FOUND)
             .body(ApiResponse.error(ex.message))
+    }
+
+    /**
+     * 도메인 예외 처리
+     * 모든 DomainException을 일관되게 처리
+     */
+    @ExceptionHandler(DomainException::class)
+    fun handleDomainException(ex: DomainException): ResponseEntity<ApiResponse<Unit>> {
+        log.warn("Domain exception [{}]: {}", ex.code, ex.message)
+
+        return ResponseEntity
+            .status(HttpStatus.BAD_REQUEST)
+            .body(ApiResponse.error(ex.message ?: "비즈니스 규칙 위반"))
     }
 
     /**
