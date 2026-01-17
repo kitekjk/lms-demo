@@ -189,20 +189,28 @@ cp .env.example .env
 git clone <repository-url>
 cd lms-demo
 
-# 2. 환경 변수 설정
+# 2. 환경 변수 설정 (선택사항, 기본값 사용 가능)
 cp .env.example .env
-# .env 파일을 편집하여 필요한 값 설정
 
-# 3. Claude Code MCP 설정 (TaskMaster AI 사용 시)
+# 3. MySQL 시작 (Docker 사용)
+docker-compose up -d
+
+# 4. 서버 실행 (local 프로파일 기본 적용)
+./gradlew :interfaces:bootRun
+
+# 5. Swagger UI에서 API 테스트
+# http://localhost:8080/swagger-ui.html
+# 로그인: admin@lms.com / password123
+```
+
+**TaskMaster AI 사용 시 추가 설정:**
+```bash
+# Claude Code MCP 설정
 claude mcp add task-master-ai --scope user -- npx task-master-ai
 
-# 4. TaskMaster AI CLI 설정
+# TaskMaster AI CLI 설정
 task-master models --setup
 # API 키 입력 (tasks.json은 이미 Git에 포함되어 있음)
-
-# 5. 빌드 및 실행
-./gradlew build
-./gradlew :interfaces:bootRun
 ```
 
 **MCP 설정 방식 비교:**

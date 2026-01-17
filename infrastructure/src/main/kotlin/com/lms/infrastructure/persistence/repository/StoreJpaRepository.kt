@@ -14,12 +14,7 @@ interface StoreJpaRepository : JpaRepository<StoreEntity, String> {
     /**
      * 매장명으로 조회
      */
-    fun findByStoreName(storeName: String): StoreEntity?
-
-    /**
-     * 활성 상태인 매장 목록 조회
-     */
-    fun findByIsActive(isActive: Boolean): List<StoreEntity>
+    fun findByName(name: String): StoreEntity?
 
     /**
      * 위치로 매장 검색 (부분 일치)
@@ -30,6 +25,6 @@ interface StoreJpaRepository : JpaRepository<StoreEntity, String> {
     /**
      * 매장명으로 검색 (부분 일치)
      */
-    @Query("SELECT s FROM StoreEntity s WHERE s.storeName LIKE %:storeName%")
-    fun searchByStoreName(@Param("storeName") storeName: String): List<StoreEntity>
+    @Query("SELECT s FROM StoreEntity s WHERE s.name LIKE %:name%")
+    fun searchByName(@Param("name") name: String): List<StoreEntity>
 }

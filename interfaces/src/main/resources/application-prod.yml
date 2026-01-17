@@ -1,23 +1,15 @@
-# Production Profile Configuration
-spring:
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
-    hikari:
-      maximum-pool-size: 20
-      minimum-idle: 10
+# Production Profile
+# 프로덕션 환경 설정
 
+spring:
   jpa:
     hibernate:
-      ddl-auto: validate  # Never auto-update in production
+      ddl-auto: validate  # 프로덕션: 스키마 검증만 수행
     show-sql: false
-    properties:
-      hibernate:
-        format_sql: false
 
-jwt:
-  secret-key: ${JWT_SECRET_KEY}  # Must be set from environment
+  sql:
+    init:
+      mode: never  # 프로덕션에서는 초기 데이터 로드하지 않음
 
 logging:
   level:

@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional
 @Repository
 interface StoreJpaRepositoryInterface : JpaRepository<StoreEntity, String> {
     fun findByName(name: String): StoreEntity?
-    fun findByIsActive(isActive: Boolean): List<StoreEntity>
 
     @Query("SELECT s FROM StoreEntity s WHERE s.location LIKE %:location%")
     fun searchByLocation(@Param("location") location: String): List<StoreEntity>
