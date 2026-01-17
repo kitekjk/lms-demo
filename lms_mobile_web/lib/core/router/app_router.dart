@@ -3,6 +3,10 @@ import 'package:go_router/go_router.dart';
 import 'package:lms_mobile_web/core/router/route_names.dart';
 import 'package:lms_mobile_web/features/admin/auth/presentation/screens/admin_login_screen.dart';
 import 'package:lms_mobile_web/features/admin/dashboard/presentation/screens/admin_dashboard_screen.dart';
+import 'package:lms_mobile_web/features/admin/employee/presentation/screens/employee_form_screen.dart';
+import 'package:lms_mobile_web/features/admin/employee/presentation/screens/employee_list_screen.dart';
+import 'package:lms_mobile_web/features/admin/store/presentation/screens/store_form_screen.dart';
+import 'package:lms_mobile_web/features/admin/store/presentation/screens/store_list_screen.dart';
 import 'package:lms_mobile_web/features/attendance/presentation/screens/attendance_records_screen.dart';
 import 'package:lms_mobile_web/features/attendance/presentation/screens/check_in_out_screen.dart';
 import 'package:lms_mobile_web/features/auth/presentation/screens/login_screen.dart';
@@ -41,6 +45,48 @@ final appRouter = GoRouter(
       path: RouteNames.adminDashboard,
       name: 'adminDashboard',
       builder: (context, state) => const AdminDashboardScreen(),
+    ),
+    // Admin - Stores
+    GoRoute(
+      path: RouteNames.adminStores,
+      name: 'adminStores',
+      builder: (context, state) => const StoreListScreen(),
+      routes: [
+        GoRoute(
+          path: 'new',
+          name: 'adminStoreCreate',
+          builder: (context, state) => const StoreFormScreen(),
+        ),
+        GoRoute(
+          path: ':storeId/edit',
+          name: 'adminStoreEdit',
+          builder: (context, state) {
+            final storeId = state.pathParameters['storeId']!;
+            return StoreFormScreen(storeId: storeId);
+          },
+        ),
+      ],
+    ),
+    // Admin - Employees
+    GoRoute(
+      path: RouteNames.adminEmployees,
+      name: 'adminEmployees',
+      builder: (context, state) => const EmployeeListScreen(),
+      routes: [
+        GoRoute(
+          path: 'new',
+          name: 'adminEmployeeCreate',
+          builder: (context, state) => const EmployeeFormScreen(),
+        ),
+        GoRoute(
+          path: ':employeeId/edit',
+          name: 'adminEmployeeEdit',
+          builder: (context, state) {
+            final employeeId = state.pathParameters['employeeId']!;
+            return EmployeeFormScreen(employeeId: employeeId);
+          },
+        ),
+      ],
     ),
   ],
   errorBuilder: (context, state) =>

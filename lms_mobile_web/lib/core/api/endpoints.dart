@@ -20,4 +20,13 @@ class ApiEndpoints {
 
   // Payroll
   static const String myPayroll = '/payroll/my-payroll';
+
+  // Admin - Stores
+  static const String stores = '/stores';
+  static String storeById(String id) => '/stores/$id';
+
+  // Admin - Employees
+  static const String employees = '/employees';
+  static String employeeById(String id) => '/employees/$id';
+  static String employeeDeactivate(String id) => '/employees/$id/deactivate';
 }
