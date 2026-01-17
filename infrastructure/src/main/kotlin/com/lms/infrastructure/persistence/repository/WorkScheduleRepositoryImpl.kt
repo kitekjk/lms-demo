@@ -70,6 +70,10 @@ class WorkScheduleRepositoryImpl(private val jpaRepository: WorkScheduleJpaRepos
     override fun findByStoreId(storeId: StoreId): List<WorkSchedule> = jpaRepository.findByStoreId(storeId.value)
         .map { WorkScheduleMapper.toDomain(it) }
 
+    override fun findByEmployeeIdAndWorkDate(employeeId: EmployeeId, workDate: LocalDate): WorkSchedule? =
+        jpaRepository.findByEmployeeIdAndWorkDate(employeeId.value, workDate)
+            ?.let { WorkScheduleMapper.toDomain(it) }
+
     override fun findByEmployeeIdAndDateRange(
         employeeId: EmployeeId,
         startDate: LocalDate,

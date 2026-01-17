@@ -13,6 +13,7 @@ interface WorkScheduleRepository {
     fun findById(id: WorkScheduleId): WorkSchedule?
     fun findByEmployeeId(employeeId: EmployeeId): List<WorkSchedule>
     fun findByStoreId(storeId: StoreId): List<WorkSchedule>
+    fun findByEmployeeIdAndWorkDate(employeeId: EmployeeId, workDate: LocalDate): WorkSchedule?
     fun findByEmployeeIdAndDateRange(
         employeeId: EmployeeId,
         startDate: LocalDate,
