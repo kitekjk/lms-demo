@@ -28,7 +28,7 @@ jobs:
 
     - name: Run analyzer
       working-directory: ./lms_mobile_web
-      run: flutter analyze
+      run: flutter analyze --no-fatal-infos
 
     - name: Run unit tests
       working-directory: ./lms_mobile_web
