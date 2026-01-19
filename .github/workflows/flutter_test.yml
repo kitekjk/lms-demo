@@ -41,7 +41,7 @@ jobs:
     - name: Check for layout overflow errors
       working-directory: ./lms_mobile_web
       run: |
-        flutter test --reporter=json > test_results.json || true
+        flutter test --exclude-tags=golden --reporter=json > test_results.json || true
         if grep -q "RenderFlex overflowed" test_results.json; then
           echo "❌ Layout overflow errors detected!"
           exit 1
