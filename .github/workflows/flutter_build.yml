@@ -30,10 +30,6 @@ jobs:
         working-directory: ./lms_mobile_web
         run: flutter pub get
 
-      - name: Create .env file
-        working-directory: ./lms_mobile_web
-        run: cp .env.development .env
-
       - name: Run analyzer
         working-directory: ./lms_mobile_web
         run: flutter analyze --no-fatal-infos
@@ -73,10 +69,6 @@ jobs:
       - name: Get dependencies
         working-directory: ./lms_mobile_web
         run: flutter pub get
-
-      - name: Create .env file
-        working-directory: ./lms_mobile_web
-        run: cp .env.development .env
 
       - name: Build APK (Debug)
         working-directory: ./lms_mobile_web
@@ -120,10 +112,6 @@ jobs:
       - name: Get dependencies
         working-directory: ./lms_mobile_web
         run: flutter pub get
-
-      - name: Create .env file
-        working-directory: ./lms_mobile_web
-        run: cp .env.development .env
 
       - name: Build iOS (No Code Sign)
         working-directory: ./lms_mobile_web

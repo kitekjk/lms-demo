@@ -22,18 +22,19 @@ class EnvConfig {
     return dotenv.env['STORAGE_ENCRYPTION_KEY'] ?? '';
   }
 
-  static Future<void> load() async {
+  static Future<void> load({String? envFileName}) async {
     // 웹 환경에서는 .env 파일을 로드하지 않고 기본값 사용
     if (kIsWeb) {
-      print('Running on web - using default environment values');
       return;
     }
 
+    // 환경별 파일명 결정 (기본값: .env.development)
+    final fileName = envFileName ?? '.env.development';
+
     try {
-      await dotenv.load();
+      await dotenv.load(fileName: fileName);
     } catch (e) {
       // .env 파일이 없을 경우 기본값 사용
-      print('Warning: .env file not found, using default values');
     }
   }
 }
