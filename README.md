@@ -156,10 +156,254 @@ task-master list --status=pending
 
 ### 필요 조건
 
+#### 백엔드 (Spring Boot)
 - JDK 17 이상
 - Gradle 8.5 이상
+- Docker Desktop (MySQL 실행용)
 
-### 빌드 및 실행
+#### 프론트엔드 (Flutter)
+- Flutter SDK 3.32.0 이상
+- Chrome 브라우저 (웹 개발용)
+
+### 🚀 Quick Start (5분 안에 시작하기)
+
+처음 프로젝트를 실행하는 경우, 아래 순서대로 진행하세요.
+
+```bash
+# 1. 저장소 클론
+git clone https://github.com/kitekjk/lms-demo.git
+cd lms-demo
+
+# 2. Docker로 MySQL 시작
+docker-compose up -d
+
+# 3. MySQL 준비 완료 확인 (약 10-15초 대기)
+docker-compose logs -f mysql
+# "ready for connections" 메시지 확인 후 Ctrl+C
+
+# 4. 백엔드 서버 실행 (새 터미널)
+./gradlew :interfaces:bootRun
+
+# 5. 프론트엔드 실행 (새 터미널)
+cd lms_mobile_web
+flutter pub get
+flutter run -d chrome
+
+# 6. 브라우저에서 확인
+# 백엔드 API: http://localhost:8080/swagger-ui.html
+# 프론트엔드: http://localhost:xxxxx (Flutter 실행 시 표시됨)
+```
+
+**테스트 계정:**
+| 역할 | 이메일 | 비밀번호 |
+|------|--------|----------|
+| 관리자 | admin@lms.com | password123 |
+| 매니저(강남점) | manager.gangnam@lms.com | password123 |
+| 직원(강남점) | employee1.gangnam@lms.com | password123 |
+
+---
+
+### 📦 상세 설치 가이드
+
+#### Step 1: 데이터베이스 설정 (MySQL)
+
+프로젝트는 Docker Compose를 사용하여 MySQL을 실행합니다.
+
+```bash
+# Docker Compose로 MySQL 컨테이너 시작
+docker-compose up -d
+
+# 컨테이너 상태 확인
+docker-compose ps
+
+# MySQL 로그 확인 (정상 시작 확인)
+docker-compose logs mysql
+```
+
+**MySQL 접속 정보:**
+| 항목 | 값 |
+|------|-----|
+| Host | localhost |
+| Port | 3306 |
+| Database | lms_demo |
+| Username | root |
+| Password | changeme |
+
+**데이터베이스 직접 접속 (선택사항):**
+```bash
+# Docker 컨테이너 내부 MySQL 접속
+docker exec -it lms-demo-mysql mysql -uroot -pchangeme lms_demo
+
+# 또는 외부 MySQL 클라이언트 사용
+mysql -h localhost -P 3306 -uroot -pchangeme lms_demo
+```
+
+**Docker 없이 로컬 MySQL 사용 시:**
+```sql
+-- MySQL에서 직접 데이터베이스 생성
+CREATE DATABASE lms_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```
+
+#### Step 2: 백엔드 서버 실행
+
+```bash
+# 프로젝트 루트 디렉토리에서
+cd lms-demo
+
+# 의존성 다운로드 및 빌드
+./gradlew build
+
+# 서버 실행 (local 프로파일 - 자동으로 테이블 생성 및 샘플 데이터 로드)
+./gradlew :interfaces:bootRun
+```
+
+**프로파일별 동작:**
+| 프로파일 | DDL 모드 | 초기 데이터 | 용도 |
+|----------|----------|-------------|------|
+| local (기본) | create-drop | O (data.sql) | 로컬 개발 |
+| dev | update | X | 개발 서버 |
+| prod | validate | X | 운영 서버 |
+
+**서버 실행 확인:**
+```bash
+# 서버가 정상 시작되면 아래 URL 접속 가능
+# Swagger UI: http://localhost:8080/swagger-ui.html
+# API Docs: http://localhost:8080/api-docs
+```
+
+**초기 데이터 (자동 생성):**
+- 매장 3개 (강남점, 홍대점, 신촌점)
+- 사용자 6명 (관리자 1, 매니저 2, 직원 3)
+- 근로자 5명
+- 급여 정책 4개 (초과근무, 야간, 주말, 공휴일)
+
+#### Step 3: 프론트엔드 실행 (Flutter Web)
+
+```bash
+# Flutter 프로젝트 디렉토리로 이동
+cd lms_mobile_web
+
+# 의존성 설치
+flutter pub get
+
+# 웹 브라우저에서 실행
+flutter run -d chrome
+
+# 또는 특정 포트로 실행
+flutter run -d chrome --web-port=3000
+```
+
+**Flutter 환경 확인:**
+```bash
+# Flutter 설치 상태 확인
+flutter doctor
+
+# 사용 가능한 디바이스 목록
+flutter devices
+```
+
+**프론트엔드 환경 설정:**
+
+`.env.development` 파일이 기본으로 사용됩니다:
+```env
+API_BASE_URL=http://localhost:8080/api
+ENV=development
+DEBUG=true
+```
+
+웹 환경에서는 `env_config.dart`의 기본값(`http://localhost:8080/api`)이 사용됩니다.
+
+#### Step 4: 전체 시스템 테스트
+
+1. **로그인 테스트:**
+   - Flutter 앱에서 `admin@lms.com` / `password123` 로그인
+   - 또는 Swagger UI에서 `/api/auth/login` API 테스트
+
+2. **주요 기능 확인:**
+   - 대시보드: 매장별 통계 확인
+   - 근로자 관리: 목록 조회, 등록, 수정
+   - 근무 일정: 캘린더 뷰, 일정 등록
+   - 출퇴근: 체크인/체크아웃
+
+---
+
+### 🔧 개발 환경 설정
+
+#### 환경 변수 설정 (선택사항)
+
+기본값이 설정되어 있어 별도 설정 없이 실행 가능합니다. 커스텀 설정이 필요한 경우:
+
+```bash
+# 백엔드 환경 변수
+cp .env.example .env
+# .env 파일 편집
+
+# 프론트엔드 환경 변수
+cd lms_mobile_web
+cp .env.example .env.development
+# .env.development 파일 편집
+```
+
+#### IDE 설정 (IntelliJ IDEA)
+
+1. **프로젝트 열기:** `File > Open > lms-demo 폴더 선택`
+2. **JDK 설정:** `File > Project Structure > SDK > JDK 17+`
+3. **Gradle 설정:** 자동으로 인식됨
+4. **실행 구성:**
+   - Main class: `com.lms.LmsApplication`
+   - Active profiles: `local`
+
+#### IDE 설정 (VS Code - Flutter)
+
+1. **Flutter 프로젝트 열기:** `lms_mobile_web` 폴더
+2. **확장 설치:** Flutter, Dart 확장
+3. **실행:** `F5` 또는 `flutter run -d chrome`
+
+---
+
+### 🛑 트러블슈팅
+
+#### MySQL 연결 실패
+```bash
+# Docker 컨테이너 상태 확인
+docker-compose ps
+
+# 컨테이너 재시작
+docker-compose down
+docker-compose up -d
+
+# 로그 확인
+docker-compose logs mysql
+```
+
+#### 포트 충돌
+```bash
+# 8080 포트 사용 중인 프로세스 확인 (Windows)
+netstat -ano | findstr :8080
+
+# 3306 포트 사용 중인 프로세스 확인 (Windows)
+netstat -ano | findstr :3306
+```
+
+#### Flutter 빌드 오류
+```bash
+# 캐시 정리 후 재시도
+flutter clean
+flutter pub get
+flutter run -d chrome
+```
+
+#### Gradle 빌드 오류
+```bash
+# Gradle 캐시 정리
+./gradlew clean build --refresh-dependencies
+```
+
+---
+
+### 빌드 명령어 모음
+
+#### 백엔드
 
 ```bash
 # 프로젝트 빌드
@@ -168,39 +412,49 @@ task-master list --status=pending
 # 테스트 제외하고 빌드
 ./gradlew build -x test
 
+# 코드 포맷팅
+./gradlew spotlessApply
+
 # 애플리케이션 실행
 ./gradlew :interfaces:bootRun
+
+# JAR 파일 생성
+./gradlew :interfaces:bootJar
 ```
 
-### 환경 변수 설정
-
-`.env.example`을 복사하여 `.env` 파일을 생성하고 필요한 값을 설정하세요.
+#### 프론트엔드
 
 ```bash
-cp .env.example .env
+# 의존성 설치
+flutter pub get
+
+# 코드 분석
+flutter analyze
+
+# 테스트 실행
+flutter test
+
+# 웹 빌드 (배포용)
+flutter build web --release
+
+# 개발 서버 실행
+flutter run -d chrome
 ```
 
-### 새 환경에서 프로젝트 설정
+---
 
-다른 컴퓨터나 새로운 환경에서 프로젝트를 시작할 때:
+### 종료 및 정리
 
 ```bash
-# 1. 저장소 클론
-git clone <repository-url>
-cd lms-demo
+# 백엔드 서버 종료: Ctrl+C
 
-# 2. 환경 변수 설정 (선택사항, 기본값 사용 가능)
-cp .env.example .env
+# Flutter 개발 서버 종료: Ctrl+C 또는 'q' 입력
 
-# 3. MySQL 시작 (Docker 사용)
-docker-compose up -d
+# MySQL 컨테이너 중지
+docker-compose stop
 
-# 4. 서버 실행 (local 프로파일 기본 적용)
-./gradlew :interfaces:bootRun
-
-# 5. Swagger UI에서 API 테스트
-# http://localhost:8080/swagger-ui.html
-# 로그인: admin@lms.com / password123
+# MySQL 컨테이너 및 볼륨 완전 삭제 (데이터 초기화)
+docker-compose down -v
 ```
 
 **TaskMaster AI 사용 시 추가 설정:**
