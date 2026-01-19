@@ -1,41 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:lms_mobile_web/features/admin/dashboard/presentation/screens/admin_dashboard_screen.dart';
+import 'package:lms_mobile_web/features/admin/dashboard/domain/models/dashboard_stats.dart';
+import 'package:lms_mobile_web/features/admin/dashboard/presentation/widgets/attendance_summary_widget.dart';
+import 'package:lms_mobile_web/features/admin/dashboard/presentation/widgets/recent_activities_widget.dart';
 
 /// Golden 테스트: UI 스냅샷을 저장하고 변경사항을 자동으로 감지
 ///
 /// 실행 방법:
 /// flutter test --update-goldens  # Golden 파일 업데이트
 /// flutter test                   # Golden 파일과 비교
+///
+/// 참고: AdminDashboardScreen은 GoRouter 의존성으로 인해 통합 테스트에서 테스트합니다.
 void main() {
-  testWidgets('Dashboard screen golden test', (WidgetTester tester) async {
+  final mockStats = DashboardStats.mock();
+
+  testWidgets('AttendanceSummaryWidget golden test',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
-          home: AdminDashboardScreen(),
+      MaterialApp(
+        home: Scaffold(
+          body: AttendanceSummaryWidget(
+            summary: mockStats.attendanceSummary,
+          ),
         ),
       ),
     );
 
     await tester.pumpAndSettle();
 
-    // Golden 이미지와 비교
     await expectLater(
-      find.byType(AdminDashboardScreen),
-      matchesGoldenFile('goldens/dashboard_screen.png'),
+      find.byType(AttendanceSummaryWidget),
+      matchesGoldenFile('goldens/attendance_summary_widget.png'),
     );
   });
 
-  testWidgets('Dashboard stat card golden test - small viewport',
+  testWidgets('RecentActivitiesWidget golden test',
       (WidgetTester tester) async {
-    // 작은 화면 크기로 테스트
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: RecentActivitiesWidget(
+            activities: mockStats.recentActivities,
+          ),
+        ),
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    await expectLater(
+      find.byType(RecentActivitiesWidget),
+      matchesGoldenFile('goldens/recent_activities_widget.png'),
+    );
+  });
+
+  testWidgets('AttendanceSummaryWidget golden test - small viewport',
+      (WidgetTester tester) async {
     await tester.binding.setSurfaceSize(const Size(375, 667));
 
     await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
-          home: AdminDashboardScreen(),
+      MaterialApp(
+        home: Scaffold(
+          body: AttendanceSummaryWidget(
+            summary: mockStats.attendanceSummary,
+          ),
         ),
       ),
     );
@@ -43,31 +71,8 @@ void main() {
     await tester.pumpAndSettle();
 
     await expectLater(
-      find.byType(AdminDashboardScreen),
-      matchesGoldenFile('goldens/dashboard_screen_small.png'),
-    );
-
-    await tester.binding.setSurfaceSize(null);
-  });
-
-  testWidgets('Dashboard stat card golden test - large viewport',
-      (WidgetTester tester) async {
-    // 큰 화면 크기로 테스트
-    await tester.binding.setSurfaceSize(const Size(1920, 1080));
-
-    await tester.pumpWidget(
-      const ProviderScope(
-        child: MaterialApp(
-          home: AdminDashboardScreen(),
-        ),
-      ),
-    );
-
-    await tester.pumpAndSettle();
-
-    await expectLater(
-      find.byType(AdminDashboardScreen),
-      matchesGoldenFile('goldens/dashboard_screen_large.png'),
+      find.byType(AttendanceSummaryWidget),
+      matchesGoldenFile('goldens/attendance_summary_widget_small.png'),
     );
 
     await tester.binding.setSurfaceSize(null);
