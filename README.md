@@ -33,7 +33,7 @@ lms-demo/
 ### 핵심 원칙
 
 - **도메인 레이어의 순수성**: 외부 라이브러리 의존성 없음 (순수 Kotlin)
-- **의존성 역전**: domain → application → infrastructure/interfaces
+- **의존성 역전**: domain(핵심) ← application ← interfaces/infrastructure(외부)
 - **Aggregate Root 중심 설계**: 도메인 로직을 Aggregate 내부에 캡슐화
 - **Value Object 활용**: 타입 안정성 및 불변성 보장
 
