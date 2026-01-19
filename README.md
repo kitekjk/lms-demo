@@ -239,9 +239,15 @@ mysql -h localhost -P 3306 -uroot -pchangeme lms_demo
 ```
 
 **Docker 없이 로컬 MySQL 사용 시:**
+
+로컬에 MySQL이 이미 설치되어 있다면 Docker 없이 사용할 수 있습니다.
+자세한 설정 방법은 [로컬 MySQL 설정 가이드](./docs/LOCAL_MYSQL_SETUP.md)를 참고하세요.
+
 ```sql
--- MySQL에서 직접 데이터베이스 생성
+-- 빠른 설정 (MySQL CLI에서 실행)
 CREATE DATABASE lms_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+ALTER USER 'root'@'localhost' IDENTIFIED BY 'changeme';
+FLUSH PRIVILEGES;
 ```
 
 #### Step 2: 백엔드 서버 실행
@@ -643,6 +649,7 @@ fun login(context: DomainContext): User {
 ## 📚 참고 문서
 
 - [DEMO_SCENARIOS.md](./DEMO_SCENARIOS.md) - 역할별 시연 시나리오 가이드
+- [docs/LOCAL_MYSQL_SETUP.md](./docs/LOCAL_MYSQL_SETUP.md) - 로컬 MySQL 설정 가이드
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - 아키텍처 상세 설명
 - [CLAUDE.md](./CLAUDE.md) - Claude Code 가이드
 - [.taskmaster/CLAUDE.md](./.taskmaster/CLAUDE.md) - TaskMaster AI 통합 가이드
