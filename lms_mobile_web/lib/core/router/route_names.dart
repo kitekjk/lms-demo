@@ -5,7 +5,9 @@ class RouteNames {
   static const String attendanceRecords = '/attendance/records';
   static const String schedule = '/schedule';
   static const String leave = '/leave';
+  static const String leaveRequest = '/leave/request';
   static const String payroll = '/payroll';
+  static const String payrollDetail = '/payroll/:id';
 
   // Admin routes
   static const String adminLogin = '/admin/login';

@@ -15,6 +15,11 @@ import 'package:lms_mobile_web/features/attendance/presentation/screens/attendan
 import 'package:lms_mobile_web/features/attendance/presentation/screens/check_in_out_screen.dart';
 import 'package:lms_mobile_web/features/auth/presentation/screens/login_screen.dart';
 import 'package:lms_mobile_web/features/home/presentation/screens/home_screen.dart';
+import 'package:lms_mobile_web/features/schedule/presentation/screens/my_schedule_screen.dart';
+import 'package:lms_mobile_web/features/leave/presentation/screens/leave_history_screen.dart';
+import 'package:lms_mobile_web/features/leave/presentation/screens/leave_request_screen.dart';
+import 'package:lms_mobile_web/features/payroll/presentation/screens/payroll_list_screen.dart';
+import 'package:lms_mobile_web/features/payroll/presentation/screens/payroll_detail_screen.dart';
 
 final appRouter = GoRouter(
   initialLocation: RouteNames.login,
@@ -38,6 +43,41 @@ final appRouter = GoRouter(
       path: RouteNames.attendanceRecords,
       name: 'attendanceRecords',
       builder: (context, state) => const AttendanceRecordsScreen(),
+    ),
+    // Employee - Schedule
+    GoRoute(
+      path: RouteNames.schedule,
+      name: 'schedule',
+      builder: (context, state) => const MyScheduleScreen(),
+    ),
+    // Employee - Leave
+    GoRoute(
+      path: RouteNames.leave,
+      name: 'leave',
+      builder: (context, state) => const LeaveHistoryScreen(),
+      routes: [
+        GoRoute(
+          path: 'request',
+          name: 'leaveRequest',
+          builder: (context, state) => const LeaveRequestScreen(),
+        ),
+      ],
+    ),
+    // Employee - Payroll
+    GoRoute(
+      path: RouteNames.payroll,
+      name: 'payroll',
+      builder: (context, state) => const PayrollListScreen(),
+      routes: [
+        GoRoute(
+          path: ':id',
+          name: 'payrollDetail',
+          builder: (context, state) {
+            final payrollId = state.pathParameters['id']!;
+            return PayrollDetailScreen(payrollId: payrollId);
+          },
+        ),
+      ],
     ),
     // Admin routes
     GoRoute(
