@@ -1,3 +1,6 @@
+@Tags(['golden'])
+library;
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:lms_mobile_web/features/admin/dashboard/domain/models/dashboard_stats.dart';
@@ -10,7 +13,8 @@ import 'package:lms_mobile_web/features/admin/dashboard/presentation/widgets/rec
 /// flutter test --update-goldens  # Golden 파일 업데이트
 /// flutter test                   # Golden 파일과 비교
 ///
-/// 참고: AdminDashboardScreen은 GoRouter 의존성으로 인해 통합 테스트에서 테스트합니다.
+/// 참고: Golden 테스트는 로컬 환경에서만 실행됩니다.
+/// CI에서는 폰트 렌더링 차이로 인해 제외됩니다.
 void main() {
   final mockStats = DashboardStats.mock();
 
