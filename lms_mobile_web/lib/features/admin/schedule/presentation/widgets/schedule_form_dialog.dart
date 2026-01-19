@@ -79,7 +79,7 @@ class _ScheduleFormDialogState extends ConsumerState<ScheduleFormDialog> {
                   loading: () => const LinearProgressIndicator(),
                   error: (error, _) => Text('매장 목록 로드 실패: ${error.toString()}'),
                   data: (stores) => DropdownButtonFormField<String>(
-                    initialValue: _selectedStoreId,
+                    value: _selectedStoreId,
                     decoration: const InputDecoration(
                       labelText: '매장',
                       border: OutlineInputBorder(),
@@ -115,7 +115,7 @@ class _ScheduleFormDialogState extends ConsumerState<ScheduleFormDialog> {
                       return const Text('해당 매장에 근로자가 없습니다');
                     }
                     return DropdownButtonFormField<String>(
-                      initialValue: _selectedEmployeeId,
+                      value: _selectedEmployeeId,
                       decoration: const InputDecoration(
                         labelText: '근로자',
                         border: OutlineInputBorder(),

@@ -62,7 +62,7 @@ class _ScheduleCalendarScreenState extends ConsumerState<ScheduleCalendarScreen>
                       width: 200,
                       child: DropdownButtonFormField<String?>(
                         key: ValueKey(_selectedStoreId),
-                        initialValue: _selectedStoreId,
+                        value: _selectedStoreId,
                         decoration: const InputDecoration(
                           labelText: '매장 필터',
                           border: OutlineInputBorder(),

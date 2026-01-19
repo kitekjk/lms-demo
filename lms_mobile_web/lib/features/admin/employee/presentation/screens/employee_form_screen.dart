@@ -112,7 +112,7 @@ class _EmployeeFormScreenState extends ConsumerState<EmployeeFormScreen> {
                       ),
                       const SizedBox(height: 24),
                       DropdownButtonFormField<EmployeeType>(
-                        initialValue: _selectedEmployeeType,
+                        value: _selectedEmployeeType,
                         decoration: const InputDecoration(
                           labelText: '근로자 유형',
                           border: OutlineInputBorder(),
@@ -141,7 +141,7 @@ class _EmployeeFormScreenState extends ConsumerState<EmployeeFormScreen> {
                         loading: () => const LinearProgressIndicator(),
                         error: (error, _) => Text('매장 목록 로드 실패: ${error.toString()}'),
                         data: (stores) => DropdownButtonFormField<String>(
-                          initialValue: _selectedStoreId,
+                          value: _selectedStoreId,
                           decoration: const InputDecoration(
                             labelText: '매장',
                             border: OutlineInputBorder(),

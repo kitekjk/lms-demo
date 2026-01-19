@@ -45,7 +45,7 @@ class _EmployeeListScreenState extends ConsumerState<EmployeeListScreen> {
                     data: (stores) => SizedBox(
                       width: 200,
                       child: DropdownButtonFormField<String?>(
-                        initialValue: _selectedStoreId,
+                        value: _selectedStoreId,
                         decoration: const InputDecoration(
                           labelText: '매장 필터',
                           border: OutlineInputBorder(),
