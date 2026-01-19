@@ -642,6 +642,7 @@ fun login(context: DomainContext): User {
 
 ## 📚 참고 문서
 
+- [DEMO_SCENARIOS.md](./DEMO_SCENARIOS.md) - 역할별 시연 시나리오 가이드
 - [ARCHITECTURE.md](./ARCHITECTURE.md) - 아키텍처 상세 설명
 - [CLAUDE.md](./CLAUDE.md) - Claude Code 가이드
 - [.taskmaster/CLAUDE.md](./.taskmaster/CLAUDE.md) - TaskMaster AI 통합 가이드
