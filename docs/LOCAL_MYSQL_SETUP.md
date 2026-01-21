@@ -32,55 +32,23 @@ SHOW DATABASES LIKE 'lms_demo';
 
 ### 3. 사용자 계정 설정
 
-#### 옵션 A: 기존 root 계정 사용 (개발 환경 권장)
-
-root 계정을 그대로 사용하되, 비밀번호를 `changeme`로 설정합니다.
-
-```sql
--- root 비밀번호 변경 (기존 비밀번호를 changeme로)
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'changeme';
-
--- 권한 적용
-FLUSH PRIVILEGES;
-```
-
-#### 옵션 B: 전용 계정 생성 (운영 환경 권장)
-
-LMS 전용 계정을 생성합니다.
+LMS 전용 계정을 생성합니다. (root 계정 대신 전용 계정 사용 권장)
 
 ```sql
 -- 전용 사용자 생성
-CREATE USER 'lms_user'@'localhost' IDENTIFIED BY 'lms_password';
+CREATE USER 'lms'@'localhost' IDENTIFIED BY 'lms1234';
 
 -- 권한 부여
-GRANT ALL PRIVILEGES ON lms_demo.* TO 'lms_user'@'localhost';
+GRANT ALL PRIVILEGES ON lms_demo.* TO 'lms'@'localhost';
 
 -- 권한 적용
 FLUSH PRIVILEGES;
 
 -- 확인
-SHOW GRANTS FOR 'lms_user'@'localhost';
+SHOW GRANTS FOR 'lms'@'localhost';
 ```
 
-**전용 계정 사용 시 환경 변수 설정:**
-
-`.env` 파일을 생성하고 다음 내용을 추가합니다:
-
-```env
-DB_URL=jdbc:mysql://localhost:3306/lms_demo?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-DB_USERNAME=lms_user
-DB_PASSWORD=lms_password
-```
-
-또는 `application-local.yml`을 수정합니다:
-
-```yaml
-spring:
-  datasource:
-    url: jdbc:mysql://localhost:3306/lms_demo?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
-    username: lms_user
-    password: lms_password
-```
+이 설정은 `application-local.yml`의 기본 설정과 일치합니다.
 
 ### 4. 연결 테스트
 
@@ -114,8 +82,8 @@ SHOW TABLES;
 | Host | localhost |
 | Port | 3306 |
 | Database | lms_demo |
-| Username | root |
-| Password | changeme |
+| Username | lms |
+| Password | lms1234 |
 
 ### 커스텀 설정
 
@@ -158,8 +126,13 @@ DB_URL=jdbc:mysql://localhost:3307/lms_demo?useSSL=false&serverTimezone=UTC&allo
 -- 사용자 권한 확인
 SELECT user, host FROM mysql.user;
 
--- 비밀번호 재설정
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'changeme';
+-- lms 계정이 없으면 생성
+CREATE USER 'lms'@'localhost' IDENTIFIED BY 'lms1234';
+GRANT ALL PRIVILEGES ON lms_demo.* TO 'lms'@'localhost';
+FLUSH PRIVILEGES;
+
+-- 비밀번호 재설정 (계정이 이미 있는 경우)
+ALTER USER 'lms'@'localhost' IDENTIFIED BY 'lms1234';
 FLUSH PRIVILEGES;
 ```
 

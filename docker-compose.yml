@@ -8,6 +8,8 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: changeme
       MYSQL_DATABASE: lms_demo
+      MYSQL_USER: lms
+      MYSQL_PASSWORD: lms1234
       MYSQL_CHARACTER_SET_SERVER: utf8mb4
       MYSQL_COLLATION_SERVER: utf8mb4_unicode_ci
     ports:
@@ -19,7 +21,7 @@ services:
       - --collation-server=utf8mb4_unicode_ci
       - --default-authentication-plugin=mysql_native_password
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-pchangeme"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ulms", "-plms1234"]
       interval: 10s
       timeout: 5s
       retries: 5

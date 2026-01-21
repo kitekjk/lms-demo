@@ -226,16 +226,16 @@ docker-compose logs mysql
 | Host | localhost |
 | Port | 3306 |
 | Database | lms_demo |
-| Username | root |
-| Password | changeme |
+| Username | lms |
+| Password | lms1234 |
 
 **데이터베이스 직접 접속 (선택사항):**
 ```bash
 # Docker 컨테이너 내부 MySQL 접속
-docker exec -it lms-demo-mysql mysql -uroot -pchangeme lms_demo
+docker exec -it lms-demo-mysql mysql -ulms -plms1234 lms_demo
 
 # 또는 외부 MySQL 클라이언트 사용
-mysql -h localhost -P 3306 -uroot -pchangeme lms_demo
+mysql -h localhost -P 3306 -ulms -plms1234 lms_demo
 ```
 
 **Docker 없이 로컬 MySQL 사용 시:**
@@ -246,7 +246,8 @@ mysql -h localhost -P 3306 -uroot -pchangeme lms_demo
 ```sql
 -- 빠른 설정 (MySQL CLI에서 실행)
 CREATE DATABASE lms_demo CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-ALTER USER 'root'@'localhost' IDENTIFIED BY 'changeme';
+CREATE USER 'lms'@'localhost' IDENTIFIED BY 'lms1234';
+GRANT ALL PRIVILEGES ON lms_demo.* TO 'lms'@'localhost';
 FLUSH PRIVILEGES;
 ```
 
