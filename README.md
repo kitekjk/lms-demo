@@ -165,6 +165,24 @@ task-master list --status=pending
 - Flutter SDK 3.32.0 이상
 - Chrome 브라우저 (웹 개발용)
 
+**Flutter SDK 설치:**
+
+```bash
+# macOS (Homebrew)
+brew install --cask flutter
+
+# Windows (Chocolatey)
+choco install flutter
+
+# 또는 공식 사이트에서 직접 다운로드
+# https://docs.flutter.dev/get-started/install
+```
+
+설치 후 환경 확인:
+```bash
+flutter doctor
+```
+
 ### 🚀 Quick Start (5분 안에 시작하기)
 
 처음 프로젝트를 실행하는 경우, 아래 순서대로 진행하세요.
