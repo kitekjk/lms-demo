@@ -1,6 +1,7 @@
-import axios, { type AxiosError, type InternalAxiosRequestConfig } from 'axios'
+import axios, { type AxiosError, type AxiosRequestConfig, type InternalAxiosRequestConfig } from 'axios'
 import { tokenStorage } from '@/lib/auth/token-storage'
 import type { ApiError, ApiResponse, AuthErrorResponse } from './types'
+import { endpoints } from './endpoints'
 
 export const api = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL,
@@ -19,10 +20,53 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   return config
 })
 
-// Normalize errors — response interceptor for errors only at this stage (401 refresh added in Task 1.3)
+// Shared refresh promise to deduplicate concurrent 401s
+let refreshPromise: Promise<string> | null = null
+
+async function refreshAccessToken(): Promise<string> {
+  const refreshToken = tokenStorage.getRefreshToken()
+  if (!refreshToken) throw new Error('no refresh token')
+  // Use api instance (so mock adapter intercepts in tests), but mark as non-retryable via
+  // the isRefreshCall guard in the response interceptor.
+  const res = await api.post<{ accessToken: string }>(
+    endpoints.auth.refresh,
+    { refreshToken },
+  )
+  tokenStorage.setAccessToken(res.data.accessToken)
+  return res.data.accessToken
+}
+
+type RetriableRequest = AxiosRequestConfig & { _retry?: boolean }
+
 api.interceptors.response.use(
   (res) => res,
-  (err: AxiosError) => Promise.reject(normalizeError(err)),
+  async (err: AxiosError) => {
+    const original = err.config as RetriableRequest | undefined
+    const status = err.response?.status
+    const isRefreshCall = original?.url?.includes(endpoints.auth.refresh)
+
+    if (status === 401 && original && !original._retry && !isRefreshCall) {
+      original._retry = true
+      try {
+        if (!refreshPromise) {
+          refreshPromise = refreshAccessToken().finally(() => {
+            refreshPromise = null
+          })
+        }
+        const newToken = await refreshPromise
+        original.headers = {
+          ...(original.headers ?? {}),
+          Authorization: `Bearer ${newToken}`,
+        } as never
+        return api.request(original)
+      } catch {
+        tokenStorage.clear()
+        return Promise.reject(normalizeError(err))
+      }
+    }
+
+    return Promise.reject(normalizeError(err))
+  },
 )
 
 function normalizeError(err: AxiosError): ApiError {
