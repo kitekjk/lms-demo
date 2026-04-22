@@ -107,3 +107,10 @@ lms_mobile_web/web/flutter_service_worker.js
 
 # Flutter environment
 lms_mobile_web/.env
+
+# React web (lms_web)
+lms_web/node_modules/
+lms_web/dist/
+lms_web/.env
+lms_web/.env.*.local
+lms_web/*.local

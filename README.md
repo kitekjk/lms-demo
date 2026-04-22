@@ -165,6 +165,10 @@ task-master list --status=pending
 - Flutter SDK 3.32.0 이상
 - Chrome 브라우저 (웹 개발용)
 
+### Web Clients
+- **Flutter** (`lms_mobile_web/`) — mobile-primary channel (iOS/Android + responsive web).
+- **React** (`lms_web/`) — desktop-primary web channel. See `lms_web/README.md`.
+
 **Flutter SDK 설치:**
 
 ```bash
