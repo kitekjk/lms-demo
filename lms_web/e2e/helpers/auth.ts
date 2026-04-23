@@ -10,7 +10,14 @@ type UserKey = keyof typeof USERS
  */
 export async function loginAs(page: Page, userKey: UserKey): Promise<void> {
   const u = USERS[userKey]
-  await page.goto('/login')
+  // If we're already on /login (e.g., right after logout's hard navigation),
+  // skip page.goto to avoid racing with the in-flight page load that Playwright
+  // interprets as "Navigation is interrupted by another navigation".
+  if (!page.url().endsWith('/login')) {
+    await page.goto('/login')
+  }
+  // Ensure the form is rendered and interactive before filling
+  await page.getByLabel('이메일').waitFor({ state: 'visible', timeout: 10_000 })
   await page.getByLabel('이메일').fill(u.email)
   await page.getByLabel('비밀번호').fill(u.password)
   await page.getByRole('button', { name: '로그인' }).click()
