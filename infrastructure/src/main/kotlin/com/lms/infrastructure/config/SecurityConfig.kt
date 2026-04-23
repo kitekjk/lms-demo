@@ -49,7 +49,9 @@ class SecurityConfig(private val jwtAuthenticationFilter: JwtAuthenticationFilte
                         "/swagger-ui/**",
                         "/swagger-ui.html",
                         "/api-docs/**",
-                        "/v3/api-docs/**"
+                        "/v3/api-docs/**",
+                        // E2E reset endpoint (bean gated by @Profile("e2e"), returns 404 in other profiles)
+                        "/test-only/**"
                     ).permitAll()
                     // OPTIONS 요청은 모두 허용 (CORS preflight)
                     .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()

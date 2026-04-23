@@ -19,6 +19,9 @@ dependencies {
     implementation(libs.spring.boot.starter.security)
     implementation(libs.spring.boot.starter.validation)
 
+    // JPA (needed for E2eResetController — EntityManager, @Transactional, ScriptUtils)
+    implementation(libs.spring.boot.starter.data.jpa)
+
     // JWT
     implementation(libs.jjwt.api)
     runtimeOnly(libs.jjwt.impl)

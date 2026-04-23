@@ -26,7 +26,6 @@ export function useLogin() {
 }
 
 export function useLogout() {
-  const logout = useAuthStore((s) => s.logout)
   return useMutation({
     mutationFn: async () => {
       try {
@@ -35,8 +34,8 @@ export function useLogout() {
         /* ignore — client-side logout primacy */
       }
     },
-    onSettled: () => {
-      logout()
-    },
+    // State clear is intentionally NOT here — the caller handles it AFTER navigation,
+    // to prevent a race where ProtectedRoute redirects (with state.from) during the
+    // brief window where state is cleared but we're still on a protected route.
   })
 }

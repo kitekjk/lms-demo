@@ -10,6 +10,9 @@ import com.lms.application.schedule.UpdateWorkScheduleAppService
 import com.lms.application.schedule.dto.CreateWorkScheduleCommand
 import com.lms.application.schedule.dto.UpdateWorkScheduleCommand
 import com.lms.domain.common.DomainContext
+import com.lms.domain.exception.EmployeeNotFoundException
+import com.lms.domain.model.employee.EmployeeRepository
+import com.lms.domain.model.user.UserId
 import com.lms.infrastructure.security.SecurityUtils
 import com.lms.interfaces.web.dto.WorkScheduleCreateRequest
 import com.lms.interfaces.web.dto.WorkScheduleListResponse
@@ -42,7 +45,8 @@ class WorkScheduleController(
     private val getWorkSchedulesByStoreAppService: GetWorkSchedulesByStoreAppService,
     private val getWorkSchedulesByDateRangeAppService: GetWorkSchedulesByDateRangeAppService,
     private val updateWorkScheduleAppService: UpdateWorkScheduleAppService,
-    private val deleteWorkScheduleAppService: DeleteWorkScheduleAppService
+    private val deleteWorkScheduleAppService: DeleteWorkScheduleAppService,
+    private val employeeRepository: EmployeeRepository
 ) {
 
     /**
@@ -149,8 +153,9 @@ class WorkScheduleController(
         val userId = SecurityUtils.getCurrentUserId()
             ?: throw IllegalStateException("인증된 사용자 정보를 찾을 수 없습니다")
 
-        // TODO: userId로 employeeId 조회 (현재는 간단히 userId 사용)
-        val results = getWorkSchedulesByEmployeeAppService.execute(userId)
+        val employee = employeeRepository.findByUserId(UserId(userId))
+            ?: throw EmployeeNotFoundException(userId)
+        val results = getWorkSchedulesByEmployeeAppService.execute(employee.id.value)
         val schedules = results.map { WorkScheduleResponse.from(it) }
         val response = WorkScheduleListResponse(
             schedules = schedules,

@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet } from 'react-router-dom'
 import {
   LayoutDashboard,
   Users,
@@ -14,6 +14,7 @@ import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { useAuthStore } from '@/features/auth/store'
 import { useLogout } from '@/features/auth/api'
+import { tokenStorage } from '@/lib/auth/token-storage'
 import { cn } from '@/lib/utils'
 
 interface NavItem {
@@ -37,11 +38,21 @@ const navItems: NavItem[] = [
 export default function AdminShell() {
   const user = useAuthStore((s) => s.currentUser)
   const logoutMutation = useLogout()
-  const navigate = useNavigate()
 
   const handleLogout = () => {
     logoutMutation.mutate(undefined, {
-      onSettled: () => navigate('/login', { replace: true }),
+      onSettled: () => {
+        // Clear persisted auth DIRECTLY via storage — never via a Zustand setter.
+        // A setter (`useAuthStore.getState().logout()`) triggers a React re-render
+        // while we're still mounted under a protected route; ProtectedRoute then
+        // fires `<Navigate to="/login" state={{from: <current path>}}/>` before
+        // the hard navigation below can unload the document. That `from` leaks
+        // into history.state and the next LoginPage redirects the next user to
+        // the previous user's page (e.g. manager's /admin/leaves → employee → 403).
+        tokenStorage.clear()
+        useAuthStore.persist.clearStorage()
+        window.location.replace('/login')
+      },
     })
   }
 

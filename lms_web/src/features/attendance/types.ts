@@ -5,8 +5,8 @@ export interface AttendanceRecord {
   employeeId: string
   workScheduleId: string | null
   attendanceDate: string          // 'YYYY-MM-DD'
-  checkInTime: string             // 'HH:mm:ss'
-  checkOutTime: string | null     // 'HH:mm:ss' | null
+  checkInTime: string             // ISO datetime (Instant) e.g. '2026-04-24T09:15:30Z'
+  checkOutTime: string | null     // ISO datetime | null
   actualWorkHours: number | null
   status: AttendanceStatusValue
   note: string | null

@@ -168,6 +168,7 @@ task-master list --status=pending
 ### Web Clients
 - **Flutter** (`lms_mobile_web/`) — mobile-primary channel (iOS/Android + responsive web).
 - **React** (`lms_web/`) — desktop-primary web channel. See `lms_web/README.md`.
+- **E2E**: Playwright Critical 6 scenarios in `lms_web/e2e/`. See `lms_web/README.md` for run instructions. Requires `docker-compose.e2e.yml` + backend `e2e` profile.
 
 **Flutter SDK 설치:**
 
