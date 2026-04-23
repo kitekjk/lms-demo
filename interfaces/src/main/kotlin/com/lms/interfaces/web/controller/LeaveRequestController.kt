@@ -10,6 +10,9 @@ import com.lms.application.leave.RejectLeaveRequestAppService
 import com.lms.application.leave.dto.CreateLeaveRequestCommand
 import com.lms.application.leave.dto.RejectLeaveRequestCommand
 import com.lms.domain.common.DomainContext
+import com.lms.domain.exception.EmployeeNotFoundException
+import com.lms.domain.model.employee.EmployeeRepository
+import com.lms.domain.model.user.UserId
 import com.lms.infrastructure.security.SecurityUtils
 import com.lms.interfaces.web.dto.LeaveRejectionRequest
 import com.lms.interfaces.web.dto.LeaveRequestCreateRequest
@@ -40,7 +43,8 @@ class LeaveRequestController(
     private val cancelLeaveRequestAppService: CancelLeaveRequestAppService,
     private val getMyLeaveRequestsAppService: GetMyLeaveRequestsAppService,
     private val getLeaveRequestsByStoreAppService: GetLeaveRequestsByStoreAppService,
-    private val getPendingLeaveRequestsAppService: GetPendingLeaveRequestsAppService
+    private val getPendingLeaveRequestsAppService: GetPendingLeaveRequestsAppService,
+    private val employeeRepository: EmployeeRepository
 ) {
 
     /**
@@ -66,9 +70,10 @@ class LeaveRequestController(
         val userId = SecurityUtils.getCurrentUserId()
             ?: throw IllegalStateException("인증된 사용자 정보를 찾을 수 없습니다")
 
-        // TODO: userId로 employeeId 조회 (현재는 간단히 userId 사용)
+        val employee = employeeRepository.findByUserId(UserId(userId))
+            ?: throw EmployeeNotFoundException(userId)
         val command = CreateLeaveRequestCommand(
-            employeeId = userId,
+            employeeId = employee.id.value,
             leaveType = request.leaveType,
             startDate = request.startDate,
             endDate = request.endDate,
@@ -99,8 +104,9 @@ class LeaveRequestController(
         val userId = SecurityUtils.getCurrentUserId()
             ?: throw IllegalStateException("인증된 사용자 정보를 찾을 수 없습니다")
 
-        // TODO: userId로 employeeId 조회 (현재는 간단히 userId 사용)
-        val results = getMyLeaveRequestsAppService.execute(userId)
+        val employee = employeeRepository.findByUserId(UserId(userId))
+            ?: throw EmployeeNotFoundException(userId)
+        val results = getMyLeaveRequestsAppService.execute(employee.id.value)
         val requests = results.map { LeaveRequestResponse.from(it) }
         val response = LeaveRequestListResponse(
             requests = requests,

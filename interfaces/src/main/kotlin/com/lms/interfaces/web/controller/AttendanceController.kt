@@ -9,6 +9,9 @@ import com.lms.application.attendance.dto.AdjustAttendanceCommand
 import com.lms.application.attendance.dto.CheckInCommand
 import com.lms.application.attendance.dto.CheckOutCommand
 import com.lms.domain.common.DomainContext
+import com.lms.domain.exception.EmployeeNotFoundException
+import com.lms.domain.model.employee.EmployeeRepository
+import com.lms.domain.model.user.UserId
 import com.lms.infrastructure.security.SecurityUtils
 import com.lms.interfaces.web.dto.AttendanceAdjustRequest
 import com.lms.interfaces.web.dto.AttendanceRecordListResponse
@@ -40,7 +43,8 @@ class AttendanceController(
     private val checkOutAppService: CheckOutAppService,
     private val getMyAttendanceRecordsAppService: GetMyAttendanceRecordsAppService,
     private val getAttendanceRecordsByStoreAppService: GetAttendanceRecordsByStoreAppService,
-    private val adjustAttendanceAppService: AdjustAttendanceAppService
+    private val adjustAttendanceAppService: AdjustAttendanceAppService,
+    private val employeeRepository: EmployeeRepository
 ) {
 
     /**
@@ -66,9 +70,10 @@ class AttendanceController(
         val userId = SecurityUtils.getCurrentUserId()
             ?: throw IllegalStateException("인증된 사용자 정보를 찾을 수 없습니다")
 
-        // TODO: userId로 employeeId 조회 (현재는 간단히 userId 사용)
+        val employee = employeeRepository.findByUserId(UserId(userId))
+            ?: throw EmployeeNotFoundException(userId)
         val command = CheckInCommand(
-            employeeId = userId,
+            employeeId = employee.id.value,
             workScheduleId = request.workScheduleId
         )
 
@@ -112,8 +117,9 @@ class AttendanceController(
         val userId = SecurityUtils.getCurrentUserId()
             ?: throw IllegalStateException("인증된 사용자 정보를 찾을 수 없습니다")
 
-        // TODO: userId로 employeeId 조회 (현재는 간단히 userId 사용)
-        val command = CheckOutCommand(employeeId = userId)
+        val employee = employeeRepository.findByUserId(UserId(userId))
+            ?: throw EmployeeNotFoundException(userId)
+        val command = CheckOutCommand(employeeId = employee.id.value)
 
         val result = checkOutAppService.execute(context, command)
         val response = AttendanceRecordResponse(
@@ -154,8 +160,9 @@ class AttendanceController(
         val userId = SecurityUtils.getCurrentUserId()
             ?: throw IllegalStateException("인증된 사용자 정보를 찾을 수 없습니다")
 
-        // TODO: userId로 employeeId 조회 (현재는 간단히 userId 사용)
-        val results = getMyAttendanceRecordsAppService.execute(userId, startDate, endDate)
+        val employee = employeeRepository.findByUserId(UserId(userId))
+            ?: throw EmployeeNotFoundException(userId)
+        val results = getMyAttendanceRecordsAppService.execute(employee.id.value, startDate, endDate)
 
         val records = results.map { result ->
             AttendanceRecordResponse(
