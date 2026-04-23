@@ -26,3 +26,37 @@ export const attendanceStatusLabels: Record<string, string> = {
 export function leaveTypeLabel(v: string): string { return leaveTypeLabels[v] ?? v }
 export function leaveStatusLabel(v: string): string { return leaveStatusLabels[v] ?? v }
 export function attendanceStatusLabel(v: string): string { return attendanceStatusLabels[v] ?? v }
+
+export const employeeTypeLabels: Record<string, string> = {
+  REGULAR: '정규',
+  IRREGULAR: '비정규',
+  PART_TIME: '파트타임',
+}
+export function employeeTypeLabel(v: string): string { return employeeTypeLabels[v] ?? v }
+
+export const workTypeLabels: Record<string, string> = {
+  WEEKDAY: '평일',
+  NIGHT: '야간',
+  WEEKEND: '주말',
+  HOLIDAY: '공휴일',
+}
+export function workTypeLabel(v: string): string { return workTypeLabels[v] ?? v }
+
+export const batchStatusLabels: Record<string, string> = {
+  RUNNING: '실행 중',
+  COMPLETED: '완료',
+  PARTIAL_SUCCESS: '부분 성공',
+  FAILED: '실패',
+}
+export function batchStatusLabel(v: string): string { return batchStatusLabels[v] ?? v }
+
+export const policyTypeLabels: Record<string, string> = {
+  OVERTIME_WEEKDAY: '평일 연장',
+  OVERTIME_WEEKEND: '주말 연장',
+  OVERTIME_HOLIDAY: '공휴일 연장',
+  NIGHT_SHIFT: '야간',
+  HOLIDAY_WORK: '공휴일 근무',
+  BONUS: '보너스',
+  ALLOWANCE: '수당',
+}
+export function policyTypeLabel(v: string): string { return policyTypeLabels[v] ?? v }
