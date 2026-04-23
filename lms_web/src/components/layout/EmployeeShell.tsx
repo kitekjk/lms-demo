@@ -19,8 +19,14 @@ export default function EmployeeShell() {
   const navigate = useNavigate()
 
   const handleLogout = () => {
+    const logoutStore = useAuthStore.getState().logout
     logoutMutation.mutate(undefined, {
-      onSettled: () => navigate('/login', { replace: true }),
+      onSettled: () => {
+        // Navigate first (while still "authenticated") to avoid ProtectedRoute
+        // redirecting to /login with state.from=<current-route>.
+        navigate('/login', { replace: true })
+        logoutStore()
+      },
     })
   }
 
