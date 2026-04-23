@@ -17,6 +17,11 @@ describe('date helpers', () => {
     expect(formatTime(null)).toBe('—')
   })
 
+  it('formatTime handles ISO datetime from backend (Instant)', () => {
+    expect(formatTime('2026-04-24T09:15:30Z')).toBe('09:15')
+    expect(formatTime('2026-04-24T18:30:45.123Z')).toBe('18:30')
+  })
+
   it('parseIsoTime returns Date on today from HH:mm:ss', () => {
     const d = parseIsoTime('09:15:30')
     expect(d.getHours()).toBe(9)
