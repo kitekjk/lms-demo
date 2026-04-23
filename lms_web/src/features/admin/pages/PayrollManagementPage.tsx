@@ -1,2 +1,1 @@
-import Placeholder from '@/components/layout/Placeholder'
-export default function PayrollManagementPage() { return <Placeholder title="급여 관리" /> }
+export { default } from '@/features/admin/payroll/pages/PayrollManagementPage'
