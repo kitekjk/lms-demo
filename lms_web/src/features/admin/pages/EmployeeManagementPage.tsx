@@ -1,2 +1,1 @@
-import Placeholder from '@/components/layout/Placeholder'
-export default function EmployeeManagementPage() { return <Placeholder title="직원 관리" /> }
+export { default } from '@/features/admin/employees/pages/EmployeeManagementPage'
