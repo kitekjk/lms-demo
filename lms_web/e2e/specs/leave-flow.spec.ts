@@ -16,7 +16,7 @@ test.describe('leave approval flow', () => {
   test('Scenarios 3 + 4 — employee requests leave → manager approves → employee sees APPROVED', async ({ page }) => {
     // === Part 1: Employee creates leave request ===
     await loginAs(page, 'employeeGangnam')
-    await page.getByRole('link', { name: '휴가' }).click()
+    await page.getByRole('link', { name: '휴가', exact: true }).click()
     await page.getByRole('link', { name: '신청하기' }).click()
 
     const start = futureDate(7)
