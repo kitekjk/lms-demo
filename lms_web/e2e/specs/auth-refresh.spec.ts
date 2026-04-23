@@ -14,9 +14,12 @@ test.describe('401 refresh flow', () => {
     const original = await accessToken(page)
     expect(original).toBeTruthy()
 
-    // Corrupt the access token to force a 401 on next authenticated request.
-    // Refresh token is untouched, so the interceptor should succeed refreshing.
-    await setAccessToken(page, 'invalid-access-token-to-trigger-401')
+    // Mutate the signature of the real token — preserves JWT structure
+    // (header.payload.signature) but invalidates signature verification.
+    // Spring Security's JWT filter then returns 401 (not 403 for malformed-as-not-a-JWT),
+    // which triggers the axios interceptor's refresh flow.
+    const corruptedToken = original!.replace(/.{5}$/, 'XXXXX')
+    await setAccessToken(page, corruptedToken)
 
     // Navigate to a page that makes an authenticated request.
     // /attendance/history calls GET /api/attendance/my-records →
@@ -28,7 +31,7 @@ test.describe('401 refresh flow', () => {
 
     // Access token in localStorage must have been replaced with a new one
     const updated = await accessToken(page)
-    expect(updated).not.toBe('invalid-access-token-to-trigger-401')
+    expect(updated).not.toBe(corruptedToken)
     expect(updated).not.toBe(original) // new token, different from both
   })
 })
