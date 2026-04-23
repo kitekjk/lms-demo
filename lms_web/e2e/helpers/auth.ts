@@ -21,7 +21,12 @@ export async function loginAs(page: Page, userKey: UserKey): Promise<void> {
 
 export async function logout(page: Page): Promise<void> {
   await page.getByRole('button', { name: '로그아웃' }).click()
+  // Logout uses window.location.replace('/login') — a hard browser navigation.
+  // We must wait for both the URL match AND the page load to complete, otherwise
+  // the next page.goto() can race with the in-flight hard navigation and error
+  // with "Navigation is interrupted by another navigation".
   await page.waitForURL('**/login', { timeout: 5_000 })
+  await page.waitForLoadState('load')
 }
 
 export function accessToken(page: Page): Promise<string | null> {
