@@ -1,4 +1,4 @@
-import { NavLink, Outlet, useNavigate } from 'react-router-dom'
+import { NavLink, Outlet } from 'react-router-dom'
 import { Home, Clock, Calendar, FileText, Wallet, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/features/auth/store'
@@ -16,16 +16,17 @@ const tabs = [
 export default function EmployeeShell() {
   const user = useAuthStore((s) => s.currentUser)
   const logoutMutation = useLogout()
-  const navigate = useNavigate()
 
   const handleLogout = () => {
     const logoutStore = useAuthStore.getState().logout
     logoutMutation.mutate(undefined, {
       onSettled: () => {
-        // Navigate first (while still "authenticated") to avoid ProtectedRoute
-        // redirecting to /login with state.from=<current-route>.
-        navigate('/login', { replace: true })
+        // Clear state FIRST (tokens + Zustand), then hard-navigate.
+        // Using `window.location.replace` instead of SPA `navigate()` guarantees
+        // React Router state (including any location.state.from set by ProtectedRoute
+        // during the state-change render cycle) is fully discarded.
         logoutStore()
+        window.location.replace('/login')
       },
     })
   }
