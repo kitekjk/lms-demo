@@ -3,14 +3,11 @@ package com.lms.interfaces.web.testonly
 import jakarta.persistence.EntityManager
 import jakarta.persistence.PersistenceContext
 import org.springframework.context.annotation.Profile
-import org.springframework.core.io.ClassPathResource
 import org.springframework.http.ResponseEntity
-import org.springframework.jdbc.datasource.init.ScriptUtils
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import javax.sql.DataSource
 
 /**
  * Test-only reset endpoint.
@@ -18,30 +15,29 @@ import javax.sql.DataSource
  * ACTIVE ONLY under the `e2e` Spring profile. NEVER loaded in local, dev, or prod.
  *
  * POST /test-only/reset
- *   1. Truncates all business tables (FK-safe via SET FOREIGN_KEY_CHECKS=0).
- *   2. Re-runs data.sql to reseed reference data (users/stores/employees/policies).
+ *   Truncates transactional tables only. Reference data (users/employees/stores/policies)
+ *   is populated at boot via `spring.sql.init.mode: always` and stays untouched.
+ *   This keeps the reset simple and avoids transaction-boundary issues with
+ *   mid-request SQL script execution.
  */
 @RestController
 @RequestMapping("/test-only")
 @Profile("e2e")
-class E2eResetController(private val dataSource: DataSource) {
+class E2eResetController {
 
     @PersistenceContext
     private lateinit var em: EntityManager
 
+    // Transactional tables only — ordered FK-safely.
+    // Reference tables (employees, users, stores, payroll_policies) intentionally
+    // excluded: tests don't mutate them, and boot-time seeding handles initial load.
     private val truncateOrder = listOf(
-        // Transactional tables first
         "payroll_details",
         "payroll_batch_histories",
         "payrolls",
-        "payroll_policies",
         "leave_requests",
         "attendance_records",
         "work_schedules",
-        // Reference tables (will be reseeded from data.sql)
-        "employees",
-        "users",
-        "stores",
     )
 
     @PostMapping("/reset")
@@ -54,16 +50,10 @@ class E2eResetController(private val dataSource: DataSource) {
         em.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate()
         em.flush()
 
-        dataSource.connection.use { conn ->
-            ScriptUtils.executeSqlScript(conn, ClassPathResource("data.sql"))
-        }
-
-        return ResponseEntity.ok(
-            mapOf(
-                "status" to "ok",
-                "truncated" to truncateOrder,
-                "reseedFrom" to "classpath:data.sql",
-            ),
-        )
+        return ResponseEntity.ok(mapOf(
+            "status" to "ok",
+            "truncated" to truncateOrder,
+            "note" to "Reference data (users/employees/stores/policies) preserved — seeded at boot.",
+        ))
     }
 }
