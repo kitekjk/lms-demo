@@ -3,6 +3,7 @@ import { Home, Clock, Calendar, FileText, Wallet, LogOut } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/features/auth/store'
 import { useLogout } from '@/features/auth/api'
+import { tokenStorage } from '@/lib/auth/token-storage'
 import { cn } from '@/lib/utils'
 
 const tabs = [
@@ -18,14 +19,16 @@ export default function EmployeeShell() {
   const logoutMutation = useLogout()
 
   const handleLogout = () => {
-    const logoutStore = useAuthStore.getState().logout
     logoutMutation.mutate(undefined, {
       onSettled: () => {
-        // Clear state FIRST (tokens + Zustand), then hard-navigate.
-        // Using `window.location.replace` instead of SPA `navigate()` guarantees
-        // React Router state (including any location.state.from set by ProtectedRoute
-        // during the state-change render cycle) is fully discarded.
-        logoutStore()
+        // Clear persisted auth DIRECTLY via storage — never via a Zustand setter.
+        // A setter (`useAuthStore.getState().logout()`) triggers a React re-render
+        // while we're still mounted under a protected route; ProtectedRoute then
+        // fires `<Navigate to="/login" state={{from: <current path>}}/>` before
+        // the hard navigation below can unload the document, leaking `from` into
+        // history.state and into the next user's LoginPage.
+        tokenStorage.clear()
+        useAuthStore.persist.clearStorage()
         window.location.replace('/login')
       },
     })
